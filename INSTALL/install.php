@@ -463,6 +463,7 @@ function checkLocationAccess($path)
 function CheckPrerequisites() {
 	global $sourceFolder;
 	global $scriptPath;
+	$prereq = '';
 	
 	$cmsfolder = "$scriptPath/$sourceFolder";
 	
