@@ -308,7 +308,7 @@ function handleUserMgmt()
 			if(!$errors) {
 				if(count($updates) > 0)
 				{
-					$profileQuery = 'UPDATE `' . MYSQL_DATABASE_PREFIX . 'users` SET ' . join($updates, ', ') . " WHERE `user_id` = ".escape($_GET['userid'])."'";
+					$profileQuery = 'UPDATE `' . MYSQL_DATABASE_PREFIX . 'users` SET ' . join(', ', $updates) . " WHERE `user_id` = ".escape($_GET['userid'])."'";
 					$profileResult = mysqli_query($GLOBALS["___mysqli_ston"], $profileQuery);
 					if(!$profileResult) {
 					displayerror('An error was encountered while attempting to process your request.'.$profileQuery);
@@ -795,7 +795,7 @@ function userProfileForm($userfieldprettynames,$profileInfoRows,$editID=false,$s
 		$containsFileUploadFields = false;
 		$userId=$profileInfoRows['user_id'];
 		$dynamicFields = getFormElementsHtmlAsArray(0, $userId, $jsValidationFunctions, $containsFileUploadFields);
-		$dynamicFields = join($dynamicFields, "</tr>\n<tr>");
+		$dynamicFields = join("</tr>\n<tr>", $dynamicFields);
 		if($dynamicFields != '') {
 			$dynamicFields = "<tr>$dynamicFields</tr>";
 		}

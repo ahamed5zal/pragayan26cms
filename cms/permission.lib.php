@@ -119,8 +119,8 @@ function getAllPermissionsOnPage($pagepath, $modifiableGroups, $grantableActions
 	$userPermTable = '`' . MYSQL_DATABASE_PREFIX . 'userpageperm`';
 	$permListTable = '`' . MYSQL_DATABASE_PREFIX . 'permissionlist`';
 	$permQuery = "SELECT `perm_type`, $userPermTable.`perm_id` AS `perm_id`, `page_id`, `usergroup_id`, `perm_permission` " .
-	             "FROM $userPermTable, $permListTable WHERE `page_id` IN (" . join($pagepath, ', ') . ") AND " .
-	             "$userPermTable.`perm_id` IN (" . join($permIds, ', ') .
+	             "FROM $userPermTable, $permListTable WHERE `page_id` IN (" . join(', ', $pagepath) . ") AND " .
+	             "$userPermTable.`perm_id` IN (" . join(', ', $permIds) .
 	             ") AND $userPermTable.`perm_id` = $permListTable.`perm_id`";
 	$permResult = mysqli_query($GLOBALS["___mysqli_ston"], $permQuery);
 
@@ -326,7 +326,7 @@ function getPagePermission(array $pagePath, $usergroupid, $action, $module, $per
 	$userpermTable = MYSQL_DATABASE_PREFIX . "userpageperm";
 	$permissionlistTable = MYSQL_DATABASE_PREFIX . "permissionlist";
 
-	$pageids = join($pagePath, ', ');
+	$pageids = join(",", $pagePath);
 
 	$permQuery = "SELECT $userpermTable.perm_permission, $userpermTable.page_id FROM $userpermTable, $permissionlistTable ";
 	$permQuery .= "WHERE $userpermTable.perm_type = '$permtype' AND $userpermTable.page_id IN ($pageids) AND ";

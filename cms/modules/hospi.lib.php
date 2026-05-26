@@ -90,7 +90,7 @@ private function getEmailSuggestions($input) {
 		$suggestions[] = $temp1[0];
 		}
 	}
-	return join($suggestions, ',');
+	return join(',', $suggestions);
 }
 
 

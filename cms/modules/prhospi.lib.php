@@ -146,7 +146,7 @@ Ck1;
     while($emailRow = mysqli_fetch_row($emailResult)) {
       $suggestions[] = $emailRow[1]. ' - ' . $emailRow[7];
     }                                                                                                                                           
-    return join($suggestions, ',');                                                                                                             
+    return join(',', $suggestions);                                                                                                             
   }
  
   

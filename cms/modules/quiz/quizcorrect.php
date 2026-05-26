@@ -271,7 +271,7 @@ HEAD;
 		
 		$profileStuff = '';
 		if(count($display))
-		$profileStuff='<td>'.join($display,'</td><td>').'</td>';
+		$profileStuff='<td>'.join('</td><td>', $display).'</td>';
 		
 		
 		

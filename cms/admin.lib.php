@@ -351,7 +351,7 @@ function getSuggestions($pattern) {
 		$suggestions[] = $suggestionsRow[1] . ' - ' . $suggestionsRow[2];
 	}
 
-	return join($suggestions, ',');
+	return join(',', $suggestions);
 }
 
 function admin($pageid, $userid) {

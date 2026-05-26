@@ -26,7 +26,7 @@ if(!defined('__PRAGYAN_CMS'))
  */
 function breadcrumbs($pageIdArray) {
 	$sqlOutputArray = array();
-	$pageIdList = join($pageIdArray, ",");
+	$pageIdList = join("," , $pageIdArray);
 	$query = 'SELECT `page_id`, `page_name`, `page_title` FROM `' . MYSQL_DATABASE_PREFIX . 'pages` WHERE `page_id` IN (' . $pageIdList . ')';
 	$resultId = mysqli_query($GLOBALS["___mysqli_ston"], $query);
 

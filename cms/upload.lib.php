@@ -38,7 +38,7 @@ function upload($moduleComponentId, $moduleName, $userId, $uploadFormName, $maxF
 			displayerror("Error in the uploadable types given.");
 			return false;
 		}
-		$uploadFileTypesRegexp = '/\.('.join($uploadableFileTypesArray,"|").')$/i';
+		$uploadFileTypesRegexp = '/\.('.join("|", $uploadableFileTypesArray).')$/i';
 	}
 	/// Checking if the upload folder exists and creating it if doesn't exist
 	if (!file_exists($uploadDir)) {
@@ -478,7 +478,7 @@ UPLOADEDFILESSTRING;
 			}
 			$uploadedFiles = upload($moduleComponentId, $moduleName, $userId, $uploadFieldName, $maxFileSizeInBytes, $uploadableFileTypesArray);
 			if(is_array($uploadedFiles) && count($uploadedFiles) > 0)
-				displayinfo ( "Successfully uploaded file(s) ".join($uploadedFiles,"; ").".");
+				displayinfo ( "Successfully uploaded file(s) ".join("; ", $uploadedFiles).".");
 			return $uploadedFiles ;
 		}
 		else

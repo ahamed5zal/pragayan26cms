@@ -672,12 +672,12 @@ function updateSettings($pageId, $userId, $pageName, $pageTitle, $showInMenu, $s
 		}
 	}
 	if (count($updates) > 0) {
-		$updateQuery = 'UPDATE `' . MYSQL_DATABASE_PREFIX . 'pages` SET ' . join($updates, ', ') . " WHERE `page_id` = '$pageId';";
+		$updateQuery = 'UPDATE `' . MYSQL_DATABASE_PREFIX . 'pages` SET ' . join(', ', $updates) . " WHERE `page_id` = '$pageId';";
 		mysqli_query($GLOBALS["___mysqli_ston"], $updateQuery);
 	}
 
 	if (is_array($visibleChildList) && count($visibleChildList) > 0) {
-		$visibleChildList = "'" . join($visibleChildList, "', '") . "'";
+		$visibleChildList = "'" . join("', '", $visibleChildList) . "'";
 		$updateQuery = 'UPDATE `' . MYSQL_DATABASE_PREFIX . 'pages` SET `page_displayinmenu` = 1 WHERE ' .
 		"`page_name` IN ($visibleChildList) AND `page_parentid` = '$pageId' AND `page_parentid` != `page_id`";
 		mysqli_query($GLOBALS["___mysqli_ston"], $updateQuery);
@@ -689,7 +689,7 @@ function updateSettings($pageId, $userId, $pageName, $pageTitle, $showInMenu, $s
 	}
 	mysqli_query($GLOBALS["___mysqli_ston"], $updateQuery);
 	if (is_array($visiblesChildList) && count($visiblesChildList) > 0) {
-		$visiblesChildList = "'" . join($visiblesChildList, "', '") . "'";
+		$visiblesChildList = "'" . join("', '", $visiblesChildList) . "'";
 		$updateQuery = 'UPDATE `' . MYSQL_DATABASE_PREFIX . 'pages` SET `page_displayinsitemap` = 1 WHERE ' .
 		"`page_name` IN ($visiblesChildList) AND `page_parentid` = '$pageId' AND `page_parentid` != `page_id`";
 		mysqli_query($GLOBALS["___mysqli_ston"], $updateQuery);
@@ -702,7 +702,7 @@ function updateSettings($pageId, $userId, $pageName, $pageTitle, $showInMenu, $s
 	if(!$icon_propogate)
 	{
 	if (is_array($visibleiChildList) && count($visibleiChildList) > 0) {
-		$visibleiChildList = "'" . join($visibleiChildList, "', '") . "'";
+		$visibleiChildList = "'" . join("', '", $visibleiChildList) . "'";
 		$updateQuery = 'UPDATE `' . MYSQL_DATABASE_PREFIX . 'pages` SET `page_displayicon` = 1 WHERE ' .
 		"`page_name` IN ($visibleiChildList) AND `page_parentid` = '$pageId' AND `page_parentid` != `page_id`";
 		mysqli_query($GLOBALS["___mysqli_ston"], $updateQuery);

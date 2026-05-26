@@ -68,9 +68,9 @@ function get_def($database,$table,$fp) {
      }
      while(list($x, $columns) = @each($index)) {
           $def .= ",\n";
-          if($x == "PRIMARY") $def .= "   PRIMARY KEY (" . implode($columns, ", ") . ")";
-          else if (substr($x,0,6) == "UNIQUE") $def .= "   UNIQUE ".substr($x,7)." (" . implode($columns, ", ") . ")";
-          else $def .= "   KEY $x (" . implode($columns, ", ") . ")";
+          if($x == "PRIMARY") $def .= "   PRIMARY KEY (" . implode(", ", $columns) . ")";
+          else if (substr($x,0,6) == "UNIQUE") $def .= "   UNIQUE ".substr($x,7)." (" . implode(", ", $columns) . ")";
+          else $def .= "   KEY $x (" . implode(", ", $columns) . ")";
      }
 
      $def .= "\n);#%%\n\n";

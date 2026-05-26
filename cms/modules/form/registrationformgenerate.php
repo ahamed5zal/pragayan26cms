@@ -54,7 +54,7 @@ if(!defined('__PRAGYAN_CMS'))
 		$containsFileUploadFields = false;
 		$formElements = getFormElementsHtmlAsArray($moduleCompId, $userId, $jsValidationFunctions, $containsFileUploadFields);
 
-		$jsValidationFunctions = join($jsValidationFunctions, ' && ');
+		$jsValidationFunctions = join(' && ', $jsValidationFunctions);
 
 		$body .= '<link rel="stylesheet" type="text/css" media="all" href="'.$calpath.'/form/calendar/calendar.css" title="Aqua" />' .
 						 '<script type="text/javascript" src="'.$calpath.'/form/calendar/calendar.js"></script>';
@@ -77,7 +77,7 @@ if(!defined('__PRAGYAN_CMS'))
 		}
 
 		$body .= "\n<table cellspacing=\"8px\"><tr>";
-		$body .= join($formElements, "</tr>\n<tr>") . '</tr>';
+		$body .= join("</tr>\n<tr>", $formElements) . '</tr>';
 
 		if(!$disableCaptcha && $formRow['form_usecaptcha'] == 1)
 			$body .= getCaptchaHtml();
@@ -237,7 +237,7 @@ function getFormElementInputField($moduleComponentId, $elementId, $value="", &$j
 		if($functionName($elementName,$value,$isRequired,$elementHelpName,$elementTooltip,$elementSize,$elementTypeOptions,$elementMoreThan,$elementLessThan,$elementCheckInt,$jsOutput,$htmlOutput)==false)
 			displayerror("Unable to run function ".$functionName);
 	}
-	$jsOutput = join($jsOutput, ' && ');
+	$jsOutput = join(' && ', $jsOutput);
 	$javascriptCheckFunctions = $jsOutput;
 
 	return $htmlOutput . "</td>\n";
@@ -331,7 +331,7 @@ function getFormElementInputField($moduleComponentId, $elementId, $value="", &$j
 					continue;
 				$value[] = $val;
 				}
-			$value = join($value,"|");
+			$value = join("|", $value);
 			}
 			$optionsHtml = '';
 			$values=explode("|",$value);

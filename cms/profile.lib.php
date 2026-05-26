@@ -121,7 +121,7 @@ function profile($userId, $forEditRegistrant = false) {
 			}
 
 			if(count($updates) > 0) {
-				$profileQuery = 'UPDATE `' . MYSQL_DATABASE_PREFIX . 'users` SET ' . join($updates, ', ') . " WHERE `user_id` = '$userId'";
+				$profileQuery = 'UPDATE `' . MYSQL_DATABASE_PREFIX . 'users` SET ' . join(', ', $updates) . " WHERE `user_id` = '$userId'";
 				$profileResult = mysqli_query($GLOBALS["___mysqli_ston"], $profileQuery);
 				if(!$profileResult) {
 					displayerror('An error was encountered while attempting to process your request.');
@@ -171,11 +171,11 @@ function getProfileForm($userId, $userName, $userFullname, $forEditRegistrant = 
 	$jsValidationFunctions = array();
 	$containsFileUploadFields = false;
 	$dynamicFields = getFormElementsHtmlAsArray(0, $userId, $jsValidationFunctions, $containsFileUploadFields);
-	$dynamicFields = join($dynamicFields, "</tr>\n<tr>");
+	$dynamicFields = join("</tr>\n<tr>", $dynamicFields);
 	if($dynamicFields != '') {
 		$dynamicFields = "<tr>$dynamicFields</tr>";
 	}
-	$jsValidationFunctions = join($jsValidationFunctions, ' && ');
+	$jsValidationFunctions = join(' && ', $jsValidationFunctions);
 
 	$captchaValidation = '';
 	if(!$forEditRegistrant) {
@@ -436,7 +436,7 @@ function getProfileRegistrantsList($showEditButtons = false) {
 			$tableBody .= '<td align="center"><a href="./+admin&subaction=editsiteregistrants&subsubaction=editregistrant&useremail='.getUserEmail($userIds[$i]).'" />' . $editImage . '</a></td>';
 			$tableBody .= '<td align="center"><a href="./+admin&subaction=editsiteregistrants&subsubaction=deleteregistrant&useremail='.getUserEmail($userIds[$i]).'" />' . $deleteImage . '</a></td>';
 		}
-		$tableBody .= '<td>' . join(generateFormDataRow(0, $userIds[$i], $columnNames), '</td><td>') . "</td></tr>\n";
+		$tableBody .= '<td>' . join('</td><td>', generateFormDataRow(0, $userIds[$i], $columnNames)) . "</td></tr>\n";
 	}
 
 	return '<br /><br /><br /><table border="1">' . $tableCaptions . $tableBody . '</table>';

@@ -37,11 +37,11 @@ function getRegistrationForm() {
 	$containsFileUploadFields = false;
         /// Get the dynamic fields that has been added to the registration form in the profile form fields.
 	$dynamicFields = getFormElementsHtmlAsArray(0, 0, $jsValidationFunctions, $containsFileUploadFields);
-	$dynamicFields = join($dynamicFields, "</tr>\n<tr>");
+	$dynamicFields = join("</tr>\n<tr>", $dynamicFields);
 	if($dynamicFields != '') {
 		$dynamicFields = "<tr>$dynamicFields</tr>";
 	}
-	$jsValidationFunctions = join($jsValidationFunctions, ' && ');
+	$jsValidationFunctions = join(' && ', $jsValidationFunctions);
 	$email_val = "";
 	$name_val = "";
 	$fullname_val = "";

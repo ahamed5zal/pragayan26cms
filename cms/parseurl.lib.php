@@ -77,9 +77,9 @@ function parseUrlReal($url, &$pageIdArray) {
 		$conditions[] = 'IF(`node'.($i - 1).'`.`page_module` = \'link\', `node'.($i - 1).'`.`page_modulecomponentid`, `node'.($i - 1).'`.`page_id`) = `node'.$i.'`.`page_parentid`';
 	}
 
- 	$pageIdQuery = 'SELECT ' . join($pages, ', ') . ' FROM (' . join($nodes, ', ') . ')';
+ 	$pageIdQuery = 'SELECT ' . join(', ', $pages) . ' FROM (' . join(', ', $nodes) . ')';
  	if(count($conditions) > 0)
- 		$pageIdQuery .= ' WHERE ' . join($conditions, ' AND ');
+ 		$pageIdQuery .= ' WHERE ' . join(' AND ', $conditions);
 
 	$pageIdResult = mysql_query($pageIdQuery);
 

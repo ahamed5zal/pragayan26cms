@@ -42,7 +42,7 @@ class qaos1 implements module, fileuploadable {
     while($emailRow = mysqli_fetch_row($emailResult)) {
       $suggestions[] = $emailRow[1];
     }
-    return join($suggestions, ',');
+    return join(',', $suggestions);
   }
 
 

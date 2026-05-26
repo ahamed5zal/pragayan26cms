@@ -585,7 +585,7 @@ DISABLEPARENTFIELD;
 			while($suggestionsRow = mysqli_fetch_row($suggestionsResult)) {
 				$suggestions[] = $suggestionsRow[0];
 			}
-			return join($suggestions, ',');
+			return join(',', $suggestions);
 		}
 		else if($patternType == 'team'){
 			$suggestionsQuery = "SELECT `qaos_team_name` FROM `qaos_teams` WHERE `qaos_team_name` LIKE \"%$pattern%\"" ;
@@ -594,7 +594,7 @@ DISABLEPARENTFIELD;
 			while($suggestionsRow = mysqli_fetch_row($suggestionsResult)) {
 				$suggestions[] = $suggestionsRow[0];
 			}
-			return join($suggestions, ',');
+			return join(',', $suggestions);
 
 		}
 	}
@@ -936,7 +936,7 @@ USERNAME;
 				else 
 					$userFullNameArray[] .= getUserFullName($i);
 			}
-			$htmlOut .= join($userFullNameArray,", ");
+			$htmlOut .= join(", ", $userFullNameArray);
 			$childHtml = $this->getNodeHtml($unitId,$score);
 			if($childHtml != "") {
 				$htmlOut .= "<ul>" . $childHtml . '</ul>';
@@ -1251,7 +1251,7 @@ SCOREUSER;
 				$htmlOut .= "<br />";
 				//$userFullNameArray[] .= getUserFullName($i);
 			}
-			//$htmlOut .= join($userFullNameArray,", ");
+			//$htmlOut .= join(", ", $userFullNameArray);
 			$htmlOut .= "</li>";
 		}
 		$htmlOut .= "<br /><br />";
@@ -1283,7 +1283,7 @@ SCOREUSER;
 					$htmlOut .= "<br />";
 					//$userFullNameArray[] .= getUserFullName($i);
 				}
-				//$htmlOut .= join($userFullNameArray,", ");
+				//$htmlOut .= join(", ", $userFullNameArray);
 				$htmlOut .= "</li>";
 			}
 		}
@@ -1315,7 +1315,7 @@ SCOREUSER;
 					$htmlOut .= "<br />";
 					//$userFullNameArray[] .= getUserFullName($i);
 				}
-				//$htmlOut .= join($userFullNameArray,", ");
+				//$htmlOut .= join(", ", $userFullNameArray);
 				$htmlOut .= "</li>";
 			}	
 			

@@ -262,7 +262,7 @@ function associateGroupWithForm($groupId, $formId) {
 			for($i = 0; $i < $registeredUserCount; $i++) {
 				$registeredUsers[$i] = "($registeredUsers[$i], $groupId)";
 			}
-			$insertQuery .= implode($registeredUsers, ', ');
+			$insertQuery .= implode(', ', $registeredUsers);
 			if(!mysqli_query($GLOBALS["___mysqli_ston"], $insertQuery)) {
 				displayerror('Could not move registered users to group.');
 				return false;
@@ -426,7 +426,7 @@ function reevaluateGroupPriorities($modifiableGroups) {
 
 	$modifiableGroups = array();
 	if($modifiableCount) {
-		$groupQuery = 'SELECT `group_id`, `group_name`, `group_description`, `group_priority` FROM `' . MYSQL_DATABASE_PREFIX . 'groups` WHERE `group_id` IN (' . join($groupIdList, ', ') . ') ORDER BY `group_priority` DESC';
+		$groupQuery = 'SELECT `group_id`, `group_name`, `group_description`, `group_priority` FROM `' . MYSQL_DATABASE_PREFIX . 'groups` WHERE `group_id` IN (' . join(', ', $groupIdList) . ') ORDER BY `group_priority` DESC';
 		$groupResult = mysqli_query($GLOBALS["___mysqli_ston"], $groupQuery) or die($groupQuery);
 		while($groupRow = mysqli_fetch_assoc($groupResult)) {
 			$modifiableGroups[] = $groupRow;

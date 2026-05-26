@@ -101,7 +101,7 @@ if(!defined('__PRAGYAN_CMS'))
 				$updates[] = "`form_closelimit` = '".$closeLimit."'";
 			}
 			if(count($updates) > 0) {
-				$updateQuery = 'UPDATE `form_desc` SET ' . join($updates, ', ') .
+				$updateQuery = 'UPDATE `form_desc` SET ' . join(', ', $updates) .
 				               ' WHERE `page_modulecomponentid` = \'' . $moduleCompId."'";
 				if(mysqli_query($GLOBALS["___mysqli_ston"], $updateQuery)) {
 					displayinfo("All changes in the form have been successfully saved!");

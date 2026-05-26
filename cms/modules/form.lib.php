@@ -414,7 +414,7 @@ CSS;
 			$suggestions[] = $suggestionsRow[1] . ' - ' . $suggestionsRow[2];
 		}
 
-		return join($suggestions, ',');
+		return join(',', $suggestions);
 	}
 
 	public function createModule($moduleComponentId) {
