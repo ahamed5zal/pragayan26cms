@@ -855,3 +855,10 @@ function censor_words($text)
 		$res = preg_replace("/$words[0]/i",$replace,$text);
 	return $res;
 }
+
+//fallback function
+if (!function_exists('get_magic_quotes_gpc')) {
+    function get_magic_quotes_gpc() {
+        return false;
+    }
+}   
