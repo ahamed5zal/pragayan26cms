@@ -31,7 +31,7 @@
 
   	var $errors;
 
-  	function captchaerror ()
+  	function __construct ()
   	{
 
   	  $this->errors = array();

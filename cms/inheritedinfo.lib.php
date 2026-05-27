@@ -38,7 +38,7 @@ function inheritedinfo($array) {
 		$data = mysqli_query($GLOBALS["___mysqli_ston"], $query);
 		$temp = mysqli_fetch_assoc($data);
 	}
-	$inheritedinfocontent = $temp['page_inheritedinfocontent'];
+	$inheritedinfocontent = $temp['page_inheritedinfocontent']??null;
 	return $inheritedinfocontent;
 }
 
