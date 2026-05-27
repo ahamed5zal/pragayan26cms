@@ -1,4 +1,4 @@
-<?php 
+<?php
 /*******************************************
 * Sphider Version 1.3.*
 * This program is licensed under the GNU GPL.
@@ -8,7 +8,7 @@
 	/**
 	* Returns the result of a query as an array
 	* 
-	* @param string $query SQL päring stringina
+	* @param string $query SQL pï¿½ring stringina
 	* @return array|null massiiv
 	 */
 	function sql_fetch_all($query) {
@@ -74,72 +74,72 @@
 		(
 		"&amp" => "&",
 		"&apos" => "'",
-		"&THORN;"  => "Þ",
-		"&szlig;"  => "ß",
-		"&agrave;" => "à",
-		"&aacute;" => "á",
-		"&acirc;"  => "â",
-		"&atilde;" => "ã",
-		"&auml;"   => "ä",
-		"&aring;"  => "å",
-		"&aelig;"  => "æ",
-		"&ccedil;" => "ç",
-		"&egrave;" => "è",
-		"&eacute;" => "é",
-		"&ecirc;"  => "ê",
-		"&euml;"   => "ë",
-		"&igrave;" => "ì",
-		"&iacute;" => "í",
-		"&icirc;"  => "î",
-		"&iuml;"   => "ï",
-		"&eth;"    => "ð",
-		"&ntilde;" => "ñ",
-		"&ograve;" => "ò",
-		"&oacute;" => "ó",
-		"&ocirc;"  => "ô",
-		"&otilde;" => "õ",
-		"&ouml;"   => "ö",
-		"&oslash;" => "ø",
-		"&ugrave;" => "ù",
-		"&uacute;" => "ú",
-		"&ucirc;"  => "û",
-		"&uuml;"   => "ü",
-		"&yacute;" => "ý",
-		"&thorn;"  => "þ",
-		"&yuml;"   => "ÿ",
-		"&THORN;"  => "Þ",
-		"&szlig;"  => "ß",
-		"&Agrave;" => "à",
-		"&Aacute;" => "á",
-		"&Acirc;"  => "â",
-		"&Atilde;" => "ã",
-		"&Auml;"   => "ä",
-		"&Aring;"  => "å",
-		"&Aelig;"  => "æ",
-		"&Ccedil;" => "ç",
-		"&Egrave;" => "è",
-		"&Eacute;" => "é",
-		"&Ecirc;"  => "ê",
-		"&Euml;"   => "ë",
-		"&Igrave;" => "ì",
-		"&Iacute;" => "í",
-		"&Icirc;"  => "î",
-		"&Iuml;"   => "ï",
-		"&ETH;"    => "ð",
-		"&Ntilde;" => "ñ",
-		"&Ograve;" => "ò",
-		"&Oacute;" => "ó",
-		"&Ocirc;"  => "ô",
-		"&Otilde;" => "õ",
-		"&Ouml;"   => "ö",
-		"&Oslash;" => "ø",
-		"&Ugrave;" => "ù",
-		"&Uacute;" => "ú",
-		"&Ucirc;"  => "û",
-		"&Uuml;"   => "ü",
-		"&Yacute;" => "ý",
-		"&Yhorn;"  => "þ",
-		"&Yuml;"   => "ÿ"
+		"&THORN;"  => "ï¿½",
+		"&szlig;"  => "ï¿½",
+		"&agrave;" => "ï¿½",
+		"&aacute;" => "ï¿½",
+		"&acirc;"  => "ï¿½",
+		"&atilde;" => "ï¿½",
+		"&auml;"   => "ï¿½",
+		"&aring;"  => "ï¿½",
+		"&aelig;"  => "ï¿½",
+		"&ccedil;" => "ï¿½",
+		"&egrave;" => "ï¿½",
+		"&eacute;" => "ï¿½",
+		"&ecirc;"  => "ï¿½",
+		"&euml;"   => "ï¿½",
+		"&igrave;" => "ï¿½",
+		"&iacute;" => "ï¿½",
+		"&icirc;"  => "ï¿½",
+		"&iuml;"   => "ï¿½",
+		"&eth;"    => "ï¿½",
+		"&ntilde;" => "ï¿½",
+		"&ograve;" => "ï¿½",
+		"&oacute;" => "ï¿½",
+		"&ocirc;"  => "ï¿½",
+		"&otilde;" => "ï¿½",
+		"&ouml;"   => "ï¿½",
+		"&oslash;" => "ï¿½",
+		"&ugrave;" => "ï¿½",
+		"&uacute;" => "ï¿½",
+		"&ucirc;"  => "ï¿½",
+		"&uuml;"   => "ï¿½",
+		"&yacute;" => "ï¿½",
+		"&thorn;"  => "ï¿½",
+		"&yuml;"   => "ï¿½",
+		"&THORN;"  => "ï¿½",
+		"&szlig;"  => "ï¿½",
+		"&Agrave;" => "ï¿½",
+		"&Aacute;" => "ï¿½",
+		"&Acirc;"  => "ï¿½",
+		"&Atilde;" => "ï¿½",
+		"&Auml;"   => "ï¿½",
+		"&Aring;"  => "ï¿½",
+		"&Aelig;"  => "ï¿½",
+		"&Ccedil;" => "ï¿½",
+		"&Egrave;" => "ï¿½",
+		"&Eacute;" => "ï¿½",
+		"&Ecirc;"  => "ï¿½",
+		"&Euml;"   => "ï¿½",
+		"&Igrave;" => "ï¿½",
+		"&Iacute;" => "ï¿½",
+		"&Icirc;"  => "ï¿½",
+		"&Iuml;"   => "ï¿½",
+		"&ETH;"    => "ï¿½",
+		"&Ntilde;" => "ï¿½",
+		"&Ograve;" => "ï¿½",
+		"&Oacute;" => "ï¿½",
+		"&Ocirc;"  => "ï¿½",
+		"&Otilde;" => "ï¿½",
+		"&Ouml;"   => "ï¿½",
+		"&Oslash;" => "ï¿½",
+		"&Ugrave;" => "ï¿½",
+		"&Uacute;" => "ï¿½",
+		"&Ucirc;"  => "ï¿½",
+		"&Uuml;"   => "ï¿½",
+		"&Yacute;" => "ï¿½",
+		"&Yhorn;"  => "ï¿½",
+		"&Yuml;"   => "ï¿½"
 		);
 
 	global $apache_indexes;
@@ -164,7 +164,7 @@
 
 
 	function remove_accents($string) {
-		return (strtr($string, "ÀÁÂÃÄÅÆàáâãäåæÒÓÔÕÕÖØòóôõöøÈÉÊËèéêëðÇçÐÌÍÎÏìíîïÙÚÛÜùúûüÑñÞßÿý",
+		return (strtr($string, "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½",
 					  "aaaaaaaaaaaaaaoooooooooooooeeeeeeeeecceiiiiiiiiuuuuuuuunntsyy"));
 	}
 
@@ -658,7 +658,7 @@ function replace_ampersand($str) {
 		global $regex_consonant;
 		$c = $regex_consonant;
 
-		return preg_match("#$c{2}$#", $str, $matches) AND $matches[0]{0} == $matches[0]{1};
+		return preg_match("#$c{2}$#", $str, $matches) AND $matches[0][0] == $matches[0][1];
 	}
 
 
@@ -675,9 +675,9 @@ function replace_ampersand($str) {
 
 		return     preg_match("#($c$v$c)$#", $str, $matches)
 			   AND strlen($matches[1]) == 3
-			   AND $matches[1]{2} != 'w'
-			   AND $matches[1]{2} != 'x'
-			   AND $matches[1]{2} != 'y';
+			   AND $matches[1][2] != 'w'
+			   AND $matches[1][2] != 'x'
+			   AND $matches[1][2] != 'y';
 	}
 
 ?>

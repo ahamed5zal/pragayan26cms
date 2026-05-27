@@ -37,8 +37,8 @@ function getmicrotime(){
 function getSearchBox(){
 	$CMS_TITLE = CMS_TITLE;
 	$lastquery="";
-	if($_GET['query']!="") $lastquery=safe_html($_GET['query']);
-	if($_POST['query']!="") $lastquery=safe_html($_POST['query']);
+	if(($_GET['query'] ?? '')!="") $lastquery=safe_html($_GET['query']);
+	if(($_POST['query'] ?? '')!="") $lastquery=safe_html($_POST['query']);
 
 	global $cmsFolder,$urlRequestRoot,$ICONS;
 	$searchbox=<<<SEARCH
@@ -97,7 +97,7 @@ DIDYOUMEAN;
 	if ($search_results['ignore_words']) {
 		$resultHTML .= '<div id="common_report">';
 		$ignored = '';
-		while ($thisword=each($ignore_words)) {
+		foreach ($ignore_words as $thisword) {
 			$ignored .= " ".$thisword[1];
 		}
 		$resultHTML .= '</div>';
