@@ -414,7 +414,7 @@ function WriteHTML($html)
 		else
 		{
 			//Tag
-			if($e{0}=='/') $this->CloseTag(strtoupper(substr($e,1)));
+			if($e[0]=='/') $this->CloseTag(strtoupper(substr($e,1)));
 			else
 			{
         $regexp = '|=\'(.*?)\'|s'; // eliminate single quotes, if any
