@@ -66,7 +66,7 @@ function download($pageId, $userId, $fileName,$action="") {
 		$moduleType = "profile";
 		$moduleComponentId = $userId;
 		if (isset($_GET['mcid'])) {
-				$moduleComponentId = escape($_GET[mcid]);
+				$moduleComponentId = escape($_GET['mcid']);
 			}
 		// Since the moduleComponentId is equal to userId, the image could be retrieved only if the userId is valid, hence no need for security check for file access here :)
 		

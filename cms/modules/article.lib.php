@@ -199,7 +199,7 @@ HEADER;
 				displayerror("Error in deleting comment");
 		}
 		if (isset($_GET['preview']) && isset ($_POST['CKEditor1'])) {
-			return "<div id=\"preview\" class=\"warning\"><a name=\"preview\">Preview</a></div>".$this->actionView(stripslashes($_POST[CKEditor1])).$this->getCkBody(stripslashes($_POST[CKEditor1]));
+			return "<div id=\"preview\" class=\"warning\"><a name=\"preview\">Preview</a></div>".$this->actionView(stripslashes($_POST['CKEditor1'])).$this->getCkBody(stripslashes($_POST['CKEditor1']));
 		}
 		if (isset($_GET['version'])) {
 			$revision = $this->getRevision($_GET['version']);
@@ -248,7 +248,7 @@ VALUES ('$this->moduleComponentId', '$revId','$diff','$this->userId')";
 				$page = replaceAction(selfURI(),"edit","view");
 				global $sourceFolder,$moduleFolder;
 				require_once("$sourceFolder/$moduleFolder/search/admin/spider.php");
-				index_url($page, 0, 0, '', 0, 0, 1);
+				index_url($page, 0, 0, '', 0, 0, 1, 0, 0);
 			}
 			/* Update the choice of editor*/
 			if(isset($_POST['editor'])){
