@@ -130,7 +130,7 @@ if (isset($file) && $del==0) {
 		 @unlink($backup_path."backup.sql");
 		 $fp = @fopen($backup_path."backup.sql","w");
 		 fwrite ($fp,"");
-			fclose ($fp);
+			if (is_resource($fp)) fclose ($fp);
 		 chmod($backup_path."backup.sql", 0777);
 		 $fp = @fopen($backup_path."backup.sql","w");
 		 $zp = @gzopen($backup_path.$file, "rb");
@@ -144,7 +144,7 @@ if (isset($file) && $del==0) {
 			$data=gzgets($zp, 8192);// buffer php
 			fwrite($fp,$data);
 		 }
-		 fclose($fp);
+		 if (is_resource($fp)) fclose($fp);
 		 gzclose($zp);
 		 $file="backup.sql";
 

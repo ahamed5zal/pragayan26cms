@@ -176,7 +176,7 @@ function url_status($url) {
 
 		}
 	}
-	fclose($fp);
+	if (is_resource($fp)) fclose($fp);
 	return $status;
 }
 

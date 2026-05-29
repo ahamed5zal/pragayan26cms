@@ -85,7 +85,7 @@ function _recaptcha_http_post($host, $path, $data, $port = 80) {
 
         while ( !feof($fs) )
                 $response .= fgets($fs, 1160); // One TCP-IP packet
-        fclose($fs);
+        if (is_resource($fs)) fclose($fs);
         $response = explode("\r\n\r\n", $response, 2);
 
         return $response;
