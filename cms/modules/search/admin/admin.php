@@ -1049,9 +1049,8 @@ function addcatform($parent) {
 				}
 				arsort($topwords);
 				$count = 0;
-				while ((list($word, $weight) = each($topwords)) && $count <= 30) {
-					
-					$count++;
+				foreach ($topwords as $word => $weight) {
+					if ($count++ > 30) break;
 					if ($class =="white") 
 						$class = "grey";
 					else 

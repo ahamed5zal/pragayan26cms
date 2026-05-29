@@ -213,7 +213,7 @@ class Services_Yadis_XRDS {
      * @return mixed $xrds An instance of Services_Yadis_XRDS or null,
      * depending on the validity of $xml_string
      */
-    function parseXRDS($xml_string, $extra_ns_map = null)
+    static function parseXRDS($xml_string, $extra_ns_map = null)
     {
         global $_Services_Yadis_ns_map;
 

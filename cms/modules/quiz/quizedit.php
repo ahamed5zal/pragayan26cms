@@ -287,7 +287,7 @@ function getQuestionTableHtml($quizId, $sectionId) {
 		$rightAnswer = $questionRow['quiz_rightanswer'];
 
 		$optionsText = '';
-		$optionsQuery = "SELECT * FROM `quiz_objectiveoptions` WHERE `page_modulecomponentid` = '$quizId' AND `quiz_sectionid` = '$sectionId' AND `quiz_questionid` = '$questionId' ORDER BY `quiz_optionrank";
+		$optionsQuery = "SELECT * FROM `quiz_objectiveoptions` WHERE `page_modulecomponentid` = '$quizId' AND `quiz_sectionid` = '$sectionId' AND `quiz_questionid` = '$questionId' ORDER BY `quiz_optionrank`";
 		$optionsResult = mysqli_query($GLOBALS["___mysqli_ston"], $optionsQuery);
 		$j = 1;
 		while ($optionsRow = mysqli_fetch_assoc($optionsResult)) {

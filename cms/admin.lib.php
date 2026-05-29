@@ -1224,7 +1224,7 @@ GROUPEDITFORM;
 						if(isset($_POST['chkAddMe'])) {
 							$insertQuery = 'INSERT INTO `' . MYSQL_DATABASE_PREFIX . "usergroup`(`user_id`, `group_id`) VALUES ('$currentUserId', '$newGroupId')";
 							if(!mysqli_query($GLOBALS["___mysqli_ston"], $insertQuery)) {
-								displayerror('Error adding user to newly created group: ' . $insertQuery . '<br />' . mysql_query());
+								displayerror('Error adding user to newly created group: ' . $insertQuery . '<br />' . mysqli_error($GLOBALS["___mysqli_ston"]));
 							}
 						}
 						$virtue = '';

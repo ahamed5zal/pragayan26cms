@@ -154,7 +154,7 @@ function displayRooms ($mcid,$userId=0) {
       while($temp=mysqli_fetch_array($result, MYSQLI_ASSOC)) {
 	$status="<br>Vacant";
 	$query1="SELECT * FROM `prhospi_accomodation_status` 
-                 WHERE `hospi_room_id`='$temp[hospi_room_id]' AND `page_modulecomponentid`={$mcid} AND `hospi_actual_checkout` IS NULL";
+                 WHERE `hospi_room_id`='{$temp['hospi_room_id']}' AND `page_modulecomponentid`={$mcid} AND `hospi_actual_checkout` IS NULL";
 	$result1=mysqli_query($GLOBALS["___mysqli_ston"], $query1);
 	if(mysqli_num_rows($result1)<$temp['hospi_room_capacity']);
 	else $status="Full";
@@ -235,7 +235,7 @@ function addUserToRoomAjax($userId,$roomId,$mcid,$checkedInBy,$stay,$registeredB
                             VALUES ($mcid,$roomId,$userId,'{$time}','{$checkedInBy}',{$amtRecieved},'{$registeredBy}')";
                             //(page_modulecomponentid,hospi_room_id,user_id,hospi_actual_checkin,hospi_checkedin_by,hospi_cash_recieved)
                             //VALUES ($mcid,$roomId,$userId,'{$time}','{$checkedInBy}',{$amtRecieved})";
-    $insertDetailsRes = mysql_query($insertDetailsQuery) or die(mysql_error());
+    $insertDetailsRes = mysqli_query($GLOBALS["___mysqli_ston"], $insertDetailsQuery) or die(mysqli_error($GLOBALS["___mysqli_ston"]));
     $availableRoomNo=getAvailableRooms($mcid);
     return "Success  {$availableRoomNo}";
 }
@@ -257,21 +257,21 @@ function updateUserToRoomAjax($userId,$roomId,$mcid,$checkedInBy,$stay) {
   }
   
   $userExistQuery="SELECT `user_email` FROM `".MYSQL_DATABASE_PREFIX."users` WHERE `user_id` = '".$userId."'";
-    $userExistRes = mysql_query($userExistQuery) or displayerror(mysql_error());
-    if(!mysql_num_rows($userExistRes)) {
+    $userExistRes = mysqli_query($GLOBALS["___mysqli_ston"], $userExistQuery) or displayerror(mysqli_error($GLOBALS["___mysqli_ston"]));
+    if(!mysqli_num_rows($userExistRes)) {
       return "Invalid Pragyan Id:".$userId;
     }
     $checkIfUserEnrolledQuery = "SELECT * FROM `prhospi_accomodation_status` 
                             WHERE `user_id`={$userId} AND `page_modulecomponentid`={$mcid}";
-    $checkIfUserEnrolledRes = mysql_query($checkIfUserEnrolledQuery) or displayerror(mysql_error());
-    if(!mysql_num_rows($checkIfUserEnrolledRes)) {
+    $checkIfUserEnrolledRes = mysqli_query($GLOBALS["___mysqli_ston"], $checkIfUserEnrolledQuery) or displayerror(mysqli_error($GLOBALS["___mysqli_ston"]));
+    if(!mysqli_num_rows($checkIfUserEnrolledRes)) {
       return getUserEmail($userId)." has not been alloted:";
     }
     $time = date("Y-m-d H:i:s");
     
     $insertDetailsQuery = "UPDATE `prhospi_accomodation_status` 
                                SET page_modulecomponentid=$mcid,hospi_room_id=$roomId,user_id=$userId,hospi_actual_checkin='{$time}',hospi_checkedin_by='{$checkedInBy}' WHERE `page_modulecomponentid`={$mcid} AND `user_id`={$userId}";
-    $insertDetailsRes = mysql_query($insertDetailsQuery) or displayerror(mysql_error());
+    $insertDetailsRes = mysqli_query($GLOBALS["___mysqli_ston"], $insertDetailsQuery) or displayerror(mysqli_error($GLOBALS["___mysqli_ston"]));
 
     $availableRoomNo=getAvailableRooms($mcid);
     return "Success  {$availableRoomNo}";

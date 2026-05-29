@@ -25,12 +25,13 @@ function emptycache(){
 	echo "error in opening directory";
 	return false;
 	}
-	while($filename=readdir($dirhandle))
+	while(($filename=readdir($dirhandle)) !== false)
 	 if( $filename != "." && $filename != ".." ) {
 	        $filename = $captchaImageFolder. "/". $filename;
 		if(filemtime($filename)<(time()-$seconds_old))
 		 unlink($filename);
 	}
+	closedir($dirhandle);
 	return true;
 }
 

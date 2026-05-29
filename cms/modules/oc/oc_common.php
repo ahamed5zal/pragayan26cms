@@ -140,9 +140,9 @@ TABLE;
         <td>{$rollNumber}</td>
         <td>{$res['amount']}</td>
         <td>{$res['gender']}</td>
-        <td style="background-color:${$res['oc_tshirt_distributed']}">{$res['Tshirt_size']}({$res['oc_tshirt_distributed']})</td>
-        <td style="background-color:${$res['oc_food_coupon_distributed']}">({$res['oc_food_coupon_distributed']})</td>
-        <td style="background-color:${$res['oc_extra_distributed']}">({$res['oc_extra_distributed']})</td>
+        <td style="background-color:{${$res['oc_tshirt_distributed']}}">{$res['Tshirt_size']}({$res['oc_tshirt_distributed']})</td>
+        <td style="background-color:{${$res['oc_food_coupon_distributed']}}">({$res['oc_food_coupon_distributed']})</td>
+        <td style="background-color:{${$res['oc_extra_distributed']}}">({$res['oc_extra_distributed']})</td>
       </tr>
 TR;
   }

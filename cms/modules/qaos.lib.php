@@ -193,7 +193,7 @@ ADMIN;
 
 			elseif($_GET['subaction']=='changeversion'){
 				if(isset($_POST['btnSubmitVersion'])){
-					$query = "UPDATE `qaos_version` SET `qaos_version` = '".escape($_POST[qaos_version])."' WHERE `page_modulecomponentid` = '$moduleComponentId'";
+					$query = "UPDATE `qaos_version` SET `qaos_version` = '".escape($_POST['qaos_version'])."' WHERE `page_modulecomponentid` = '$moduleComponentId'";
 					$result = mysqli_query($GLOBALS["___mysqli_ston"], $query);
 					if(mysqli_query($GLOBALS["___mysqli_ston"], $query))
 						displayinfo("The version has been successfully updated.");
@@ -956,14 +956,14 @@ USERNAME;
 			$htmlOut .= "<li><a href=\"$pagePath\">" . getPageTitle($pageId) . '</a>';
 
 			$childrenQuery = 'SELECT `page_id` FROM `' . MYSQL_DATABASE_PREFIX  . 'pages` WHERE `page_parentid` <> `page_id` AND `page_parentid` = ' . $pageId;
-			$childrenResult = mysql_query($childrenQuery);
-			if(mysql_num_rows($childrenResult) > 0) {
+			$childrenResult = mysqli_query($GLOBALS["___mysqli_ston"], $childrenQuery);
+			if(mysqli_num_rows($childrenResult) > 0) {
 				$htmlOut .= '<ul>';
 			}
-			while($childrenRow = mysql_fetch_row($childrenResult)) {
+			while($childrenRow = mysqli_fetch_row($childrenResult)) {
 				$htmlOut .= $this->getNodeHtml($childrenRow[0], $userId, $module, $action, $pagePath);
 			}
-			if(mysql_num_rows($childrenResult) > 0)
+			if(mysqli_num_rows($childrenResult) > 0)
 				$htmlOut .= '</ul>';
 			$htmlOut .= '</li>';
 		}

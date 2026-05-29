@@ -81,9 +81,9 @@ function parseUrlReal($url, &$pageIdArray) {
  	if(count($conditions) > 0)
  		$pageIdQuery .= ' WHERE ' . join(' AND ', $conditions);
 
-	$pageIdResult = mysql_query($pageIdQuery);
+	$pageIdResult = mysqli_query($GLOBALS["___mysqli_ston"], $pageIdQuery);
 
-	if(!$pageIdResult || !($pageIdArray = mysql_fetch_row($pageIdResult))) {
+	if(!$pageIdResult || !($pageIdArray = mysqli_fetch_row($pageIdResult))) {
 		displayerror("The requested page does not exist.");
 		return false;
 	}

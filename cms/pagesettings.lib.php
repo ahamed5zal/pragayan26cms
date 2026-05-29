@@ -359,7 +359,7 @@ MOVECOPY;
 	else{
 		$pageTags="There are no tags yet.";
 	}
-	$allTagsQuery="SELECT DISTINCT `tag_text` FROM `". MYSQL_DATABASE_PREFIX ."pagetags` ORDER BY `tag_text;";
+	$allTagsQuery="SELECT DISTINCT `tag_text` FROM `". MYSQL_DATABASE_PREFIX ."pagetags` ORDER BY `tag_text`;";
 	$allTagsResult = mysqli_query($GLOBALS["___mysqli_ston"], $allTagsQuery);
 	if(!$allTagsResult) { displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));}//Error handling
 	while($alltagrow = mysqli_fetch_assoc($allTagsResult)) {
@@ -891,14 +891,14 @@ function pagesettings($pageId, $userId) {
 				$tempSrc=mysqli_fetch_assoc($result);
 				if(($tempTarg['page_menurank'])==($tempSrc['page_menurank']))
 				{
-					$query="UPDATE `".MYSQL_DATABASE_PREFIX."pages` SET `page_menurank` = `page_id` WHERE `page_parentid`='$tempSrc[page_parentid]'";
+					$query="UPDATE `".MYSQL_DATABASE_PREFIX."pages` SET `page_menurank` = `page_id` WHERE `page_parentid`='{$tempSrc['page_parentid']}'";
 		 			mysqli_query($GLOBALS["___mysqli_ston"], $query);
 		 			displayinfo("Error in menu rank corrected. Please reorder the pages");
 				}
 				else{
-				$query="UPDATE `".MYSQL_DATABASE_PREFIX."pages`  SET `page_menurank` ='$tempSrc[page_menurank]' WHERE `page_id` = '$tempTarg[page_id]' ";
+				$query="UPDATE `".MYSQL_DATABASE_PREFIX."pages`  SET `page_menurank` ='{$tempSrc['page_menurank']}' WHERE `page_id` = '{$tempTarg['page_id']}' ";
 				mysqli_query($GLOBALS["___mysqli_ston"], $query);
-				$query="UPDATE `".MYSQL_DATABASE_PREFIX."pages`  SET `page_menurank` ='$tempTarg[page_menurank]' WHERE `page_id` = '$childPageId' ";
+				$query="UPDATE `".MYSQL_DATABASE_PREFIX."pages`  SET `page_menurank` ='{$tempTarg['page_menurank']}' WHERE `page_id` = '$childPageId' ";
 				mysqli_query($GLOBALS["___mysqli_ston"], $query);
 				}
 			}
@@ -1067,8 +1067,8 @@ function pagesettings($pageId, $userId) {
 				else
 					displayerror("Error in deleting tag.");
 			}
-			if(isset($_POST[newTag]) && $_POST[newTag]!=""){ //INSERTING THE TAG
-				$newTagQuery="INSERT INTO `". MYSQL_DATABASE_PREFIX ."pagetags` (`tag_id`, `page_id`, `tag_text`) VALUES (NULL, ".$pageId.", '".escape($_POST[newTag])."');";
+			if(isset($_POST['newTag']) && $_POST['newTag']!=""){ //INSERTING THE TAG
+				$newTagQuery="INSERT INTO `". MYSQL_DATABASE_PREFIX ."pagetags` (`tag_id`, `page_id`, `tag_text`) VALUES (NULL, ".$pageId.", '".escape($_POST['newTag'])."');";
 				$newTagResult=mysqli_query($GLOBALS["___mysqli_ston"], $newTagQuery);
 				if($newTagResult)
 					displayinfo("Tag added!");

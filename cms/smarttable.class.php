@@ -36,7 +36,7 @@ class smarttable
 	 *
 	 * @param $code The code around which the CSS and JS file includes codes should be appended.
 	 */
-	function includeCode($code)
+	static function includeCode($code)
 	{
 		global $urlRequestRoot,$cmsFolder;
 		$before=<<<CODE
@@ -63,7 +63,7 @@ CODE;
 	 * @param $paramsarray 2D Array of parameters associated with each table ID in the $tableidarray
 	 * @return The HTML code for the SmartTable
 	 */
-	function render($tableidarray,$paramsarray)
+	static function render($tableidarray,$paramsarray)
 	{
 		$ret="";
 		foreach($tableidarray as $tableid)
@@ -79,7 +79,7 @@ CODE;
 	 * @param $params Associated parameters
 	 * @return The Jquery code for the SmartTable
 	 */
-	function generate_js($tableid,$params)
+	static function generate_js($tableid,$params)
 	{
 		$config=array(
 				'bJQueryUI' => 'true',

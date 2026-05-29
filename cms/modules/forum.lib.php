@@ -440,10 +440,10 @@ PRE;
 	        <small">by $name on $rows[forum_post_datetime] <small>
 PRE;
 			if($r['allow_like_posts'] == 1){
-					$likequery = "SELECT * from `forum_like` WHERE `forum_thread_id`='$rows[forum_thread_id]' AND `forum_post_id`='".$rows['forum_post_id']."' AND `like_status`='1' AND `page_modulecomponentid`='$this->moduleComponentId' ";
+					$likequery = "SELECT * from `forum_like` WHERE `forum_thread_id`='{$rows['forum_thread_id']}' AND `forum_post_id`='".$rows['forum_post_id']."' AND `like_status`='1' AND `page_modulecomponentid`='$this->moduleComponentId' ";
 					$likeres = mysqli_query($GLOBALS["___mysqli_ston"], $likequery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)) . "Moderate failed L:438");;
 					$likeres = mysqli_num_rows($likeres);
-					$dlikequery = "SELECT * from `forum_like` WHERE `forum_thread_id`='$rows[forum_thread_id]' AND `forum_post_id`='".$rows['forum_post_id']."' AND `like_status`='0' AND `page_modulecomponentid`='$this->moduleComponentId' ";
+					$dlikequery = "SELECT * from `forum_like` WHERE `forum_thread_id`='{$rows['forum_thread_id']}' AND `forum_post_id`='".$rows['forum_post_id']."' AND `like_status`='0' AND `page_modulecomponentid`='$this->moduleComponentId' ";
 					$dlikeres = mysqli_query($GLOBALS["___mysqli_ston"], $dlikequery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)) . "Moderate failed L:441");
 					$dlikeres = mysqli_num_rows($dlikeres);
 					$postpart .= '<br /><small> ' . $likeres . ' people like this post</small> &nbsp&nbsp&nbsp';

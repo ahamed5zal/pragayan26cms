@@ -354,7 +354,7 @@ error_reporting(E_ALL ^ E_NOTICE);
 
 
 		if ($merge_site_results == 1 && $domain_qry == "") {
-			while (list($key, $value) = each($result_array_full)) {
+			foreach ($result_array_full as $key => $value) {
 				if (!isset($domains_to_show[$domains[$key]])) {
 					$result_array_temp[$key] = $value;
 					$domains_to_show[$domains[$key]] = 1;
@@ -367,10 +367,12 @@ error_reporting(E_ALL ^ E_NOTICE);
 		}
 	
 		
-		while (list($key, $value) = each ($result_array_temp)) {
+		foreach ($result_array_temp as $key => $value) {
 			$result_array[$key] = $value;
 			if (isset ($domains_to_show[$domains[$key]]) && $domains_to_show[$domains[$key]] != 1) {
-				list ($k, $v) = each($domains_to_show[$domains[$key]]);
+				$k = key($domains_to_show[$domains[$key]]);
+				$v = current($domains_to_show[$domains[$key]]);
+				next($domains_to_show[$domains[$key]]);
 				$result_array[$k] = $v;
 			}
 		}
@@ -483,7 +485,7 @@ function get_search_results($query, $start, $category, $searchtype, $results, $d
 	if (isset($result['did_you_mean'])) {
 		$did_you_mean_b=$entitiesQuery;
 		$did_you_mean=$entitiesQuery;
-		while (list($key, $val) = each($result['did_you_mean'])) {
+		foreach ($result['did_you_mean'] as $key => $val) {
 			if ($key != $val) {
 				$did_you_mean_b = str_replace($key, "<b>$val</b>", $did_you_mean_b);
 				$did_you_mean = str_replace($key, "$val", $did_you_mean);
@@ -549,7 +551,7 @@ function get_search_results($query, $start, $category, $searchtype, $results, $d
 				$x = 0;
 				$begin = 0;
 				$end = 0;
-				while(list($id, $place) = each($places)) {
+				foreach ($places as $id => $place) {
 					while ($places[$id + $x] - $place < $desc_length && $x+$id < count((array)$places) && $place < strlen($fulltxt) -$desc_length) {
 						$x++;
 						$begin = $id;

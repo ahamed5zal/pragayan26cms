@@ -45,7 +45,7 @@ RESET;
 						if (!preg_match("/^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,3})$/i", escape($_POST['user_email'])))
 							displayerror("Invalid Email Id. <br /><input type=\"button\" onclick=\"history.go(-1)\" value=\"Go back\" />");
 						else {
-							$query = "SELECT * FROM `" . MYSQL_DATABASE_PREFIX . "users` WHERE `user_email`='".escape($_POST[user_email])."' ";
+							$query = "SELECT * FROM `" . MYSQL_DATABASE_PREFIX . "users` WHERE `user_email`='".escape($_POST['user_email'])."' ";
 							$result = mysqli_query($GLOBALS["___mysqli_ston"], $query);
 							$temp = mysqli_fetch_assoc($result);
 							if (mysqli_num_rows($result) == 0)
@@ -349,7 +349,7 @@ function openid_login($userdata){
 		<fieldset>
 		 <legend>Password for the existing account </legend>
 					    Please Enter the Password of the pre-existing account on $cmstitle
-		<input type="hidden" name="email" value="${userdata['email']}" />														      
+		<input type="hidden" name="email" value="{$userdata['email']}" />														      
         <table>
 
 <tr><td>Username</td>
@@ -357,7 +357,7 @@ function openid_login($userdata){
 <td>$username</td></tr>
 
 <tr><td>Email</td>
-<td>${userdata['email']}</td></tr>
+<td>{$userdata['email']}</td></tr>
  <tr><td><label for="user_password" class="labelrequired">Password</label></td>
 				      <td><input type="password" name="user_password"  id="user_password"  class="required" /><br /></td>
 				      </tr>
@@ -389,12 +389,12 @@ OPENIDPASS;
 	<table>
 	<tr>
 	<td><label for="user_email"  class="labelrequired">Email</label></td>
-        <td><input type="text" name="user_email" value="${userdata['email']}"  id="user_email" class="required" readonly="true" onchange="if(this.length!=0) return checkEmail(this);"/><br /></td>
+        <td><input type="text" name="user_email" value="{$userdata['email']}"  id="user_email" class="required" readonly="true" onchange="if(this.length!=0) return checkEmail(this);"/><br /></td>
         </tr>
 
 	<tr>
 	<td><label for="user_name">Full Name</label></td>
-        <td><input type="text" name="user_name" value="${userdata['fullname']}"  id="user_name" class="required"/><br /></td>
+        <td><input type="text" name="user_name" value="{$userdata['fullname']}"  id="user_name" class="required"/><br /></td>
         </tr>
 
         <tr>
@@ -707,7 +707,7 @@ function login() {
 	}
 	else { //if user is not in db
 	  global $authmethods;
-	  if(strpos($user_email,'@') > -1) {
+	  if(strpos($user_email,'@') !== false) {
 	    $tmp = explode('@',$user_email);
 	    $user_name = $tmp[0];
 	    $user_domain = strtolower($tmp[1]);
@@ -744,7 +744,7 @@ function login() {
 	    // then it means that the user has been denied access !!!
 	  }
 	  else {
-	    $query = "UPDATE `" . MYSQL_DATABASE_PREFIX . "users` SET `user_lastlogin`=NOW() WHERE `" . MYSQL_DATABASE_PREFIX . "users`.`user_id` ='$temp[user_id]'";
+	    $query = "UPDATE `" . MYSQL_DATABASE_PREFIX . "users` SET `user_lastlogin`=NOW() WHERE `" . MYSQL_DATABASE_PREFIX . "users`.`user_id` ='{$temp['user_id']}'";
 	    mysqli_query($GLOBALS["___mysqli_ston"], $query) or die(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)) . " in login.lib.L:111");
 	    $_SESSION['last_to_last_login_datetime']=$temp['user_lastlogin'];
 	    setAuth($temp['user_id']);

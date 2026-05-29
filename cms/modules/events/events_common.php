@@ -403,7 +403,7 @@ function validateProcurementData($pageModuleComponentId){
     else {
             $_POST['eventName']=escape($_POST['eventName']);
             $_POST['procurementName']=escape($_POST['procurementName']);
-            $selectQuery = "SELECT * FROM `events_event_procurement` WHERE `event_name`='{$_POST[eventName]}' AND `procurement_name`='{$_POST[procurementName]}' ";
+            $selectQuery = "SELECT * FROM `events_event_procurement` WHERE `event_name`='{$_POST['eventName']}' AND `procurement_name`='{$_POST['procurementName']}' ";
             $selectRes=mysqli_query($GLOBALS["___mysqli_ston"], $selectQuery);
             if(mysqli_num_rows($selectRes)==1){
                 $isValid=false;

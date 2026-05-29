@@ -49,7 +49,7 @@ function prettyurl($str) {
 		$page = substr($page,0,strripos($page,"/")-1);
 		$page = substr($page,0,strripos($page,"/")+1);
 	}
-	if(strpos($str,"../")) {
+	if(strpos($str,"../") !== false) {
 		$pos = strpos($str,"../");
 		$page = substr($page,0,strripos($page,"/")-1);
 		$page = substr($page,0,strripos($page,"/")+1);
@@ -74,7 +74,7 @@ function convertUrif($x,$attr) {
 	while(1) {
 		$z=$x;
 		$count=0;
-		if(strpos($x,$attr))
+		if(strpos($x,$attr) !== false)
 			$y .= substr($x,$count,strpos($x,$attr)+$len+2);
 		else
 			$y .= substr($x,$count);
@@ -87,7 +87,7 @@ function convertUrif($x,$attr) {
 		}
 		$x = substr($x,1);
 		//echo "<br>" . substr($x,0,strpos($x,"\"")) . " => " . prettyurl(substr($x,0,strpos($x,"\"")));
-		$count1=(strpos($x,"\"")==-1||!strpos($x,"\""))?10000:strpos($x,"\"");
+		$count1=(strpos($x,"\"")===-1||strpos($x,"\"")===false)?10000:strpos($x,"\"");
 		$count2=(strpos($x,"'")==-1||!strpos($x,"'"))?10000:strpos($x,"'");
 		$count=($count1<$count2)?$count1:$count2;
 //		echo substr($x,0,$count) ." => ". prettyurl(substr($x,0,$count)). "<br>";
@@ -164,7 +164,7 @@ function disable_magic_quotes()
 {
 	if (get_magic_quotes_gpc()) {
 	    $process = array(&$_GET, &$_POST, &$_COOKIE, &$_REQUEST);
-	    while (list($key, $val) = each($process)) {
+	    foreach ($process as $key => $val) {
 		foreach ($val as $k => $v) {
 		    unset($process[$key][$k]);
 		    if (is_array($v)) {
@@ -202,6 +202,7 @@ function reloadTemplates()
 	global $sourceFolder;
 	global $templateFolder;
 	$templates=scandir($sourceFolder.'/'.$templateFolder);
+	if (!is_array($templates)) $templates = array();
 	$res="<table>";
 	$temparrr=array();
 	foreach($templates as $tdir)
@@ -231,6 +232,7 @@ function reloadModules()
 	global $sourceFolder;
 	global $moduleFolder;
 	$modules=scandir($sourceFolder.'/'.$moduleFolder);
+	if (!is_array($modules)) $modules = array();
 	$res="<table>";
 	$modarr=array();
 	foreach($modules as $module)

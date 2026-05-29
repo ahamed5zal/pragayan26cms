@@ -177,7 +177,7 @@
 	$lines = @file($include_dir.'/common.txt');
 
 	if (is_array($lines)) {
-		while (list($id, $word) = each($lines))
+		foreach ($lines as $id => $word)
 			$common[trim($word)] = 1;
 	}
 
@@ -188,7 +188,7 @@
 	$lines = @file('ext.txt');
 
 	if (is_array($lines)) {
-		while (list($id, $word) = each($lines))
+		foreach ($lines as $id => $word)
 			$ext[] = trim($word);
 	}
 

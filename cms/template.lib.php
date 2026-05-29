@@ -78,16 +78,22 @@ function templateReplace(&$TITLE,&$MENUBAR,&$ACTIONBARMODULE,&$ACTIONBARPAGE,&$B
 function actualTemplatePath($templatePath) {
 	$templateActualPath = $templatePath;
 	$dirHandle = opendir($templatePath);
+	if ($dirHandle === false) return NULL;
 	$files = '';
-	while($file = readdir($dirHandle)) {
-		if($file == "index.php")
+	while(($file = readdir($dirHandle)) !== false) {
+		if($file == "index.php") {
+			closedir($dirHandle);
 			return $templatePath;
+		}
 		elseif(is_dir($templatePath . $file) && $file != '.' && $file != '..') {
 			$return = actualTemplatePath($templatePath . $file . "/");
-			if($return != NULL)
+			if($return != NULL) {
+				closedir($dirHandle);
 				return $return;
+			}
 		}
 	}
+	closedir($dirHandle);
 	return NULL;
 }
 
@@ -410,7 +416,7 @@ RET;
 		rename(escape($_POST['path']), $sourceFolder . "/templates/" . escape($_POST['template']) . "/");
 		delDir(escape($_POST['del']));
 		unlink(escape($_POST['file']));
-		mysql_query("INSERT INTO `" . MYSQL_DATABASE_PREFIX . "templates` VALUES('" . escape($_POST['template']) . "')");
+		mysqli_query($GLOBALS["___mysqli_ston"], "INSERT INTO `" . MYSQL_DATABASE_PREFIX . "templates` VALUES('" . escape($_POST['template']) . "')");
 		displayinfo("Template installation complete");
 		return "";
 		

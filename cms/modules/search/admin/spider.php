@@ -274,13 +274,12 @@ if(!defined('__PRAGYAN_CMS'))
 					//if there are any, add to the temp table, but only if there isnt such url already
 					
 					if (is_array($links)) {
-						reset ($links);
 
-						while ($thislink = each($links)) {
-							if ($tmp_urls[$thislink[1]] != 1) {
-								$tmp_urls[$thislink[1]] = 1;
+						foreach ($links as $thislink) {
+							if ($tmp_urls[$thislink] != 1) {
+								$tmp_urls[$thislink] = 1;
 								$numoflinks++;
-								mysqli_query($GLOBALS["___mysqli_ston"], "insert into ".$mysql_table_prefix."temp (link, level, id) values ('$thislink[1]', '$level', '$sessid')") or die (((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false))."-spider.php L:276");
+								mysqli_query($GLOBALS["___mysqli_ston"], "insert into ".$mysql_table_prefix."temp (link, level, id) values ('$thislink', '$level', '$sessid')") or die (((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false))."-spider.php L:276");
 							}
 						}
 					}
@@ -506,7 +505,7 @@ if(!defined('__PRAGYAN_CMS'))
 						$check_omit = $omiturl;
 					}
 	
-					if (strpos($thislink, $check_omit)) {
+					if (strpos($thislink, $check_omit) !== false) {
 						printRobotsReport($num, $thislink, $command_line);
 						check_for_removal($thislink); 
 						$forbidden = 1;
