@@ -587,6 +587,8 @@ QUIZEDITFORM;
 	$moveDownImage = "<img src=\"$urlRequestRoot/$cmsFolder/$templateFolder/common/icons/16x16/actions/go-down.png\" alt=\"Move Section Down\" />";
 
 	$quizSections = getSectionList($quizId);
+	if (!is_array($quizSections))
+		$quizSections = array();
 	$questionTypes = getQuestionTypes();
 
 	$sectionCount = count($quizSections);

@@ -60,7 +60,7 @@ class prhospi implements module,fileuploadable {
   
   
   
-  public function getCkBody($content="",$team){
+  public function getCkBody($content,$team){
     global $sourceFolder;
     global $cmsFolder;
     global $moduleFolder;

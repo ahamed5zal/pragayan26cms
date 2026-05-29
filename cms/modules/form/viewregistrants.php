@@ -228,7 +228,7 @@ function generateFormDataRow($moduleCompId, $userId, $columnList, $showProfileDa
 			/// TODO: Implement the sort here.
 		}
 		else {
-			$elementId = split('_', $rowSortField);
+			$elementId = explode('_', $rowSortField);
 			$elementId = $elementId[1];
 /**
  * SELECT *

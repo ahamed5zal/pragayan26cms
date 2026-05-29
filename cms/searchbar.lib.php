@@ -31,11 +31,8 @@ function getSearchbar($userId, $pageId) {
             if(getPermissions($userId, $row['page_id'], $action="view", $module=$row['page_module']))
                 array_push($pagesIdList, intval($row['page_id']));
         }
-        $searchQueryParams="";
-        foreach ($pagesIdList as $key => $value) {
-            $searchQueryParams.=$value.",";
-        }
-        $searchQueryParams=substr($searchQueryParams,0,-1);
+        if (empty($pagesIdList)) return;
+        $searchQueryParams=implode(",", $pagesIdList);
         $searchQuery="SELECT * FROM `". MYSQL_DATABASE_PREFIX ."pagetags` WHERE `tag_text` LIKE '%{$_GET['searchContents']}%' AND `page_id` IN (".$searchQueryParams.");";
         $tagsWithPermsResult= mysqli_query($GLOBALS["___mysqli_ston"], $searchQuery);
 
@@ -94,6 +91,7 @@ SEARCHSCRIPT;
  * @return $pagetags The tags for the page. 
  */
 function getPagetags($pageId) {
+    $pageId = (int)$pageId;
     $pageTagQuery="SELECT `tag_text` FROM `". MYSQL_DATABASE_PREFIX ."pagetags` WHERE `page_id` = {$pageId}";
     $pageTagResult=mysqli_query($GLOBALS["___mysqli_ston"], $pageTagQuery);
     $pagetags=[];

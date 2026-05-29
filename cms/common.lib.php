@@ -204,7 +204,7 @@ function reloadTemplates()
 	$templates=scandir($sourceFolder.'/'.$templateFolder);
 	if (!is_array($templates)) $templates = array();
 	$res="<table>";
-	$temparrr=array();
+	$temparr=array();
 	foreach($templates as $tdir)
 	{
 		$tdir=escape($tdir);
@@ -219,7 +219,7 @@ function reloadTemplates()
 		}
 		
 	}
-	$templist=join("','",$temparr);	
+	$templist=empty($temparr) ? "''" : join("','",$temparr);	
 	$query="DELETE FROM `".MYSQL_DATABASE_PREFIX."templates` WHERE `template_name` NOT IN ('$templist')";
 	mysqli_query($GLOBALS["___mysqli_ston"], $query);
 	if($delc=mysqli_affected_rows($GLOBALS["___mysqli_ston"])>0)
@@ -331,6 +331,8 @@ function displaywarning($error_desc) {
  * @return string containing the array information
  */
  function arraytostring($array) {
+	if (!is_array($array))
+		return '';
 	$text = "array(";
 	$count=count($array);
 	$x=0;
@@ -523,6 +525,8 @@ function getParentPage($pageid) {
 	$pageparent_query = "SELECT `page_parentid` FROM `".MYSQL_DATABASE_PREFIX."pages` WHERE `page_id`='".$pageid."'";
 	$pageparent_result = mysqli_query($GLOBALS["___mysqli_ston"], $pageparent_query);
 	$pageparent_row = mysqli_fetch_assoc($pageparent_result);
+	if (!$pageparent_row || !isset($pageparent_row['page_parentid']))
+		return 0;
 	return $pageparent_row['page_parentid'];
 }
 function getPageInfo($pageid) {

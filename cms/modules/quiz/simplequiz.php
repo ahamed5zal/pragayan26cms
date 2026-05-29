@@ -269,6 +269,8 @@ QUIZSTARTFORM;
 
 			if ($questionType == 'sso' || $questionType == 'mso') {
 				$options = getQuestionOptionList($this->quizId, $questionRow['quiz_sectionid'], $questionRow['quiz_questionid']);
+				if (!is_array($options))
+					$options = array();
 				if ($questionType == 'sso') {
 					$fieldName = 'optAnswer' . $questionRow['quiz_sectionid'] . '_' . $questionRow['quiz_questionid'];
 					$submittedAnswer = isset($_POST[$fieldName]) && is_numeric($_POST[$fieldName]) ? intval($_POST[$fieldName]) : '';

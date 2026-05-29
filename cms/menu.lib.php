@@ -22,6 +22,8 @@ if(!defined('__PRAGYAN_CMS'))
  */
 
 function findMenuIndex($menuArray, $pageId) {
+	if (!is_array($menuArray))
+		return -1;
 	for ($i = 0; $i < count($menuArray); ++$i)
 		if ($menuArray[$i][0] == $pageId)
 			return $i;
@@ -41,6 +43,8 @@ function findMenuIndex($menuArray, $pageId) {
  **/
 function getMenu($userId, $pageIdArray) {
 
+	if (empty($pageIdArray) || !is_array($pageIdArray))
+		return '';
 
 	///This hostURL is to replace all ".(dot)s" with the current address, making the link absolute.	
 	///@functions hostURL() common.lib.php - http://pragyan.org/11
@@ -209,6 +213,8 @@ function getChildList($pageId,$depth,$rootUri,$userId,$curdepth) {
   }
 }
 function htmlMenuRenderer($menuArray, $currentIndex = -1, $linkPrefix = '') {
+	if (!is_array($menuArray))
+		return '';
 	$menuHtml = '';
 	$hostURL=strstr(selfURI(),'+',true);
 	
@@ -236,6 +242,8 @@ function htmlMenuRenderer($menuArray, $currentIndex = -1, $linkPrefix = '') {
 }
 
 function imageMenuRenderer($menuArray, $currentIndex = -1, $linkPrefix = '') {
+	if (!is_array($menuArray))
+		return '';
 	$menuRows = array();
 	$rowCount = -1;
 	for ($i = 0; $i < count($menuArray); ++$i) {

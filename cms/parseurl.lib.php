@@ -100,19 +100,21 @@ function parseUrlReal($url, &$pageIdArray) {
  * @param $pageids An array to hold the list of page ids.
  */
 function parseUrlDereferenced($pageid, &$pageids) {
-	$dereferencedPageId = getDereferencedPageId($pageid);
-	$parentId = getParentPage($dereferencedPageId);
+	$dereferencedPageId = (int)getDereferencedPageId($pageid);
+	$parentId = (int)getParentPage($dereferencedPageId);
 	$pageids = array($dereferencedPageId);
 
 	while($parentId != $dereferencedPageId) {
 		$pageids[] = $parentId;
-		$dereferencedPageId = getDereferencedPageId($parentId);
-		$parentId = getParentPage($dereferencedPageId);
+		$dereferencedPageId = (int)getDereferencedPageId($parentId);
+		$parentId = (int)getParentPage($dereferencedPageId);
 		if($dereferencedPageId==0)	break;
 	}
 	if($parentId != 0)
 		displayerror("Looping condition detected!!");
 	$pageids = array_reverse($pageids);
+	$pageids = array_filter($pageids, fn($v) => $v >= 0);
+	$pageids = array_values($pageids);
 }
 
  /*

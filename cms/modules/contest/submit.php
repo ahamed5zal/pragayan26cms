@@ -15,7 +15,7 @@ function getLanguageSelectionBox($languageList) {
 			'C#'
 		);
 	else
-		$languageList = split('@', $languageList);
+		$languageList = explode('@', $languageList);
 
 	$html = '<select name="language" id="language">';
 	for ($i = 0; $i < count($languageList); ++$i) {
@@ -95,7 +95,7 @@ function submitPostSolution($contestCode, $problemCode) {
 		return '';
 	}
 
-	$allowableLanguages = split('@', $problemRow['plang']);
+	$allowableLanguages = explode('@', $problemRow['plang']);
 
 	if (!isset($_POST['language']) || !in_array($_POST['language'], $allowableLanguages)) {
 		display_error('Error. No language specified, or submissions in the specified language are not allowed for this problem.');

@@ -387,7 +387,7 @@ error_reporting(E_ALL ^ E_NOTICE);
 			$in[] = $keys[$i];
 
 		}
-		if (!is_array($in)) {
+		if (empty($in)) {
 			$res['results'] = $results;
 			return $res;
 		}

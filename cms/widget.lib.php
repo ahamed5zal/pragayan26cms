@@ -691,6 +691,7 @@ function getConfigFormAsArray($widgetconfigs,$containsFileUploadFields,$widgetin
 			$formValues[$configentry['confname']]=$configentry['confdefault'];
 		}
 			
+		$confnames = empty($confnames) ? array('') : $confnames;
 		$query="SELECT `config_name` AS 'confname', `config_value` AS 'confvalue' FROM ".MYSQL_DATABASE_PREFIX."widgetsconfig WHERE `widget_instanceid`='$widgetinstanceid' AND `widget_id`='{$widgetconfigs[0]['id']}'  AND `config_name` IN ('".join("','",$confnames)."')";
 
 		$res=mysqli_query($GLOBALS["___mysqli_ston"], $query);
@@ -731,7 +732,7 @@ function getConfigFormAsArray($widgetconfigs,$containsFileUploadFields,$widgetin
  * @param $isglobal Must be set to true if handling global settings, else false.
  * @return The HTML field of that configuration along with the javascript Validation function (if any).
  */
-function getFormInputField($configentry, $value="", $isglobal) {
+function getFormInputField($configentry, $value, $isglobal) {
 
 
 	$elementType = $configentry['conftype'];

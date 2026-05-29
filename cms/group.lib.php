@@ -94,7 +94,7 @@ function getFormIdFromGroupId($groupId){
  * 								 or whether this group should be moved beside the next higher priority group
  * @return Boolean, true indicating success, false indicating failure
  */
-function shiftGroupPriority($userId, $groupName, $direction = 'up', $userMaxPriority, $shiftNeighbours = true) {
+function shiftGroupPriority($userId, $groupName, $direction, $userMaxPriority, $shiftNeighbours = true) {
 	$userId=escape($userId);
 	$direction=escape($direction);
 	$userMaxPriority=escape($userMaxPriority);
