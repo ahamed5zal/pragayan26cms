@@ -119,7 +119,7 @@ RET;
 		global $sourceFolder,$ICONS;
 		require_once($sourceFolder."/upload.lib.php");
 		submitFileUploadForm($this->moduleComponentId,"safedit",$this->userId,UPLOAD_SIZE_LIMIT);
-		$end = "<fieldset id='uploadFile'><legend>{$ICONS['Uploaded Files']['small']}File Upload</legend>Upload files : <br />".getFileUploadForm($this->moduleComponentId,"safedit",'./+edit',UPLOAD_SIZE_LIMIT,5).getUploadedFilePreviewDeleteForm($this->moduleComponentId,"safedit",'./+edit').'</fieldset>';
+		$end = "<fieldset id='uploadFile'><legend>{$ICONS['Uploaded Files']['small']}File Upload</legend>Upload files : <br />".getFileUploadForm($this->moduleComponentId,"safedit",'./+edit',UPLOAD_SIZE_LIMIT,10).getUploadedFilePreviewDeleteForm($this->moduleComponentId,"safedit",'./+edit').'</fieldset>';
 		$val = mysqli_fetch_assoc(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT `page_title` FROM `" . MYSQL_DATABASE_PREFIX . "pages` WHERE `page_module` = 'safedit' AND `page_modulecomponentid` = '{$this->moduleComponentId}'"));
 		$ret .= "<h1>Editing '".$val['page_title']."' page</h1>";
 		if(isset($_GET['subaction'])) {
