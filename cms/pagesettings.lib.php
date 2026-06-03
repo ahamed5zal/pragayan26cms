@@ -909,10 +909,15 @@ function pagesettings($pageId, $userId) {
 					$childPageName=escape($_GET['pageName']);
 					$query="SELECT `page_id` FROM  `".MYSQL_DATABASE_PREFIX."pages` WHERE `page_parentid`='$pageId' AND `page_name`='$childPageName'";
 					$result=mysqli_query($GLOBALS["___mysqli_ston"], $query);
-					$temp=mysqli_fetch_assoc($result);
-					$childPageId=$temp['page_id'];
-					if(deletePage($childPageId,$userId))
-						displayinfo("Page deleted successfully.");
+					if($temp=mysqli_fetch_assoc($result)) {
+						$childPageId=$temp['page_id'];
+						if($childPageId != 0 && deletePage($childPageId,$userId))
+							displayinfo("Page deleted successfully.");
+						else if($childPageId == 0)
+							displayerror("Cannot delete the root page.");
+					}
+					else
+						displayerror("Page not found.");
 				}
 				else
 					displayerror("Not enough information available");
@@ -1177,6 +1182,7 @@ function createInstance($moduleType) {
 
 
 function deletePage($pageId,$userId){
+	if ($pageId == 0) return false;
  	$query="SELECT `page_id` FROM `".MYSQL_DATABASE_PREFIX."pages` WHERE `page_parentid`='$pageId' AND `page_id`!=`page_parentid` ";
  	$result=mysqli_query($GLOBALS["___mysqli_ston"], $query);
  	$deleteAll = true;
