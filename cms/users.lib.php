@@ -409,7 +409,7 @@ function handleUserMgmt()
 				$val=escape($_POST[$field]);
 				if($field=='user_activated') ${$field.'_lastval'}=$val=isset($_POST[$field])?1:0;
 				else ${$field.'_lastval'}=$val;
-				$qstring .= "`$field` LIKE CONVERT( _utf8 '%$val%'USING latin1 ) ";
+				$qstring .= "`$field` LIKE '%$val%' ";
 				$first=false;
 			}
 		}

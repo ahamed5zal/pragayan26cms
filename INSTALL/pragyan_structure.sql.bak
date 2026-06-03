@@ -33,7 +33,7 @@ CREATE TABLE IF NOT EXISTS `article_comments` (
   `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `comment` text NOT NULL,
   PRIMARY KEY (`comment_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -48,7 +48,7 @@ CREATE TABLE IF NOT EXISTS `article_content` (
   `allowComments` tinyint(1) NOT NULL,
   `default_editor` enum('ckeditor','plain') NOT NULL DEFAULT 'ckeditor',
   PRIMARY KEY (`page_modulecomponentid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -63,7 +63,7 @@ CREATE TABLE IF NOT EXISTS `article_contentbak` (
   `article_updatetime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `user_id` int(11) NOT NULL,
   KEY `page_mdulecomponentid` (`page_modulecomponentid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -77,7 +77,7 @@ CREATE TABLE IF NOT EXISTS `article_draft` (
   `draft_content` text NOT NULL,
   `draft_lastsaved` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' ON UPDATE CURRENT_TIMESTAMP,
   `user_id` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -91,7 +91,7 @@ CREATE TABLE IF NOT EXISTS `book_desc` (
   `list` varchar(256) NOT NULL,
   `menu_hide` varchar(500) NOT NULL,
   PRIMARY KEY (`page_modulecomponentid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -105,7 +105,7 @@ CREATE TABLE IF NOT EXISTS `faculty_data` (
   `faculty_data` text NOT NULL,
   `page_moduleComponentId` int(11) NOT NULL,
   PRIMARY KEY (`faculty_dataId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -119,7 +119,7 @@ CREATE TABLE IF NOT EXISTS `faculty_module` (
   `email` varchar(200) DEFAULT NULL,
   `templateId` int(11) NOT NULL DEFAULT '1',
   PRIMARY KEY (`page_moduleComponentId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -135,7 +135,7 @@ CREATE TABLE IF NOT EXISTS `faculty_template` (
   `template_sectionName` varchar(200) NOT NULL,
   `template_sectionLimit` int(11) NOT NULL,
   `template_sectionOrder` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 
 -- --------------------------------------------------------
@@ -163,7 +163,7 @@ CREATE TABLE IF NOT EXISTS `form_desc` (
   `form_registrantslimit` int(11) NOT NULL DEFAULT '-1',
   `form_closelimit` int(11) NOT NULL DEFAULT '-1',
   PRIMARY KEY (`page_modulecomponentid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 
 -- --------------------------------------------------------
@@ -178,7 +178,7 @@ CREATE TABLE IF NOT EXISTS `form_elementdata` (
   `form_elementid` int(11) NOT NULL DEFAULT '0',
   `form_elementdata` text NOT NULL,
   PRIMARY KEY (`user_id`,`page_modulecomponentid`,`form_elementid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -189,20 +189,20 @@ CREATE TABLE IF NOT EXISTS `form_elementdata` (
 CREATE TABLE IF NOT EXISTS `form_elementdesc` (
   `page_modulecomponentid` int(11) NOT NULL DEFAULT '0',
   `form_elementid` int(11) NOT NULL DEFAULT '0',
-  `form_elementname` text NOT NULL,
-  `form_elementdisplaytext` text NOT NULL COMMENT 'Description of data held',
+  `form_elementname` varchar(1000) NOT NULL,
+  `form_elementdisplaytext` varchar(5000) NOT NULL COMMENT 'Description of data held',
   `form_elementtype` enum('text','textarea','radio','checkbox','select','password','file','date','datetime','member') NOT NULL DEFAULT 'text',
   `form_elementsize` int(11) DEFAULT NULL,
   `form_elementtypeoptions` text,
-  `form_elementdefaultvalue` text DEFAULT NULL,
-  `form_elementmorethan` text DEFAULT NULL,
-  `form_elementlessthan` text DEFAULT NULL,
+  `form_elementdefaultvalue` varchar(4000) DEFAULT NULL,
+  `form_elementmorethan` varchar(4000) DEFAULT NULL,
+  `form_elementlessthan` varchar(4000) DEFAULT NULL,
   `form_elementcheckint` tinyint(1) NOT NULL DEFAULT '0' COMMENT 'Check if it is int if 1',
   `form_elementtooltiptext` text NOT NULL,
   `form_elementisrequired` tinyint(1) NOT NULL DEFAULT '0',
   `form_elementrank` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`page_modulecomponentid`,`form_elementid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -217,7 +217,7 @@ CREATE TABLE IF NOT EXISTS `form_regdata` (
   `form_lastupdated` timestamp NULL DEFAULT NULL,
   `form_verified` tinyint(1) NOT NULL DEFAULT '1',
   PRIMARY KEY (`user_id`,`page_modulecomponentid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -231,7 +231,7 @@ CREATE TABLE IF NOT EXISTS `forum_like` (
   `forum_post_id` int(11) NOT NULL,
   `forum_like_user_id` int(11) NOT NULL,
   `like_status` enum('0','1') NOT NULL COMMENT '(0-Dislike 1-like)'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -250,7 +250,7 @@ CREATE TABLE IF NOT EXISTS `forum_module` (
   `allow_delete_posts` enum('0','1') NOT NULL DEFAULT '0' COMMENT '(1-Allow 0-Don''t Allow)',
   `allow_like_posts` enum('0','1') NOT NULL DEFAULT '0' COMMENT '(1-Allow 0-Don''t Allow)',
   PRIMARY KEY (`page_modulecomponentid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -268,7 +268,7 @@ CREATE TABLE IF NOT EXISTS `forum_posts` (
   `forum_post_datetime` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `forum_post_approve` int(1) NOT NULL DEFAULT '0' COMMENT 'here approve is for the replies',
   PRIMARY KEY (`page_modulecomponentid`,`forum_thread_id`,`forum_post_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -290,7 +290,7 @@ CREATE TABLE IF NOT EXISTS `forum_threads` (
   `forum_thread_last_post_userid` int(11) NOT NULL,
   `forum_thread_lastpost_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`forum_thread_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -302,7 +302,7 @@ CREATE TABLE IF NOT EXISTS `forum_visits` (
   `page_modulecomponentid` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
   `last_visit` datetime NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -317,7 +317,7 @@ CREATE TABLE IF NOT EXISTS `gallery_name` (
   `imagesPerPage` int(11) NOT NULL DEFAULT '6',
   `allowViews` tinyint(1) NOT NULL DEFAULT '0',
   `allowRatings` tinyint(1) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -332,7 +332,7 @@ CREATE TABLE IF NOT EXISTS `gallery_pics` (
   `pic_rate` int(11) NOT NULL,
   `vote_avg` decimal(10,0) NOT NULL DEFAULT '0',
   `voters` mediumint(9) NOT NULL DEFAULT '0'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -354,7 +354,7 @@ CREATE TABLE IF NOT EXISTS `hospi_accomodation_status` (
   `hospi_cash_collected` tinyint(1) NOT NULL DEFAULT '0',
   `hospi_checkedout_by` int(11) NOT NULL,
   `hospi_cash_refunded` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -369,7 +369,7 @@ CREATE TABLE IF NOT EXISTS `hospi_hostel` (
   `hospi_room_capacity` int(11) NOT NULL DEFAULT '0',
   `hospi_room_no` int(11) NOT NULL DEFAULT '0',
   `hospi_floor` int(1) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -381,7 +381,7 @@ CREATE TABLE IF NOT EXISTS `list_images` (
   `page_id` int(11) NOT NULL,
   `page_name` varchar(51) NOT NULL,
   `page_image` varchar(51) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -394,7 +394,7 @@ CREATE TABLE IF NOT EXISTS `list_prop` (
   `depth` int(11) NOT NULL,
   UNIQUE KEY `page_modulecomponentid_2` (`page_modulecomponentid`),
   KEY `page_modulecomponentid` (`page_modulecomponentid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -411,7 +411,7 @@ CREATE TABLE IF NOT EXISTS `newsletter` (
   `mail4` timestamp NULL DEFAULT NULL,
   UNIQUE KEY `user_email_2` (`email`),
   KEY `user_email` (`email`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 PACK_KEYS=0;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 PACK_KEYS=0;
 
 -- --------------------------------------------------------
 
@@ -422,7 +422,7 @@ CREATE TABLE IF NOT EXISTS `newsletter` (
 CREATE TABLE IF NOT EXISTS `newsletter_bc` (
   `email` varchar(100) NOT NULL,
   `mail1` timestamp NULL DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -439,7 +439,7 @@ CREATE TABLE IF NOT EXISTS `news_data` (
   `news_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `news_link` varchar(100) NOT NULL,
   KEY `news_id` (`news_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -452,7 +452,7 @@ CREATE TABLE IF NOT EXISTS `oc_config` (
   `key` varchar(100) NOT NULL,
   `value` text NOT NULL,
   UNIQUE KEY `key` (`key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
 -- --------------------------------------------------------
@@ -473,7 +473,7 @@ CREATE TABLE IF NOT EXISTS `oc_form_reg` (
   `oc_food_coupon_distributed` enum('Yes','No') NOT NULL DEFAULT 'No',
   `oc_extra_distributed` enum('Yes','No') NOT NULL DEFAULT 'No',
   PRIMARY KEY (`Id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -488,7 +488,7 @@ CREATE TABLE IF NOT EXISTS `oc_valid_emails` (
   `oc_valid_email` varchar(100) NOT NULL,
   PRIMARY KEY (`Id`),
   UNIQUE KEY `oc_valid_email` (`oc_valid_email`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -502,7 +502,7 @@ CREATE TABLE IF NOT EXISTS `news_desc` (
   `news_description` varchar(1000) DEFAULT NULL,
   `news_link` varchar(250) DEFAULT NULL,
   `news_copyright` varchar(1000) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -523,7 +523,7 @@ CREATE TABLE IF NOT EXISTS `poll_content` (
   `multiple_opt` tinyint(1) NOT NULL DEFAULT '0' COMMENT '1 indicates multiple options',
   `visibility` tinyint(1) NOT NULL DEFAULT '1',
   PRIMARY KEY (`pid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -541,7 +541,7 @@ CREATE TABLE IF NOT EXISTS `poll_log` (
   `o5` int(11) NOT NULL DEFAULT '0',
   `o6` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`pid`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 AUTO_INCREMENT=26 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=26 ;
 
 -- --------------------------------------------------------
 
@@ -553,7 +553,7 @@ CREATE TABLE IF NOT EXISTS `poll_users` (
   `pid` int(11) NOT NULL,
   `userID` int(11) NOT NULL,
   `page_modulecomponentid` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -566,7 +566,7 @@ CREATE TABLE IF NOT EXISTS `pragyanV3_blacklist` (
   `domain` varchar(50) DEFAULT NULL,
   `ip` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 AUTO_INCREMENT=19 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=19 ;
 
 -- --------------------------------------------------------
 
@@ -578,7 +578,7 @@ CREATE TABLE IF NOT EXISTS `pragyanV3_external` (
   `page_modulecomponentid` int(11) NOT NULL,
   `page_extlink` varchar(500) NOT NULL,
   PRIMARY KEY (`page_modulecomponentid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='Used to store all external links';
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Used to store all external links';
 
 -- --------------------------------------------------------
 
@@ -590,7 +590,7 @@ CREATE TABLE IF NOT EXISTS `pragyanV3_global` (
   `attribute` varchar(50) NOT NULL,
   `value` text NOT NULL,
   PRIMARY KEY (`attribute`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -606,7 +606,7 @@ CREATE TABLE IF NOT EXISTS `pragyanV3_groups` (
   `form_id` int(11) NOT NULL DEFAULT '0' COMMENT '0 if not associated with a form',
   PRIMARY KEY (`group_id`),
   UNIQUE KEY `groupName` (`group_name`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 AUTO_INCREMENT=9 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=9 ;
 
 -- --------------------------------------------------------
 
@@ -617,7 +617,7 @@ CREATE TABLE IF NOT EXISTS `pragyanV3_groups` (
 CREATE TABLE IF NOT EXISTS `pragyanV3_inheritedinfo` (
   `page_inheritedinfoid` int(11) NOT NULL COMMENT 'Inherited info id from the pages table',
   `page_inheritedinfocontent` text NOT NULL COMMENT 'Inherited information (like banner), can be used anywhere desired in template'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -637,7 +637,7 @@ CREATE TABLE IF NOT EXISTS `pragyanV3_log` (
   `user_accessipaddress` varchar(100) NOT NULL,
   UNIQUE KEY `log_no` (`log_no`),
   KEY `date` (`log_datetime`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -650,7 +650,7 @@ CREATE TABLE IF NOT EXISTS `pragyanV3_modules` (
   `module_tables` varchar(500) NOT NULL,
   `allow_uploads` tinyint(1) DEFAULT NULL,
   PRIMARY KEY (`module_name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -663,7 +663,7 @@ CREATE TABLE IF NOT EXISTS `pragyanV3_openid_users` (
   `openid_url` varchar(2063) NOT NULL,
   `user_id` int(11) NOT NULL,
   PRIMARY KEY (`openid_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -696,7 +696,7 @@ CREATE TABLE IF NOT EXISTS `pragyanV3_pages` (
   PRIMARY KEY (`page_id`),
   UNIQUE KEY `unique parent` (`page_parentid`,`page_name`),
   KEY `page_module` (`page_module`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 AUTO_INCREMENT=5 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=5 ;
 
 -- --------------------------------------------------------
 
@@ -709,7 +709,7 @@ CREATE TABLE IF NOT EXISTS `pragyanV3_pagetags` (
   `page_id` int(11) NOT NULL COMMENT 'To identifu the page to which the tag corresponds',
   `tag_text` varchar(128) NOT NULL COMMENT 'The text of the tag',
   PRIMARY KEY (`tag_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -726,7 +726,7 @@ CREATE TABLE IF NOT EXISTS `pragyanV3_permissionlist` (
   `perm_description` varchar(200) NOT NULL,
   PRIMARY KEY (`perm_id`),
   UNIQUE KEY `permission type` (`page_module`,`perm_action`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='List of the available permissions' AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='List of the available permissions' AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -737,7 +737,7 @@ CREATE TABLE IF NOT EXISTS `pragyanV3_permissionlist` (
 CREATE TABLE IF NOT EXISTS `pragyanV3_templates` (
   `template_name` varchar(50) NOT NULL,
   PRIMARY KEY (`template_name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -750,7 +750,7 @@ CREATE TABLE IF NOT EXISTS `pragyanV3_tempuploads` (
   `filePath` varchar(500) NOT NULL,
   `info` varchar(1000) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 AUTO_INCREMENT=11 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=11 ;
 
 -- --------------------------------------------------------
 
@@ -769,7 +769,7 @@ CREATE TABLE IF NOT EXISTS `pragyanV3_uploads` (
   PRIMARY KEY (`upload_fileid`),
   UNIQUE KEY `page_modulecomponentid` (`page_modulecomponentid`,`page_module`,`upload_filename`),
   KEY `page_module` (`page_module`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -781,7 +781,7 @@ CREATE TABLE IF NOT EXISTS `pragyanV3_usergroup` (
   `user_id` int(11) NOT NULL COMMENT 'user id ...comes from the user''s table',
   `group_id` int(11) NOT NULL COMMENT 'group id ...comes from the group''s table',
   KEY `user_id` (`user_id`,`group_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -798,7 +798,7 @@ CREATE TABLE IF NOT EXISTS `pragyanV3_userpageperm` (
   UNIQUE KEY `Permissions` (`perm_type`,`page_id`,`usergroup_id`,`perm_id`),
   KEY `page_pageid` (`page_id`),
   KEY `user_id` (`usergroup_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -817,7 +817,7 @@ CREATE TABLE IF NOT EXISTS `pragyanV3_users` (
   `user_activated` tinyint(1) NOT NULL DEFAULT '0' COMMENT 'Used for email verification',
   `user_loginmethod` enum('openid','db','ldap','imap','ads') NOT NULL DEFAULT 'db' COMMENT 'Login Method',
   PRIMARY KEY (`user_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 AUTO_INCREMENT=9 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=9 ;
 
 -- --------------------------------------------------------
 
@@ -833,7 +833,7 @@ CREATE TABLE IF NOT EXISTS `pragyanV3_widgets` (
   `widget_order` int(11) NOT NULL,
   `widget_propagate` int(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`widget_id`,`widget_instanceid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -847,7 +847,7 @@ CREATE TABLE IF NOT EXISTS `pragyanV3_widgetsconfig` (
   `config_name` varchar(128) NOT NULL,
   `config_value` longtext NOT NULL,
   PRIMARY KEY (`widget_id`,`widget_instanceid`,`config_name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -865,7 +865,7 @@ CREATE TABLE IF NOT EXISTS `pragyanV3_widgetsconfiginfo` (
   `is_global` int(1) NOT NULL,
   `config_rank` int(10) NOT NULL,
   PRIMARY KEY (`widget_id`,`config_name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -879,7 +879,7 @@ CREATE TABLE IF NOT EXISTS `pragyanV3_widgetsdata` (
   `widget_datakey` varchar(500) NOT NULL,
   `widget_datavalue` longtext NOT NULL,
   PRIMARY KEY (`widget_id`,`widget_instanceid`,`widget_datakey`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -897,7 +897,7 @@ CREATE TABLE IF NOT EXISTS `pragyanV3_widgetsinfo` (
   `widget_foldername` varchar(27) NOT NULL,
   PRIMARY KEY (`widget_id`),
   UNIQUE KEY `widget_foldername` (`widget_foldername`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -919,7 +919,7 @@ CREATE TABLE IF NOT EXISTS `prhospi_accomodation_status` (
   `hospi_cash_refunded` int(1) NOT NULL,
   `hospi_printed` int(11) NOT NULL DEFAULT '0',
   `user_registered_by` int(11) NOT NULL DEFAULT '0'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 
 -- --------------------------------------------------------
@@ -933,7 +933,7 @@ CREATE TABLE IF NOT EXISTS `prhospi_admin` (
   `page_getform_modulecomponentid` int(11) NOT NULL,
   `details_to_display` int(11) NOT NULL,
   `detail_required` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -947,7 +947,7 @@ CREATE TABLE IF NOT EXISTS `prhospi_disclaimer` (
   `disclaimer_desc` text NOT NULL,
   `team_cost` int(11) NOT NULL DEFAULT '0',
   UNIQUE KEY `disclaimer_team` (`disclaimer_team`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
 -- --------------------------------------------------------
@@ -965,7 +965,7 @@ CREATE TABLE IF NOT EXISTS `prhospi_hostel` (
   `hospi_floor` int(1) NOT NULL,
   `hospi_blocked` int(11) NOT NULL,
   PRIMARY KEY (`hospi_room_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
 -- --------------------------------------------------------
 
 --
@@ -981,7 +981,7 @@ CREATE TABLE IF NOT EXISTS `prhospi_pr_status` (
   `amount_refunded` int(11) NOT NULL,
   `user_registered_by` int(11) NOT NULL DEFAULT '0'
 
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -1002,7 +1002,7 @@ CREATE TABLE IF NOT EXISTS `qaos1_bills` (
   `qaos1_amt` varchar(100) NOT NULL,
   `qaos1_tin` varchar(100) NOT NULL,
   PRIMARY KEY (`bill_no`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 AUTO_INCREMENT=30 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=30 ;
 
 
 -- --------------------------------------------------------
@@ -1016,7 +1016,7 @@ CREATE TABLE IF NOT EXISTS `qaos1_disclaimer` (
   `disclaimer_team` varchar(30) NOT NULL,
   `disclaimer_desc` text NOT NULL,
   UNIQUE KEY `disclaimer_team` (`disclaimer_team`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -1029,7 +1029,7 @@ CREATE TABLE IF NOT EXISTS `qaos1_events` (
   `events_name` varchar(30) NOT NULL,
   `page_modulecomponentid` int(11) NOT NULL,
   PRIMARY KEY (`events_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 AUTO_INCREMENT=39 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=39 ;
 
 
 -- --------------------------------------------------------
@@ -1050,7 +1050,7 @@ CREATE TABLE IF NOT EXISTS `qaos1_evtproc` (
   `evtproc_reason` text NOT NULL,
   `evtproc_date` text NOT NULL,
   PRIMARY KEY (`evtproc_Id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 AUTO_INCREMENT=2 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
 
 -- --------------------------------------------------------
 
@@ -1071,7 +1071,7 @@ CREATE TABLE IF NOT EXISTS `qaos1_fundreq` (
   `fundreq_reason` text NOT NULL,
   `fundreq_date` text NOT NULL,
   PRIMARY KEY (`fundreq_Id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 AUTO_INCREMENT=2 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
 
 --
 -- Table structure for table `qaos_designations`
@@ -1084,7 +1084,7 @@ CREATE TABLE IF NOT EXISTS `qaos_designations` (
   `qaos_designation_description` text,
   `qaos_designation_priority` mediumint(9) NOT NULL DEFAULT '0' COMMENT 'tells the priority of the designaiton, by default it is 0, for chairman =5, core members =4, managers = 3, coordinators = 2 and volunteers =1',
   UNIQUE KEY `qaos_designation_id` (`qaos_designation_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -1106,7 +1106,7 @@ CREATE TABLE IF NOT EXISTS `qaos_scoring` (
   `qaos_reason3` text,
   `qaos_reason4` text,
   `qaos_reason5` text
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -1121,7 +1121,7 @@ CREATE TABLE IF NOT EXISTS `qaos_teams` (
   `qaos_team_description` text,
   `qaos_representative_user_id` int(11) NOT NULL,
   UNIQUE KEY `qaos_team_id` (`qaos_team_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -1134,7 +1134,7 @@ CREATE TABLE IF NOT EXISTS `qaos_tree` (
   `qaos_unit_id` int(11) NOT NULL,
   `qaos_parentunit_id` int(11) NOT NULL,
   PRIMARY KEY (`qaos_unit_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -1148,7 +1148,7 @@ CREATE TABLE IF NOT EXISTS `qaos_units` (
   `qaos_team_id` int(11) NOT NULL,
   `qaos_designation_id` int(11) NOT NULL,
   `score_team` tinyint(1) NOT NULL DEFAULT '0'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -1160,7 +1160,7 @@ CREATE TABLE IF NOT EXISTS `qaos_users` (
   `page_modulecomponentid` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
   `qaos_unit_id` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -1171,7 +1171,7 @@ CREATE TABLE IF NOT EXISTS `qaos_users` (
 CREATE TABLE IF NOT EXISTS `qaos_version` (
   `page_modulecomponentid` int(11) NOT NULL,
   `qaos_version` text NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -1190,7 +1190,7 @@ CREATE TABLE IF NOT EXISTS `quiz_answersubmissions` (
   `quiz_answersubmittime` datetime DEFAULT NULL COMMENT 'When the user submitted his answer',
   `quiz_marksallotted` decimal(5,2) DEFAULT NULL COMMENT 'Marks allotted for the given question',
   UNIQUE KEY `page_modulecomponentid` (`page_modulecomponentid`,`quiz_sectionid`,`quiz_questionid`,`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -1215,7 +1215,7 @@ CREATE TABLE IF NOT EXISTS `quiz_descriptions` (
   `quiz_showquiztimer` tinyint(1) NOT NULL COMMENT 'Whether the quiz timer must be shown',
   `quiz_showpagetimer` tinyint(1) NOT NULL COMMENT 'Whether the page timer must be shown',
   PRIMARY KEY (`page_modulecomponentid`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 AUTO_INCREMENT=10 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=10 ;
 
 -- --------------------------------------------------------
 
@@ -1230,9 +1230,8 @@ CREATE TABLE IF NOT EXISTS `quiz_objectiveoptions` (
   `quiz_optionid` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Option ID',
   `quiz_optiontext` text NOT NULL COMMENT 'The option itself!',
   `quiz_optionrank` int(11) NOT NULL COMMENT 'A rank, according to which options will be ordered',
-  PRIMARY KEY (`page_modulecomponentid`,`quiz_sectionid`,`quiz_questionid`,`quiz_optionid`),
-  UNIQUE KEY `quiz_optionid` (`quiz_optionid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 AUTO_INCREMENT=1 ;
+  PRIMARY KEY (`page_modulecomponentid`,`quiz_sectionid`,`quiz_questionid`,`quiz_optionid`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -1250,9 +1249,8 @@ CREATE TABLE IF NOT EXISTS `quiz_questions` (
   `quiz_questionweight` int(11) NOT NULL COMMENT 'Question difficulty level, based on which positive and negative marks may be alloted',
   `quiz_answermaxlength` int(11) NOT NULL COMMENT 'Maximum number of characters in the answer, in case it''s a subjective question',
   `quiz_rightanswer` text NOT NULL COMMENT 'The correct answer for the question. In case of sso, the option id, in case of mmo, a delimited set of options ids, and in case of subjective, a hint to the human correcting the quiz',
-  PRIMARY KEY (`page_modulecomponentid`,`quiz_sectionid`,`quiz_questionid`),
-  UNIQUE KEY `quiz_questionid` (`quiz_questionid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 AUTO_INCREMENT=1 ;
+  PRIMARY KEY (`page_modulecomponentid`,`quiz_sectionid`,`quiz_questionid`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -1271,9 +1269,8 @@ CREATE TABLE IF NOT EXISTS `quiz_sections` (
   `quiz_sectionquestionshuffled` tinyint(1) NOT NULL COMMENT 'Whether questions should be shuffled (1), or taken in the order given by question_rank (0)',
   `quiz_sectionrank` int(11) NOT NULL,
   `quiz_sectionshowlimit` tinyint(4) NOT NULL DEFAULT '1' COMMENT 'Whether the section remaining time limit should be displayed(1) or not(0)',
-  PRIMARY KEY (`page_modulecomponentid`,`quiz_sectionid`),
-  UNIQUE KEY `quiz_sectionid` (`quiz_sectionid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 AUTO_INCREMENT=1 ;
+  PRIMARY KEY (`page_modulecomponentid`,`quiz_sectionid`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -1289,7 +1286,7 @@ CREATE TABLE IF NOT EXISTS `quiz_userattempts` (
   `quiz_submissiontime` datetime DEFAULT NULL COMMENT 'Time when the user submitted the quiz. If an entry exists here, with this field null, the user has started the quiz, but hasn''t completed it yet.',
   `quiz_marksallotted` decimal(5,2) DEFAULT NULL COMMENT 'Total marks the person scored',
   UNIQUE KEY `page_modulecomponentid` (`page_modulecomponentid`,`quiz_sectionid`,`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -1303,7 +1300,7 @@ CREATE TABLE IF NOT EXISTS `quiz_weightmarks` (
   `question_positivemarks` decimal(5,2) NOT NULL COMMENT 'Marks allotted in case a correct answer was submitted',
   `question_negativemarks` decimal(5,2) NOT NULL COMMENT 'Marks deducted in case a wrong answer was submitted',
   UNIQUE KEY `page_modulecomponentid` (`page_modulecomponentid`,`question_weight`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -1319,7 +1316,7 @@ CREATE TABLE IF NOT EXISTS `safedit_sections` (
   `section_show` tinyint(4) NOT NULL,
   `section_priority` int(11) DEFAULT NULL,
   `section_content` text
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -1333,7 +1330,7 @@ CREATE TABLE IF NOT EXISTS `share` (
   `file_type` varchar(100) NOT NULL,
   `maxfile_size` int(11) NOT NULL,
   PRIMARY KEY (`page_modulecomponentid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -1349,7 +1346,7 @@ CREATE TABLE IF NOT EXISTS `share_comments` (
   `userid` int(11) NOT NULL,
   `comment_datetime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`comment_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -1365,7 +1362,7 @@ CREATE TABLE IF NOT EXISTS `share_files` (
   `file_desc` text NOT NULL,
   `upload_userid` int(11) NOT NULL,
   PRIMARY KEY (`file_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 AUTO_INCREMENT=8 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=8 ;
 
 -- --------------------------------------------------------
 
@@ -1378,7 +1375,7 @@ CREATE TABLE IF NOT EXISTS `sqlquery_desc` (
   `sqlquery_title` varchar(260) DEFAULT NULL COMMENT 'Title',
   `sqlquery_query` text NOT NULL COMMENT 'Query',
   UNIQUE KEY `page_modulecomponentid` (`page_modulecomponentid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `events_certificate`
@@ -1390,7 +1387,7 @@ CREATE TABLE IF NOT EXISTS `events_certificate` (
   `event_id` int(11) NOT NULL,
   `certificate_image` varchar(100) NOT NULL,
   `page_moduleComponentId` int(11) NOT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `events_certificate_details`
@@ -1405,7 +1402,7 @@ CREATE TABLE IF NOT EXISTS `events_certificate_details` (
   `certificate_posy2` int(11) NOT NULL,
   `form_value_id` int(11) NOT NULL,
   `page_moduleComponentId` int(11) NOT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `events_confirmed_participants`
@@ -1415,7 +1412,7 @@ CREATE TABLE IF NOT EXISTS `events_confirmed_participants` (
   `page_moduleComponentId` int(11) NOT NULL,
   `event_id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `events_details`
@@ -1437,7 +1434,7 @@ CREATE TABLE IF NOT EXISTS `events_details` (
   `event_cluster` text NOT NULL,
   `event_date` date NOT NULL,
   `event_form_id` int(11) NOT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=69 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=69 DEFAULT CHARSET=latin1;
 
 --
 -- Indexes for table `events_details`
@@ -1461,7 +1458,7 @@ CREATE TABLE IF NOT EXISTS `events_edited_form` (
   `user_id` int(11) NOT NULL,
   `form_elementid` int(11) NOT NULL,
   `form_elementdata` text NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -1474,7 +1471,7 @@ CREATE TABLE IF NOT EXISTS `events_event_procurement` (
   `procurement_name` varchar(25) NOT NULL,
   `quantity` int(4) NOT NULL,
   `page_moduleComponentId` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -1487,7 +1484,7 @@ CREATE TABLE IF NOT EXISTS `events_event_procurement1` (
   `procurement_id` int(11) NOT NULL,
   `quantity` int(11) NOT NULL,
   `page_moduleComponentId` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -1499,7 +1496,7 @@ CREATE TABLE IF NOT EXISTS `events_form` (
   `event_id` int(11) NOT NULL,
   `form_id` int(11) NOT NULL,
   `page_moduleComponentId` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -1510,7 +1507,7 @@ CREATE TABLE IF NOT EXISTS `events_form` (
 CREATE TABLE IF NOT EXISTS `events_locked` (
   `page_moduleComponentId` int(11) NOT NULL,
   `event_id` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `events_notifications`
@@ -1520,7 +1517,7 @@ CREATE TABLE IF NOT EXISTS `events_notifications` (
 `notif_id` int(11) NOT NULL,
   `notif_content` text NOT NULL,
   `timeadded` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=MyISAM AUTO_INCREMENT=13 DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -1534,7 +1531,7 @@ CREATE TABLE IF NOT EXISTS `events_participants` (
   `user_pid` int(11) NOT NULL,
   `user_team_id` int(11) NOT NULL,
   `prize_money` int(11) NOT NULL DEFAULT '0'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
 
@@ -1546,7 +1543,7 @@ CREATE TABLE IF NOT EXISTS `events_procurements` (
 `procurement_id` int(10) NOT NULL,
   `procurement_name` varchar(100) NOT NULL,
   `page_moduleComponentId` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -1560,7 +1557,7 @@ CREATE TABLE IF NOT EXISTS `events_result` (
   `user_rank` int(11) NOT NULL DEFAULT '-1',
   `printed_certificate` int(11) NOT NULL DEFAULT '0',
   `page_moduleComponentId` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
 --
@@ -1571,7 +1568,7 @@ CREATE TABLE IF NOT EXISTS `events_workshop_details` (
   `page_moduleComponentId` int(11) NOT NULL,
 `workshop_id` int(11) NOT NULL,
   `workshop_name` varchar(100) NOT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `events_workshop_participants`
@@ -1582,7 +1579,7 @@ CREATE TABLE IF NOT EXISTS `events_workshop_participants` (
   `workshop_id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
   `user_team_id` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `publication_details`
@@ -1593,8 +1590,7 @@ CREATE TABLE IF NOT EXISTS `publication_details` (
   `publication` text , 
   `saved_time` TIMESTAMP ON UPDATE CURRENT_TIMESTAMP ,
   `created_time` TIMESTAMP , 
-  `module_component_id` int(11)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `module_component_id` int(11));
 
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

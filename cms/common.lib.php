@@ -26,6 +26,7 @@ require_once("smarttable.class.php");
 function connect() {
 	$dbase = ($GLOBALS["___mysqli_ston"] = mysqli_connect(MYSQL_SERVER,  MYSQL_USERNAME,  MYSQL_PASSWORD)) or die("Could not connect to server");
 	((bool)mysqli_query($GLOBALS["___mysqli_ston"], "USE " . constant('MYSQL_DATABASE'))) or die("Could not connect to database");
+	mysqli_set_charset($GLOBALS["___mysqli_ston"], "utf8mb4");
 	return $dbase;
 }
 
