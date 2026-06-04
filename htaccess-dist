@@ -106,12 +106,12 @@ RewriteRule ^(.*)index.php(.*)/([^/]+)$ $1index.php?page=$2/&fileget=$3	[L,B]
 ##Case 1 : no action given
 # pragyan.org/.../index.php/a/b/ to pragyan.org/.../index.php?page=/a/b/
 RewriteCond %{REQUEST_URI} ^(.*)index.php([^+]+)$
-RewriteRule ^(.*)index.php([^+]+)$ $1index.php?page=$2	[L,B]
+RewriteRule ^(.*)index.php([^+]+)$ $1index.php?page=$2	[L]
 
 ##Case 2 : action given
 # pragyan.org/.../index.php/a/b/+view to pragyan.org/.../index.php?page=/a/b/&action=view
 RewriteCond %{REQUEST_URI} ^(.*)index.php([^+]*)\+([^+]*)$
-RewriteRule ^(.*)index.php([^+]*)\+([^+]*)$  $1index.php?page=$2&action=$3 [L,B]
+RewriteRule ^(.*)index.php([^+]*)\+([^+]*)$  $1index.php?page=$2&action=$3 [L]
 
 ####################END OF REWRITE RULE CONFIGURATION#####################
 
