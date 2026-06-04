@@ -308,6 +308,7 @@ function deleteFile( $moduleComponentId, $page_module, $upload_filename) {
 	global $uploadFolder;
 	global $sourceFolder;
 	$upload_filename = stripslashes($upload_filename);
+	$upload_filename = urldecode($upload_filename);
 	$query = "SELECT * FROM `" . MYSQL_DATABASE_PREFIX . "uploads`WHERE `page_modulecomponentid` ='$moduleComponentId' AND `page_module` = '$page_module' AND `upload_filename`= '" . ((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $upload_filename) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : "")) . "'";
 
 	$result = mysqli_query($GLOBALS["___mysqli_ston"], $query) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)) . "upload L:260");
@@ -350,9 +351,9 @@ function getUploadedFilePreviewDeleteForm($moduleComponentId, $moduleName, $dele
 	$uploadedFormNumber += 1;
 
 	if(isset($_POST['file_deleted']) && ($_POST['file_deleted'] == "form_$uploadedFormNumber")) {
-		if(isset($_GET['deletefile'])) {
-			if(deleteFile($moduleComponentId,$moduleName,escape($_GET['deletefile'])))
-				displayinfo("The file ".escape($_GET['deletefile'])." has been removed");
+		if(isset($_POST['deletefile'])) {
+			if(deleteFile($moduleComponentId,$moduleName,escape($_POST['deletefile'])))
+				displayinfo("The file ".escape($_POST['deletefile'])." has been removed");
 			else
 				displayinfo("Unable to remove the file.");
 		}
@@ -380,7 +381,7 @@ UPLOADEDFILESSTRING;
 	global $STARTSCRIPTS;
 	if(count($uploadedFiles)>0) {
 	
-		$smarttablestuff = smarttable::render(array('filestable'),null);
+		$smarttablestuff = smarttable::render(array('filestable'),array());
 		$STARTSCRIPTS .= "initSmartTable();";
 		$uploadedFilesString =<<<UPLOADEDFILESSTRING
 	<form action="$deleteFormAction" method="POST" name="deleteFile">
@@ -393,7 +394,11 @@ UPLOADEDFILESSTRING;
 			}
 			function checkDeleteUpload(butt,fileDel) {
 				if(confirm('Are you sure you want to delete '+fileDel+'?')) {
-					butt.form.action+='&deletefile='+fileDel;
+					var input = document.createElement('input');
+					input.type = 'hidden';
+					input.name = 'deletefile';
+					input.value = fileDel;
+					butt.form.appendChild(input);
 					butt.form.submit();
 				}
 				else

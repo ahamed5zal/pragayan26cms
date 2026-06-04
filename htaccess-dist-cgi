@@ -81,17 +81,17 @@ RewriteRule ^(.*)user:(.*)$ $1index.php?user=$2
 # pragyan.org/.../index.php/a/b/xxx.jpg to pragyan.org/.../index.php?page=/a/b/&file=xxx.jpg
 
 RewriteCond %{REQUEST_URI}	^(.*)index.php([^+?&]+\.(css|gif|png|jpe?g|js|html|xml|pdf|doc|docx|ods|odt|oft|pps|ppt|pptx|avi|txt|std|stc|sti|stw|svgz?|sxc|sx.|tex|tiff|txt|chm|mp3|mp2|wave?|ogg|mpe?g|wmv|wma|wmf|rm|avi|gzip|gz|rar|bmp|psd|bz2|tar|zip|swf|fla|flv|eps|ico|xcf|m3u|lit|bcf|xls|mov|xlr|exe|7?z))$ [NC]
-RewriteRule ^(.*)index.php(.*)/([^/]+)$ $1index.php?page=$2/&fileget=$3	[L]
+RewriteRule ^(.*)index.php(.*)/([^/]+)$ $1index.php?page=$2/&fileget=$3	[L,B]
 
 ##Case 1 : no action given
 # pragyan.org/.../index.php/a/b/ to pragyan.org/.../index.php?page=/a/b/
 RewriteCond %{REQUEST_URI} ^(.*)index.php([^+]+)$
-RewriteRule ^(.*)index.php([^+]+)$ $1index.php?page=$2	[L]
+RewriteRule ^(.*)index.php([^+]+)$ $1index.php?page=$2	[L,B]
 
 ##Case 2 : action given
 # pragyan.org/.../index.php/a/b/+view to pragyan.org/.../index.php?page=/a/b/&action=view
 RewriteCond %{REQUEST_URI} ^(.*)index.php([^+]*)\+([^+]*)$
-RewriteRule ^(.*)index.php([^+]*)\+([^+]*)$  $1index.php?page=$2&action=$3 [L]
+RewriteRule ^(.*)index.php([^+]*)\+([^+]*)$  $1index.php?page=$2&action=$3 [L,B]
 
 ####################END OF REWRITE RULE CONFIGURATION#####################
 
