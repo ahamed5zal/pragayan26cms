@@ -26,7 +26,6 @@ class pngrender {
 		imagecolortransparent($im,$background_color);
 		imagestring ($im, $font, 0, 0,  $string, $text_color);
 		$pngdata=imagepng ($im,$this->CACHE_DIR."/$hash.png");
-		chdir($current_dir);
 
 	}
 	function cleanup($hash) {

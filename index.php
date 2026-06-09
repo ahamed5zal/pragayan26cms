@@ -217,6 +217,8 @@ require_once($sourceFolder."/login.lib.php");
 ///If requesting for a userpage donot goto parse. Note that this code is before the URL parse
 
 ///Check if request is made
+$pageId = 0;
+$pageIdArray = [];
 if($publicPageRequest) {
 	require_once($sourceFolder."/userprofile.lib.php");
 	define("TEMPLATE", getPageTemplate(0));

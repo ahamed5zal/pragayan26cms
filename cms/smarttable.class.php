@@ -68,7 +68,7 @@ CODE;
 		$ret="";
 		foreach($tableidarray as $tableid)
 		{
-			$ret.=self::generate_js($tableid,$paramsarray[$tableid]);
+			$ret.=self::generate_js($tableid,$paramsarray[$tableid] ?? []);
 		}
 		return self::includeCode($ret);
 	}

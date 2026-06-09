@@ -825,6 +825,7 @@ function getFileActualPath($moduleType,$moduleComponentId,$fileName)
 	$query = "SELECT * FROM `" . MYSQL_DATABASE_PREFIX . "uploads` WHERE  `upload_filename`= '". escape($fileName). "' AND `page_module` = '".escape($moduleType)."' AND `page_modulecomponentid` = '".escape($moduleComponentId)."'";
 	$result = mysqli_query($GLOBALS["___mysqli_ston"], $query) or die(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)) . "upload L:85");
 	$row = mysqli_fetch_assoc($result);
+	if (!$row) return '';
 	/**
 	 * Not checking if filetype adheres to uploadable filetype list beacuse this check can be
 	 * performed in $moduleInstance->getFileAccessPermission.

@@ -18,11 +18,12 @@ function processUploaded($type) {
 	global $sourceFolder;
 	if(!file_exists($sourceFolder . "/uploads/{$type}/"))
 		mkdir($sourceFolder . "/uploads/{$type}/");
-	$zipFile = $sourceFolder ."/uploads/{$type}/".$_FILES['file']['name'];
+	$file = $_FILES['file'] ?? [];
+	$zipFile = $sourceFolder ."/uploads/{$type}/".($file['name'] ?? '');
 	$ext = extension($zipFile);
 	while(file_exists($zipFile))
 		$zipFile = $sourceFolder . "/uploads/{$type}/" . rand() . $ext;
-	move_uploaded_file($_FILES['file']['tmp_name'],$zipFile);
+	move_uploaded_file($file['tmp_name'] ?? '',$zipFile);
 
 	$len = strlen($zipFile);
 	$moduleName = name($zipFile,".");

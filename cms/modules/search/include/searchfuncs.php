@@ -344,7 +344,7 @@ error_reporting(E_ALL ^ E_NOTICE);
 				}
 
 			}
-			$res['did_you_mean'] = $near_words;
+			$res['did_you_mean'] = $near_words ?? [];
 			return $res;
 		}
 		if (count((array)$result_array_full) == 0) {
@@ -482,6 +482,8 @@ function get_search_results($query, $start, $category, $searchtype, $results, $d
 	$did_you_mean = "";
 
 
+	$did_you_mean = '';
+	$did_you_mean_b = '';
 	if (isset($result['did_you_mean'])) {
 		$did_you_mean_b=$entitiesQuery;
 		$did_you_mean=$entitiesQuery;

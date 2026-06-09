@@ -256,7 +256,7 @@ END;
 
 	public function createModule($moduleComponentId) {
 		$globalSettings = getGlobalSettings();
-		mysqli_query($GLOBALS["___mysqli_ston"], "INSERT INTO `news_desc` (`page_modulecomponentid` ,`news_copyright`)VALUES ('$compId', '{$globalSettings['cms_footer']}')");
+		mysqli_query($GLOBALS["___mysqli_ston"], "INSERT INTO `news_desc` (`page_modulecomponentid` ,`news_copyright`)VALUES ('$moduleComponentId', '{$globalSettings['cms_footer']}')");
 	}
 	public function deleteModule($moduleComponentId){
 		return true;

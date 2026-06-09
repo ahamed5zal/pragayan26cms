@@ -351,7 +351,7 @@ MOVECOPY;
 		while($pagetagrow = mysqli_fetch_assoc($pageTagsResult)) {
 			$pageTags.="<tr>";
 			$pageTags.="<td>".$pagetagrow['tag_text']."</td>";
-			$pageTags.="<td><a href='./+settings&subaction=tags&delTag={$pagetagrow[tag_id]}'>".$ICONS['Delete']['small']."</a></td>";
+			$pageTags.="<td><a href='./+settings&subaction=tags&delTag={$pagetagrow['tag_id']}'>".$ICONS['Delete']['small']."</a></td>";
 			$pageTags.="</tr>";
 		}
 		$pageTags.="</table>";
@@ -362,8 +362,9 @@ MOVECOPY;
 	$allTagsQuery="SELECT DISTINCT `tag_text` FROM `". MYSQL_DATABASE_PREFIX ."pagetags` ORDER BY `tag_text`;";
 	$allTagsResult = mysqli_query($GLOBALS["___mysqli_ston"], $allTagsQuery);
 	if(!$allTagsResult) { displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));}//Error handling
+	$allTags = '';
 	while($alltagrow = mysqli_fetch_assoc($allTagsResult)) {
-		$allTags.="<option value='{$alltagrow[tag_text]}'>"; //dataset option for newTag input
+		$allTags.="<option value='{$alltagrow['tag_text']}'>"; //dataset option for newTag input
 	}
 	
 	$tagsPageSettingsText="<fieldset><legend><a name='tags'>Page Tags</a></legend>";
@@ -409,7 +410,7 @@ MOVECOPY;
 	else $completetype="selected";
 	
 	$row = mysqli_fetch_array(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT `allowComments` FROM `article_content` WHERE `page_modulecomponentid` = '{$modulecomponentid}'"));
-	$allowComments = $row['allowComments'] == 1 ? 'checked="checked" ' : '';
+	$allowComments = ($row && isset($row['allowComments']) && $row['allowComments'] == 1) ? 'checked="checked" ' : '';
 	
 	$formDisplay =<<<FORMDISPLAY
 
