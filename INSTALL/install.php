@@ -66,14 +66,17 @@ else if ($installPageNumber == 3) {
 	$installPageContent = "<br /><table width=\"100%\" border=\"0\">\n $installPageContent </table>\n $installationErrors";
 	if ($installationErrors == '') {
 		$installPageContent .= <<<HTTPDCONF
-		<b>Your installation is almost over. As a security measure, either delete the $newInstallFolderName folder or remove read permissions from it so that no-one else can access that folder.</b>
+		<b>Installation completed successfully!</b>
 
-			<p>If you have done this, <a href="../">click here</a> to go to the CMS.</p>
+			<p><a href="../">Click here</a> to go to the CMS.</p>
 HTTPDCONF;
 	}
 }
 
 include_once('template.php');
+
+if ($installPageNumber == 3 && $installationErrors == '')
+	renameInstallationDirectory();
 
 
 /**
@@ -91,8 +94,7 @@ function installCMS() {
 					array('checkOpenidCurl','Checking if cURL needed and installed',false),
 					array('importDatabase', 'Importing Database', false),
 					array('saveHtaccess', 'Checking .htaccess Settings (for Pretty URLs)', false),
-					array('saveConfigurationFile', 'Saving Configuration Settings to file', false),
-					array('renameInstallationDirectory', 'Renaming the INSTALL directory to make it inaccessible to exploit', false)
+					array('saveConfigurationFile', 'Saving Configuration Settings to file', false)
 					//array('indexSite', 'Indexing site', false)
 			);
 	
