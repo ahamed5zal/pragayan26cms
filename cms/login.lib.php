@@ -343,21 +343,23 @@ function openid_login($userdata){
 			  "<li>You just need to provide your password of your existing account to link your OpenID with.</li>".
 			  "<li> This is a one time step after which you can use your OpenID account to Login.</li></ul>");
 	      $cmstitle=CMS_TITLE;
+	      $safe_email = htmlspecialchars($userdata['email'], ENT_QUOTES);
+	      $safe_username = htmlspecialchars($username, ENT_QUOTES);
 	       $openid_pass_form=<<<OPENIDPASS
 		
 	<form method="POST" class="registrationform" name="openid_pass"  action="./home/+login&subaction=openid_pass">
 		<fieldset>
 		 <legend>Password for the existing account </legend>
 					    Please Enter the Password of the pre-existing account on $cmstitle
-		<input type="hidden" name="email" value="{$userdata['email']}" />														      
+		<input type="hidden" name="email" value="$safe_email" />														      
         <table>
 
 <tr><td>Username</td>
 
-<td>$username</td></tr>
+<td>$safe_username</td></tr>
 
 <tr><td>Email</td>
-<td>{$userdata['email']}</td></tr>
+<td>$safe_email</td></tr>
  <tr><td><label for="user_password" class="labelrequired">Password</label></td>
 				      <td><input type="password" name="user_password"  id="user_password"  class="required" /><br /></td>
 				      </tr>
@@ -382,6 +384,8 @@ OPENIDPASS;
 	       * and add the user there appropriately.
 	      */
 	      displayinfo("Seems like you are using this OpenID for the first time. We just need your full name to continue.");
+	      $safe_openid_email = htmlspecialchars($userdata['email'], ENT_QUOTES);
+	      $safe_fullname = htmlspecialchars($userdata['fullname'], ENT_QUOTES);
 	      $openid_detail_form=<<<OPENIDFORM
 	<form method="POST" class="registrationform" name="quick_openid_reg"  action="./home/+login&subaction=quick_openid_reg">
 	<fieldset>
@@ -389,12 +393,12 @@ OPENIDPASS;
 	<table>
 	<tr>
 	<td><label for="user_email"  class="labelrequired">Email</label></td>
-        <td><input type="text" name="user_email" value="{$userdata['email']}"  id="user_email" class="required" readonly="true" onchange="if(this.length!=0) return checkEmail(this);"/><br /></td>
+        <td><input type="text" name="user_email" value="$safe_openid_email"  id="user_email" class="required" readonly="true" onchange="if(this.length!=0) return checkEmail(this);"/><br /></td>
         </tr>
 
 	<tr>
 	<td><label for="user_name">Full Name</label></td>
-        <td><input type="text" name="user_name" value="{$userdata['fullname']}"  id="user_name" class="required"/><br /></td>
+        <td><input type="text" name="user_name" value="$safe_fullname"  id="user_name" class="required"/><br /></td>
         </tr>
 
         <tr>
@@ -600,7 +604,7 @@ function login() {
 	      $info=getUserInfo($openid_email);
 	      if(!$info)
 		{
-		  displayerror("No user with Email $openid_email");
+		  displayerror("No user with Email ".safe_html($openid_email));
 		}
 	      else
 		{
@@ -733,7 +737,7 @@ function login() {
 	      "VALUES (DEFAULT, '{$user_name}', '{$user_email}', '{$user_fullname}', '{$user_md5passwd}', '{$login_method}', '1')";
 	    mysqli_query($GLOBALS["___mysqli_ston"], $query) or die(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)) . " creating new user !");
 	  }
-	  else displaywarning("Incorrect username and/or password for <b>".(isset($user_domain)?$user_domain."</b> domain!":$user_name."</b> user"));
+	  else displaywarning("Incorrect username and/or password for <b>".(isset($user_domain)?htmlspecialchars($user_domain, ENT_QUOTES)."</b> domain!":htmlspecialchars($user_name, ENT_QUOTES)."</b> user"));
 	}
 				
 	if($login_status) {

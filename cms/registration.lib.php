@@ -46,11 +46,11 @@ function getRegistrationForm() {
 	$name_val = "";
 	$fullname_val = "";
 	if(isset($_POST['user_email']))
-		$email_val = escape($_POST['user_email']);
+		$email_val = escape(htmlspecialchars($_POST['user_email'], ENT_QUOTES));
 	if(isset($_POST['user_name']))
-		$name_val = escape($_POST['user_name']);
-	if(isset($_POST['user_email']))
-		$fullname_val = escape($_POST['user_fullname']);
+		$name_val = escape(htmlspecialchars($_POST['user_name'], ENT_QUOTES));
+	if(isset($_POST['user_fullname']))
+		$fullname_val = escape(htmlspecialchars($_POST['user_fullname'], ENT_QUOTES));
 	$reg_str =<<<REG
 <script language="javascript">
 			function checkPassword(inputhandler2) {
@@ -171,7 +171,7 @@ FORM;
 		else {
 			$temp = mysqli_fetch_assoc($result);
 			if ($temp['user_activated'] == 1)
-				displayinfo("E-mail $email has already been verified.<a href=\"./+login\"> Login</a> <a href=\"./+login&subaction=resetPasswd\">Forgot Password?</a>");
+				displayinfo("E-mail ".safe_html($email)." has already been verified.<a href=\"./+login\"> Login</a> <a href=\"./+login&subaction=resetPasswd\">Forgot Password?</a>");
 			else {
 				$key = getVerificationKey($email, $temp['user_password'], $temp['user_regdate']);
 
@@ -201,17 +201,17 @@ FORM;
 		$result = mysqli_query($GLOBALS["___mysqli_ston"], $query) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)) . "registration L:76");
 		$temp = mysqli_fetch_assoc($result);
 		if ($temp['user_activated'] == 1)
-			displayinfo("E-mail ".escape($_GET['verify'])." has already been verified");
+			displayinfo("E-mail ".safe_html(escape($_GET['verify']))." has already been verified");
 		else {
 			if ($_GET['key'] == getVerificationKey($_GET['verify'], $temp['user_password'], $temp['user_regdate'])) {
 				$query = "UPDATE `" . MYSQL_DATABASE_PREFIX . "users` SET `user_activated`=1  WHERE `user_email`='$emailId'";
 				mysqli_query($GLOBALS["___mysqli_ston"], $query) or die(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 				if (mysqli_affected_rows($GLOBALS["___mysqli_ston"]) > 0)
-					displayinfo("Your e-mail ".escape($_GET['verify'])." has been verified. Now you can fill your profile information by clicking <a href=\"./+profile\">here</a> or by clicking on the preferences link in the action bar any time you are logged in.");
+				displayinfo("Your e-mail ".safe_html(escape($_GET['verify']))." has been verified. Now you can fill your profile information by clicking <a href=\"./+profile\">here</a> or by clicking on the preferences link in the action bar any time you are logged in.");
 				else
-					displayerror("Verification error for ".escape($_GET['verify']).". Please contact administrator");
-			} else
-				displayerror("Verification error for ".escape($_GET['verify']).". Please contact administrator");
+					displayerror("Verification error for ".safe_html(escape($_GET['verify'])).". Please contact administrator");
+		} else
+				displayerror("Verification error for ".safe_html(escape($_GET['verify'])).". Please contact administrator");
 		}
 	}
 	///Registration form submission
