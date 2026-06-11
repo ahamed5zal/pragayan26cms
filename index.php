@@ -110,6 +110,8 @@ $onlineSiteUrl = "http://" . $_SERVER['HTTP_HOST'] . substr($scriptname,0,stripo
 ///If config.inc.php doesn't exists, assume CMS hasn't been installed.
 @include_once($sourceFolder."/config.inc.php"); 
 
+header("Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: *.nitt.edu; font-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'self'");
+
 ///If config.inc.php doesn't exists, ADMIN_USERID won't be defined, so assume CMS is not installed.
 if(!defined("ADMIN_USERID") )
 {
