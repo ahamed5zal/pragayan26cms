@@ -13,12 +13,16 @@ if(!defined('__PRAGYAN_CMS'))
  * For more details, see README
  */
 
+require_once("csrf.lib.php");
+
 function resetPasswd($allow_login) {
 	if((!isset($_POST['user_email']))&&(!isset($_GET['key']))) {
+		$csrfField = getCsrfTokenField();
 		$resetPasswd =<<<RESET
 					<form class="registrationform" method="POST" name="user_passreset" onsubmit="return checkForm(this)" action="./+login&subaction=resetPasswd">
 						<fieldset>
 						<legend>Reset Password</legend>
+						$csrfField
 							<table>
 								<tr>
 									<td><label for="user_email"  class="labelrequired">Email</label></td>
@@ -41,6 +45,7 @@ RESET;
 		return $resetPasswd;
 	}
 	elseif(!isset($_GET['key'])) {
+						if (!verifyCsrfToken()) return "";
 						$user_email = escape($_GET['user_email']);
 						if (!preg_match("/^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,3})$/i", escape($_POST['user_email'])))
 							displayerror("Invalid Email Id. <br /><input type=\"button\" onclick=\"history.go(-1)\" value=\"Go back\" />");
@@ -345,12 +350,14 @@ function openid_login($userdata){
 	      $cmstitle=CMS_TITLE;
 	      $safe_email = htmlspecialchars($userdata['email'], ENT_QUOTES);
 	      $safe_username = htmlspecialchars($username, ENT_QUOTES);
+	      $csrfField = getCsrfTokenField();
 	       $openid_pass_form=<<<OPENIDPASS
 		
 	<form method="POST" class="registrationform" name="openid_pass"  action="./home/+login&subaction=openid_pass">
 		<fieldset>
 		 <legend>Password for the existing account </legend>
 					    Please Enter the Password of the pre-existing account on $cmstitle
+		$csrfField
 		<input type="hidden" name="email" value="$safe_email" />														      
         <table>
 
@@ -386,10 +393,12 @@ OPENIDPASS;
 	      displayinfo("Seems like you are using this OpenID for the first time. We just need your full name to continue.");
 	      $safe_openid_email = htmlspecialchars($userdata['email'], ENT_QUOTES);
 	      $safe_fullname = htmlspecialchars($userdata['fullname'], ENT_QUOTES);
+	      $csrfField = getCsrfTokenField();
 	      $openid_detail_form=<<<OPENIDFORM
 	<form method="POST" class="registrationform" name="quick_openid_reg"  action="./home/+login&subaction=quick_openid_reg">
 	<fieldset>
 	<legend>Just give us your Full name</legend>
+	$csrfField
 	<table>
 	<tr>
 	<td><label for="user_email"  class="labelrequired">Email</label></td>
@@ -435,6 +444,7 @@ function loginForm($allow_login=1)
   global $urlRequestRoot;
   global $cmsFolder;
   $openidFolder=$urlRequestRoot.'/'.$cmsFolder.'/openid';
+  $csrfField = getCsrfTokenField();
 	$openid_login_str =<<<OPENIDLOGIN
 
         <!-- Simple OpenID Selector -->
@@ -465,6 +475,7 @@ function loginForm($allow_login=1)
 <!-- Simple OpenID Selector -->
 <form action="./+login&subaction=openid_login" method="post" id="openid_form">
         <input type="hidden" name="process" value="1" />
+        $csrfField
         
 			   <p> Sign-in using your existing account on popular websites
 <br>Please click your account provider:</p>
@@ -504,6 +515,7 @@ OPENIDLOGIN;
 					<form method="POST" class="registrationform" name="user_loginform" id="pragyan_loginform" onsubmit="return checkLoginForm(this);" action="./+login">
 						<fieldset>
 						<legend>Login</legend>
+						$csrfField
 							<table cellspacing=0 cellpadding=0>
 								<tr>
 									<td><label for="user_email"  class="labelrequired">Email</label></td>
@@ -553,6 +565,7 @@ function login() {
 	{
 	  if(isset($_POST['process']))
 	    {
+	      if (!verifyCsrfToken()) return "";
 	      $openid_url = trim($_POST['openid_identifier']);
 	      openid_endpoint($openid_url);
 	    }
@@ -584,6 +597,7 @@ function login() {
       }
       if($_GET['subaction']=="openid_pass")
 	{
+	  if (!verifyCsrfToken()) return "";
 	  if(!isset($_SESSION['openid_url']) || !isset($_SESSION['openid_email']))
 	    {
 	      displayerror("You are trying to link an OpenID account without validating your log-in. Please <a href=\"./+login\">Login</a> with your OpenID account first.");
@@ -629,6 +643,7 @@ function login() {
 	}
       if($_GET['subaction']=="quick_openid_reg")
 	{
+	  if (!verifyCsrfToken()) return "";
 	  if(!isset($_SESSION['openid_url']) || !isset($_SESSION['openid_email']))
 	    {
 	      displayerror("You are trying to register an OpenID account without validating your log-in. Please <a href=\"./+login\">Login</a> with your OpenID account first.");
@@ -672,6 +687,7 @@ function login() {
   if (!isset ($_POST['user_email'])) {
     return loginForm($allow_login_result[0]);
   } else {
+    if (!verifyCsrfToken()) return "";
 			
     /*if it is, 
       then userLDAPVerify($user_email,$user_passwd);

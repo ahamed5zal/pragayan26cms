@@ -13,7 +13,9 @@ if(!defined('__PRAGYAN_CMS'))
  * @license http://www.gnu.org/licenses/ GNU Public License
  * For more details, see README
  */
- 
+
+require_once("csrf.lib.php");
+
 global $cmsFolder,$sourceFolder;
 require_once("$sourceFolder/modules/search/settings/conf.php");
 require_once("$sourceFolder/modules/search/include/commonfuncs.php");
@@ -35,6 +37,7 @@ function getmicrotime(){
 }
 
 function getSearchBox(){
+	$csrfField = getCsrfTokenField();
 	$CMS_TITLE = CMS_TITLE;
 	$lastquery="";
 	if(($_GET['query'] ?? '')!="") $lastquery=safe_html($_GET['query']);
@@ -59,6 +62,7 @@ function getSearchBox(){
 	
 	<center>
 	<form action="./+search" method="POST">
+	$csrfField
 	<table cellspacing="1" cellpadding="5" class="searchBox">
 		<tr>
 			<td align="center">
