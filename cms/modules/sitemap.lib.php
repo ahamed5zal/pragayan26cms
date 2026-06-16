@@ -79,7 +79,7 @@ TREEDATA;
 
 			$htmlOut .= "<li><a href=\"$pagePath\">" . getPageTitle($pageId) . "</a>\n";
 
-			$childrenQuery = 'SELECT `page_id` FROM `' . MYSQL_DATABASE_PREFIX  . 'pages` WHERE `page_parentid` <> `page_id` AND `page_parentid` = \'' . $pageId . '\' AND `page_displayinsitemap` = 1';
+			$childrenQuery = 'SELECT `page_id` FROM `' . MYSQL_DATABASE_PREFIX  . 'pages` WHERE `page_parentid` <> `page_id` AND `page_parentid` = \'' . $pageId . '\' AND `page_id` >= 0 AND `page_displayinsitemap` = 1';
 			$childrenResult = mysqli_query($GLOBALS["___mysqli_ston"], $childrenQuery);
 
 			$childrenHtml = '';

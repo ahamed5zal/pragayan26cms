@@ -276,7 +276,7 @@ function imageMenuRenderer($menuArray, $currentIndex = -1, $linkPrefix = '') {
  */
 function getChildren($pageId, $userId) {
 	$pageId=escape($pageId);
-	$childrenQuery = 'SELECT `page_id`, `page_name`, `page_title`, `page_module`, `page_modulecomponentid`, `page_displayinmenu`, `page_image` , `page_displayicon` FROM `' . MYSQL_DATABASE_PREFIX . 'pages` WHERE `page_parentid` = \'' . $pageId . '\' AND `page_id` != \'' . $pageId . '\' AND `page_displayinmenu` = 1 ORDER BY `page_menurank`';
+	$childrenQuery = 'SELECT `page_id`, `page_name`, `page_title`, `page_module`, `page_modulecomponentid`, `page_displayinmenu`, `page_image` , `page_displayicon` FROM `' . MYSQL_DATABASE_PREFIX . 'pages` WHERE `page_parentid` = \'' . $pageId . '\' AND `page_id` != \'' . $pageId . '\' AND `page_id` >= 0 AND `page_displayinmenu` = 1 ORDER BY `page_menurank`';
 	
 	$childrenResult = mysqli_query($GLOBALS["___mysqli_ston"], $childrenQuery);
 	$children = array();

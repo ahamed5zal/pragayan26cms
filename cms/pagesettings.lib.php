@@ -412,6 +412,78 @@ MOVECOPY;
 	$row = mysqli_fetch_array(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT `allowComments` FROM `article_content` WHERE `page_modulecomponentid` = '{$modulecomponentid}'"));
 	$allowComments = ($row && isset($row['allowComments']) && $row['allowComments'] == 1) ? 'checked="checked" ' : '';
 	
+	$archivePageSettingsText = '';
+	$csrfField = getCsrfTokenField();
+	if ($pageId > 0) {
+		$childDescendantIds = getAllDescendantIds($pageId);
+		$hasArchivedDescendants = false;
+		foreach ($childDescendantIds as $id)
+			if ($id < 0) { $hasArchivedDescendants = true; break; }
+		$thirdBtn = '';
+		if ($hasArchivedDescendants)
+			$thirdBtn = '<td>
+				<form action="./+settings&amp;subaction=restoredescendants&amp;pageName=" method="POST" style="display:inline">
+					' . $csrfField . '
+					<input type="submit" name="restoreDescendants" value="Restore All Child Pages" onclick="return confirm(\'Restore all archived descendant pages?\')" />
+				</form>
+			</td>';
+		$archivePageSettingsText = '<a name="archiveform"></a>
+	<fieldset>
+		<legend>' . $ICONS['Archive Page']['small'] . 'Archive / Restore Page</legend>
+		<table border="1" cellpadding="2px" cellspacing="2px">
+			<tr>
+				<td>
+					<form action="./+settings&amp;subaction=archive&amp;pageName=" method="POST" style="display:inline">
+						' . $csrfField . '
+						<input type="submit" name="archivePage" value="Archive Page Only" />
+					</form>
+				</td>
+				<td>
+					<form action="./+settings&amp;subaction=archivewithchildren&amp;pageName=" method="POST" style="display:inline">
+						' . $csrfField . '
+						<input type="submit" name="archivePageWithChildren" value="Archive Including Child Pages" onclick="return confirm(\'Archive this page and all descendants?\')" />
+					</form>
+				</td>
+				' . $thirdBtn . '
+			</tr>
+		</table>
+	</fieldset>';
+	}
+	elseif ($pageId < 0)
+		$archivePageSettingsText = '<a name="archiveform"></a>
+	<fieldset>
+		<legend>' . $ICONS['Archive Page']['small'] . 'Archive / Restore Page</legend>
+		<table border="1" cellpadding="2px" cellspacing="2px">
+			<tr>
+				<td>
+					<form action="./+settings&amp;subaction=restore&amp;pageName=" method="POST" style="display:inline">
+						' . $csrfField . '
+						<input type="submit" name="restorePage" value="Restore Page Only" />
+					</form>
+				</td>
+				<td>
+					<form action="./+settings&amp;subaction=restorewithchildren&amp;pageName=" method="POST" style="display:inline">
+						' . $csrfField . '
+						<input type="submit" name="restorePageWithChildren" value="Restore Including Child Pages" onclick="return confirm(\'Restore this page and all descendants?\')" />
+					</form>
+				</td>
+			</tr>
+		</table>
+	</fieldset>';
+	else {
+		$archivePageSettingsText = '<a name="archiveform"></a>
+	<fieldset>
+		<legend>' . $ICONS['Archive Page']['small'] . 'Archive / Restore Page</legend>
+		<table border="1" cellpadding="2px" cellspacing="2px">
+			<tr>
+				<td><input type="submit" value="Archive Page Only" disabled="disabled" /></td>
+				<td><input type="submit" value="Archive Including Child Pages" disabled="disabled" /></td>
+			</tr>
+		</table>
+		<p><em>The root page cannot be archived.</em></p>
+	</fieldset>';
+	}
+	
 	$formDisplay =<<<FORMDISPLAY
 
 	<div id="page_settings">
@@ -466,6 +538,7 @@ MOVECOPY;
         <td><a href='#childpageform'><div>{$ICONS['Create New Page']['large']}<br/>Create New Page</div></a></td>
         <td><a href='#copymovepageform'><div>{$ICONS['Copy or Move Page']['large']}<br/>Copy or Move Page</div></a></td>
         <td><a href='#inheritinfoform'><div>{$ICONS['Page Inherited Info']['large']}<br/>Page Inherited Information</div></a></td>
+        <td><a href='#archiveform'><div>{$ICONS['Archive Page']['large']}<br/>Archive Page</div></a></td>
         </tr>
         </table>   
         </fieldset>
@@ -564,7 +637,6 @@ FORMDISPLAY;
       	</fieldset>
       	<a href="#topquicklinks">Top</a>
     </form>
-    	<br/><br/>
 		$createdPageSettingsText
 		<a href="#topquicklinks">Top</a>
 	<br/><br/>
@@ -575,6 +647,9 @@ FORMDISPLAY;
     	<a href="#topquicklinks">Top</a>
     <br/><br/>
     	$tagsPageSettingsText
+    	<a href="#topquicklinks">Top</a>
+    	<br/><br/>
+    	$archivePageSettingsText
     	<a href="#topquicklinks">Top</a>
 	</div>
 FORMDISPLAY;
@@ -1082,6 +1157,31 @@ function pagesettings($pageId, $userId) {
 					displayerror("Error in adding tag.");
 			}
 		}
+		elseif($_GET['subaction']=="archive") {
+			if (!verifyCsrfToken()) return '';
+			if($pageId<=0) { displayerror("Root page cannot be archived."); }
+			else { archivePage($pageId); displayinfo("Page archived successfully."); }
+		}
+		elseif($_GET['subaction']=="archivewithchildren") {
+			if (!verifyCsrfToken()) return '';
+			if($pageId<=0) { displayerror("Root page cannot be archived."); }
+			else { archivePageAndDescendants($pageId, $userId); displayinfo("Page and descendants archived successfully."); }
+		}
+		elseif($_GET['subaction']=="restore") {
+			if (!verifyCsrfToken()) return '';
+			if($pageId>=0) { displayerror("Page is not archived."); }
+			else { restorePage($pageId); displayinfo("Page restored successfully."); }
+		}
+		elseif($_GET['subaction']=="restorewithchildren") {
+			if (!verifyCsrfToken()) return '';
+			if($pageId>=0) { displayerror("Page is not archived."); }
+			else { restorePageAndDescendants($pageId, $userId); displayinfo("Page and descendants restored successfully."); }
+		}
+		elseif($_GET['subaction']=="restoredescendants") {
+			if (!verifyCsrfToken()) return '';
+			if($pageId<=0) { displayerror("Root page cannot initiate restore from."); }
+			else { restoreDescendants($pageId); displayinfo("All descendant pages restored successfully."); }
+		}
 	}
 	if ($settingsForm = getSettingsForm($pageId, $userId))
 		return $settingsForm;
@@ -1417,5 +1517,63 @@ function getPageInheritedInfo($pageId, &$inheritedInfoBuf) {
 	} while($curPageId >= 0);
 
 	return -1;
+}
+
+function getAllDescendantIdsInclusive($pageId) {
+	$ids = array((int)$pageId);
+	$query = "SELECT `page_id` FROM `".MYSQL_DATABASE_PREFIX."pages` WHERE `page_parentid` = '".(int)$pageId."' AND `page_id` != `page_parentid`";
+	$result = mysqli_query($GLOBALS["___mysqli_ston"], $query);
+	while($row = mysqli_fetch_row($result))
+		$ids = array_merge($ids, getAllDescendantIdsInclusive($row[0]));
+	return $ids;
+}
+
+function getAllDescendantIds($pageId) {
+	$ids = array();
+	$query = "SELECT `page_id` FROM `".MYSQL_DATABASE_PREFIX."pages` WHERE `page_parentid` = '".(int)$pageId."' AND `page_id` != `page_parentid`";
+	$result = mysqli_query($GLOBALS["___mysqli_ston"], $query);
+	while($row = mysqli_fetch_row($result))
+		$ids = array_merge($ids, getAllDescendantIdsInclusive($row[0]));
+	return $ids;
+}
+
+function restoreDescendants($pageId) {
+	$ids = getAllDescendantIds($pageId);
+	if (empty($ids)) return;
+	$descAbsList = join(",", array_map(function($v){return abs($v);}, $ids));
+	$pid = (int)$pageId;
+	mysqli_query($GLOBALS["___mysqli_ston"], "UPDATE `".MYSQL_DATABASE_PREFIX."pages` SET `page_parentid` = abs(`page_parentid`) WHERE (abs(`page_parentid`) IN ($descAbsList) OR abs(`page_parentid`) = '$pid') AND `page_parentid` != `page_id`");
+	mysqli_query($GLOBALS["___mysqli_ston"], "UPDATE `".MYSQL_DATABASE_PREFIX."pages` SET `page_id` = abs(`page_id`) WHERE abs(`page_id`) IN ($descAbsList)");
+	mysqli_query($GLOBALS["___mysqli_ston"], "UPDATE `".MYSQL_DATABASE_PREFIX."userpageperm` SET `page_id` = abs(`page_id`) WHERE abs(`page_id`) IN ($descAbsList)");
+}
+
+function archivePage($pageId) {
+	$pid = (int)$pageId;
+	mysqli_query($GLOBALS["___mysqli_ston"], "UPDATE `".MYSQL_DATABASE_PREFIX."pages` SET `page_parentid` = -abs(`page_parentid`) WHERE `page_parentid` = '$pid' AND `page_parentid` != `page_id`");
+	mysqli_query($GLOBALS["___mysqli_ston"], "UPDATE `".MYSQL_DATABASE_PREFIX."pages` SET `page_id` = -abs(`page_id`) WHERE `page_id` = '$pid'");
+	mysqli_query($GLOBALS["___mysqli_ston"], "UPDATE `".MYSQL_DATABASE_PREFIX."userpageperm` SET `page_id` = -abs(`page_id`) WHERE `page_id` = '$pid'");
+}
+
+function restorePage($pageId) {
+	$pid = (int)$pageId;
+	mysqli_query($GLOBALS["___mysqli_ston"], "UPDATE `".MYSQL_DATABASE_PREFIX."pages` SET `page_parentid` = abs(`page_parentid`) WHERE `page_parentid` = '$pid' AND `page_parentid` != `page_id`");
+	mysqli_query($GLOBALS["___mysqli_ston"], "UPDATE `".MYSQL_DATABASE_PREFIX."pages` SET `page_id` = abs(`page_id`) WHERE `page_id` = '$pid'");
+	mysqli_query($GLOBALS["___mysqli_ston"], "UPDATE `".MYSQL_DATABASE_PREFIX."userpageperm` SET `page_id` = abs(`page_id`) WHERE `page_id` = '$pid'");
+}
+
+function archivePageAndDescendants($pageId, $userId) {
+	$ids = getAllDescendantIdsInclusive($pageId);
+	$idList = join(",", $ids);
+	mysqli_query($GLOBALS["___mysqli_ston"], "UPDATE `".MYSQL_DATABASE_PREFIX."pages` SET `page_parentid` = -abs(`page_parentid`) WHERE `page_parentid` IN ($idList) AND `page_parentid` != `page_id`");
+	mysqli_query($GLOBALS["___mysqli_ston"], "UPDATE `".MYSQL_DATABASE_PREFIX."pages` SET `page_id` = -abs(`page_id`) WHERE `page_id` IN ($idList)");
+	mysqli_query($GLOBALS["___mysqli_ston"], "UPDATE `".MYSQL_DATABASE_PREFIX."userpageperm` SET `page_id` = -abs(`page_id`) WHERE `page_id` IN ($idList)");
+}
+
+function restorePageAndDescendants($pageId, $userId) {
+	$ids = getAllDescendantIdsInclusive($pageId);
+	$idList = join(",", $ids);
+	mysqli_query($GLOBALS["___mysqli_ston"], "UPDATE `".MYSQL_DATABASE_PREFIX."pages` SET `page_parentid` = abs(`page_parentid`) WHERE `page_parentid` IN ($idList) AND `page_parentid` != `page_id`");
+	mysqli_query($GLOBALS["___mysqli_ston"], "UPDATE `".MYSQL_DATABASE_PREFIX."pages` SET `page_id` = abs(`page_id`) WHERE `page_id` IN ($idList)");
+	mysqli_query($GLOBALS["___mysqli_ston"], "UPDATE `".MYSQL_DATABASE_PREFIX."userpageperm` SET `page_id` = abs(`page_id`) WHERE `page_id` IN ($idList)");
 }
 

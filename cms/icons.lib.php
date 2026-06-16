@@ -56,6 +56,7 @@ $ICON_ARRAY=array(
 'Copy or Move Page'=>"actions/edit-copy.png",
 'Delete Section'=>"actions/process-stop.png",
 'Page Inherited Info'=>"apps/preferences-desktop-theme.png",
+'Archive Page'=>"emblems/emblem-readonly.png",
 'Email Registrants'=>"actions/mail-reply-all.png",
 'Forum Settings'=>"emblems/emblem-system.png",
 'Forum Moderate'=>"actions/edit-clear.png",
