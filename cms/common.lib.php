@@ -26,6 +26,7 @@ require_once("smarttable.class.php");
 function connect() {
 	$dbase = ($GLOBALS["___mysqli_ston"] = mysqli_connect(MYSQL_SERVER,  MYSQL_USERNAME,  MYSQL_PASSWORD)) or die("Could not connect to server");
 	((bool)mysqli_query($GLOBALS["___mysqli_ston"], "USE " . constant('MYSQL_DATABASE'))) or die("Could not connect to database");
+	mysqli_set_charset($GLOBALS["___mysqli_ston"], "utf8mb4");
 	return $dbase;
 }
 
@@ -49,7 +50,7 @@ function prettyurl($str) {
 		$page = substr($page,0,strripos($page,"/")-1);
 		$page = substr($page,0,strripos($page,"/")+1);
 	}
-	if(strpos($str,"../")) {
+	if(strpos($str,"../") !== false) {
 		$pos = strpos($str,"../");
 		$page = substr($page,0,strripos($page,"/")-1);
 		$page = substr($page,0,strripos($page,"/")+1);
@@ -74,7 +75,7 @@ function convertUrif($x,$attr) {
 	while(1) {
 		$z=$x;
 		$count=0;
-		if(strpos($x,$attr))
+		if(strpos($x,$attr) !== false)
 			$y .= substr($x,$count,strpos($x,$attr)+$len+2);
 		else
 			$y .= substr($x,$count);
@@ -87,7 +88,7 @@ function convertUrif($x,$attr) {
 		}
 		$x = substr($x,1);
 		//echo "<br>" . substr($x,0,strpos($x,"\"")) . " => " . prettyurl(substr($x,0,strpos($x,"\"")));
-		$count1=(strpos($x,"\"")==-1||!strpos($x,"\""))?10000:strpos($x,"\"");
+		$count1=(strpos($x,"\"")===-1||strpos($x,"\"")===false)?10000:strpos($x,"\"");
 		$count2=(strpos($x,"'")==-1||!strpos($x,"'"))?10000:strpos($x,"'");
 		$count=($count1<$count2)?$count1:$count2;
 //		echo substr($x,0,$count) ." => ". prettyurl(substr($x,0,$count)). "<br>";
@@ -164,7 +165,7 @@ function disable_magic_quotes()
 {
 	if (get_magic_quotes_gpc()) {
 	    $process = array(&$_GET, &$_POST, &$_COOKIE, &$_REQUEST);
-	    while (list($key, $val) = each($process)) {
+	    foreach ($process as $key => $val) {
 		foreach ($val as $k => $v) {
 		    unset($process[$key][$k]);
 		    if (is_array($v)) {
@@ -202,8 +203,9 @@ function reloadTemplates()
 	global $sourceFolder;
 	global $templateFolder;
 	$templates=scandir($sourceFolder.'/'.$templateFolder);
+	if (!is_array($templates)) $templates = array();
 	$res="<table>";
-	$temparrr=array();
+	$temparr=array();
 	foreach($templates as $tdir)
 	{
 		$tdir=escape($tdir);
@@ -218,7 +220,7 @@ function reloadTemplates()
 		}
 		
 	}
-	$templist=join("','",$temparr);	
+	$templist=empty($temparr) ? "''" : join("','",$temparr);	
 	$query="DELETE FROM `".MYSQL_DATABASE_PREFIX."templates` WHERE `template_name` NOT IN ('$templist')";
 	mysqli_query($GLOBALS["___mysqli_ston"], $query);
 	if($delc=mysqli_affected_rows($GLOBALS["___mysqli_ston"])>0)
@@ -231,6 +233,7 @@ function reloadModules()
 	global $sourceFolder;
 	global $moduleFolder;
 	$modules=scandir($sourceFolder.'/'.$moduleFolder);
+	if (!is_array($modules)) $modules = array();
 	$res="<table>";
 	$modarr=array();
 	foreach($modules as $module)
@@ -329,6 +332,8 @@ function displaywarning($error_desc) {
  * @return string containing the array information
  */
  function arraytostring($array) {
+	if (!is_array($array))
+		return '';
 	$text = "array(";
 	$count=count($array);
 	$x=0;
@@ -521,6 +526,8 @@ function getParentPage($pageid) {
 	$pageparent_query = "SELECT `page_parentid` FROM `".MYSQL_DATABASE_PREFIX."pages` WHERE `page_id`='".$pageid."'";
 	$pageparent_result = mysqli_query($GLOBALS["___mysqli_ston"], $pageparent_query);
 	$pageparent_row = mysqli_fetch_assoc($pageparent_result);
+	if (!$pageparent_row || !isset($pageparent_row['page_parentid']))
+		return 0;
 	return $pageparent_row['page_parentid'];
 }
 function getPageInfo($pageid) {
@@ -643,14 +650,14 @@ function verifyHttps($url){
 }
 
 function selfURI() {
-    $s = empty($_SERVER["HTTPS"]) ? '' : ($_SERVER["HTTPS"] == "on") ? "s" : "";
+    $s = empty($_SERVER["HTTPS"]) ? '' : (($_SERVER["HTTPS"] == "on") ? "s" : "");
     $protocol = strleft(strtolower($_SERVER["SERVER_PROTOCOL"]), "/").$s;
     $port = ($_SERVER["SERVER_PORT"] == "80") ? "" : (":".$_SERVER["SERVER_PORT"]);
 	return $protocol."://".$_SERVER['SERVER_NAME'].$port.$_SERVER['REQUEST_URI'];
 }
 
 function hostURL() {
-    $s = empty($_SERVER["HTTPS"]) ? '' : ($_SERVER["HTTPS"] == "on") ? "s" : "";
+    $s = empty($_SERVER["HTTPS"]) ? '' : (($_SERVER["HTTPS"] == "on") ? "s" : "");
     $protocol = strleft(strtolower($_SERVER["SERVER_PROTOCOL"]), "/").$s;
     
     $scriptname = isset($_SERVER['ORIG_SCRIPT_NAME'])?$_SERVER['ORIG_SCRIPT_NAME']:$_SERVER['SCRIPT_NAME'];
@@ -818,6 +825,7 @@ function getFileActualPath($moduleType,$moduleComponentId,$fileName)
 	$query = "SELECT * FROM `" . MYSQL_DATABASE_PREFIX . "uploads` WHERE  `upload_filename`= '". escape($fileName). "' AND `page_module` = '".escape($moduleType)."' AND `page_modulecomponentid` = '".escape($moduleComponentId)."'";
 	$result = mysqli_query($GLOBALS["___mysqli_ston"], $query) or die(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)) . "upload L:85");
 	$row = mysqli_fetch_assoc($result);
+	if (!$row) return '';
 	/**
 	 * Not checking if filetype adheres to uploadable filetype list beacuse this check can be
 	 * performed in $moduleInstance->getFileAccessPermission.
@@ -855,3 +863,10 @@ function censor_words($text)
 		$res = preg_replace("/$words[0]/i",$replace,$text);
 	return $res;
 }
+
+//fallback function
+if (!function_exists('get_magic_quotes_gpc')) {
+    function get_magic_quotes_gpc() {
+        return false;
+    }
+}   

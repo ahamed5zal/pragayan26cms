@@ -351,7 +351,7 @@ MOVECOPY;
 		while($pagetagrow = mysqli_fetch_assoc($pageTagsResult)) {
 			$pageTags.="<tr>";
 			$pageTags.="<td>".$pagetagrow['tag_text']."</td>";
-			$pageTags.="<td><a href='./+settings&subaction=tags&delTag={$pagetagrow[tag_id]}'>".$ICONS['Delete']['small']."</a></td>";
+			$pageTags.="<td><a href='./+settings&subaction=tags&delTag={$pagetagrow['tag_id']}'>".$ICONS['Delete']['small']."</a></td>";
 			$pageTags.="</tr>";
 		}
 		$pageTags.="</table>";
@@ -359,11 +359,12 @@ MOVECOPY;
 	else{
 		$pageTags="There are no tags yet.";
 	}
-	$allTagsQuery="SELECT DISTINCT `tag_text` FROM `". MYSQL_DATABASE_PREFIX ."pagetags` ORDER BY `tag_text;";
+	$allTagsQuery="SELECT DISTINCT `tag_text` FROM `". MYSQL_DATABASE_PREFIX ."pagetags` ORDER BY `tag_text`;";
 	$allTagsResult = mysqli_query($GLOBALS["___mysqli_ston"], $allTagsQuery);
 	if(!$allTagsResult) { displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));}//Error handling
+	$allTags = '';
 	while($alltagrow = mysqli_fetch_assoc($allTagsResult)) {
-		$allTags.="<option value='{$alltagrow[tag_text]}'>"; //dataset option for newTag input
+		$allTags.="<option value='{$alltagrow['tag_text']}'>"; //dataset option for newTag input
 	}
 	
 	$tagsPageSettingsText="<fieldset><legend><a name='tags'>Page Tags</a></legend>";
@@ -409,7 +410,7 @@ MOVECOPY;
 	else $completetype="selected";
 	
 	$row = mysqli_fetch_array(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT `allowComments` FROM `article_content` WHERE `page_modulecomponentid` = '{$modulecomponentid}'"));
-	$allowComments = $row['allowComments'] == 1 ? 'checked="checked" ' : '';
+	$allowComments = ($row && isset($row['allowComments']) && $row['allowComments'] == 1) ? 'checked="checked" ' : '';
 	
 	$formDisplay =<<<FORMDISPLAY
 
@@ -672,12 +673,12 @@ function updateSettings($pageId, $userId, $pageName, $pageTitle, $showInMenu, $s
 		}
 	}
 	if (count($updates) > 0) {
-		$updateQuery = 'UPDATE `' . MYSQL_DATABASE_PREFIX . 'pages` SET ' . join($updates, ', ') . " WHERE `page_id` = '$pageId';";
+		$updateQuery = 'UPDATE `' . MYSQL_DATABASE_PREFIX . 'pages` SET ' . join(', ', $updates) . " WHERE `page_id` = '$pageId';";
 		mysqli_query($GLOBALS["___mysqli_ston"], $updateQuery);
 	}
 
 	if (is_array($visibleChildList) && count($visibleChildList) > 0) {
-		$visibleChildList = "'" . join($visibleChildList, "', '") . "'";
+		$visibleChildList = "'" . join("', '", $visibleChildList) . "'";
 		$updateQuery = 'UPDATE `' . MYSQL_DATABASE_PREFIX . 'pages` SET `page_displayinmenu` = 1 WHERE ' .
 		"`page_name` IN ($visibleChildList) AND `page_parentid` = '$pageId' AND `page_parentid` != `page_id`";
 		mysqli_query($GLOBALS["___mysqli_ston"], $updateQuery);
@@ -689,7 +690,7 @@ function updateSettings($pageId, $userId, $pageName, $pageTitle, $showInMenu, $s
 	}
 	mysqli_query($GLOBALS["___mysqli_ston"], $updateQuery);
 	if (is_array($visiblesChildList) && count($visiblesChildList) > 0) {
-		$visiblesChildList = "'" . join($visiblesChildList, "', '") . "'";
+		$visiblesChildList = "'" . join("', '", $visiblesChildList) . "'";
 		$updateQuery = 'UPDATE `' . MYSQL_DATABASE_PREFIX . 'pages` SET `page_displayinsitemap` = 1 WHERE ' .
 		"`page_name` IN ($visiblesChildList) AND `page_parentid` = '$pageId' AND `page_parentid` != `page_id`";
 		mysqli_query($GLOBALS["___mysqli_ston"], $updateQuery);
@@ -702,7 +703,7 @@ function updateSettings($pageId, $userId, $pageName, $pageTitle, $showInMenu, $s
 	if(!$icon_propogate)
 	{
 	if (is_array($visibleiChildList) && count($visibleiChildList) > 0) {
-		$visibleiChildList = "'" . join($visibleiChildList, "', '") . "'";
+		$visibleiChildList = "'" . join("', '", $visibleiChildList) . "'";
 		$updateQuery = 'UPDATE `' . MYSQL_DATABASE_PREFIX . 'pages` SET `page_displayicon` = 1 WHERE ' .
 		"`page_name` IN ($visibleiChildList) AND `page_parentid` = '$pageId' AND `page_parentid` != `page_id`";
 		mysqli_query($GLOBALS["___mysqli_ston"], $updateQuery);
@@ -891,14 +892,14 @@ function pagesettings($pageId, $userId) {
 				$tempSrc=mysqli_fetch_assoc($result);
 				if(($tempTarg['page_menurank'])==($tempSrc['page_menurank']))
 				{
-					$query="UPDATE `".MYSQL_DATABASE_PREFIX."pages` SET `page_menurank` = `page_id` WHERE `page_parentid`='$tempSrc[page_parentid]'";
+					$query="UPDATE `".MYSQL_DATABASE_PREFIX."pages` SET `page_menurank` = `page_id` WHERE `page_parentid`='{$tempSrc['page_parentid']}'";
 		 			mysqli_query($GLOBALS["___mysqli_ston"], $query);
 		 			displayinfo("Error in menu rank corrected. Please reorder the pages");
 				}
 				else{
-				$query="UPDATE `".MYSQL_DATABASE_PREFIX."pages`  SET `page_menurank` ='$tempSrc[page_menurank]' WHERE `page_id` = '$tempTarg[page_id]' ";
+				$query="UPDATE `".MYSQL_DATABASE_PREFIX."pages`  SET `page_menurank` ='{$tempSrc['page_menurank']}' WHERE `page_id` = '{$tempTarg['page_id']}' ";
 				mysqli_query($GLOBALS["___mysqli_ston"], $query);
-				$query="UPDATE `".MYSQL_DATABASE_PREFIX."pages`  SET `page_menurank` ='$tempTarg[page_menurank]' WHERE `page_id` = '$childPageId' ";
+				$query="UPDATE `".MYSQL_DATABASE_PREFIX."pages`  SET `page_menurank` ='{$tempTarg['page_menurank']}' WHERE `page_id` = '$childPageId' ";
 				mysqli_query($GLOBALS["___mysqli_ston"], $query);
 				}
 			}
@@ -909,10 +910,15 @@ function pagesettings($pageId, $userId) {
 					$childPageName=escape($_GET['pageName']);
 					$query="SELECT `page_id` FROM  `".MYSQL_DATABASE_PREFIX."pages` WHERE `page_parentid`='$pageId' AND `page_name`='$childPageName'";
 					$result=mysqli_query($GLOBALS["___mysqli_ston"], $query);
-					$temp=mysqli_fetch_assoc($result);
-					$childPageId=$temp['page_id'];
-					if(deletePage($childPageId,$userId))
-						displayinfo("Page deleted successfully.");
+					if($temp=mysqli_fetch_assoc($result)) {
+						$childPageId=$temp['page_id'];
+						if($childPageId != 0 && deletePage($childPageId,$userId))
+							displayinfo("Page deleted successfully.");
+						else if($childPageId == 0)
+							displayerror("Cannot delete the root page.");
+					}
+					else
+						displayerror("Page not found.");
 				}
 				else
 					displayerror("Not enough information available");
@@ -1067,8 +1073,8 @@ function pagesettings($pageId, $userId) {
 				else
 					displayerror("Error in deleting tag.");
 			}
-			if(isset($_POST[newTag]) && $_POST[newTag]!=""){ //INSERTING THE TAG
-				$newTagQuery="INSERT INTO `". MYSQL_DATABASE_PREFIX ."pagetags` (`tag_id`, `page_id`, `tag_text`) VALUES (NULL, ".$pageId.", '".escape($_POST[newTag])."');";
+			if(isset($_POST['newTag']) && $_POST['newTag']!=""){ //INSERTING THE TAG
+				$newTagQuery="INSERT INTO `". MYSQL_DATABASE_PREFIX ."pagetags` (`tag_id`, `page_id`, `tag_text`) VALUES (NULL, ".$pageId.", '".escape($_POST['newTag'])."');";
 				$newTagResult=mysqli_query($GLOBALS["___mysqli_ston"], $newTagQuery);
 				if($newTagResult)
 					displayinfo("Tag added!");
@@ -1177,6 +1183,7 @@ function createInstance($moduleType) {
 
 
 function deletePage($pageId,$userId){
+	if ($pageId == 0) return false;
  	$query="SELECT `page_id` FROM `".MYSQL_DATABASE_PREFIX."pages` WHERE `page_parentid`='$pageId' AND `page_id`!=`page_parentid` ";
  	$result=mysqli_query($GLOBALS["___mysqli_ston"], $query);
  	$deleteAll = true;

@@ -18,6 +18,8 @@ if(!defined('__PRAGYAN_CMS'))
  * Give the action and module component id to module.
  */
 
+require_once("csrf.lib.php");
+
  /**TODO: Make sure a newly created page or renamed page does not have a . in its name. -> clashes with .php, .jpg etc
   *
   *Actions which are taken care of from here only : login, logout, profile
@@ -58,8 +60,10 @@ function getContent($pageId, $action, $userId, $permission, $recursed=0) {
 	if($action=="search") {
 		require_once("search.lib.php");
 		$ret = getSearchBox();
-		if(isset($_POST['query'])) 
+		if(isset($_POST['query'])) {
+			if (!verifyCsrfToken()) return "";
 			$ret .= getSearchResultString($_POST['query']);
+		}
 		elseif(isset($_GET['query'])) 
 			$ret .= getSearchResultString($_GET['query']);
 	

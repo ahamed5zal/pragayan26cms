@@ -13,7 +13,9 @@ if(!defined('__PRAGYAN_CMS'))
  * @license http://www.gnu.org/licenses/ GNU Public License
  * For more details, see README
  */
- 
+
+require_once("csrf.lib.php");
+
 global $cmsFolder,$sourceFolder;
 require_once("$sourceFolder/modules/search/settings/conf.php");
 require_once("$sourceFolder/modules/search/include/commonfuncs.php");
@@ -35,10 +37,11 @@ function getmicrotime(){
 }
 
 function getSearchBox(){
+	$csrfField = getCsrfTokenField();
 	$CMS_TITLE = CMS_TITLE;
 	$lastquery="";
-	if($_GET['query']!="") $lastquery=safe_html($_GET['query']);
-	if($_POST['query']!="") $lastquery=safe_html($_POST['query']);
+	if(($_GET['query'] ?? '')!="") $lastquery=safe_html($_GET['query']);
+	if(($_POST['query'] ?? '')!="") $lastquery=safe_html($_POST['query']);
 
 	global $cmsFolder,$urlRequestRoot,$ICONS;
 	$searchbox=<<<SEARCH
@@ -59,6 +62,7 @@ function getSearchBox(){
 	
 	<center>
 	<form action="./+search" method="POST">
+	$csrfField
 	<table cellspacing="1" cellpadding="5" class="searchBox">
 		<tr>
 			<td align="center">
@@ -97,7 +101,7 @@ DIDYOUMEAN;
 	if ($search_results['ignore_words']) {
 		$resultHTML .= '<div id="common_report">';
 		$ignored = '';
-		while ($thisword=each($ignore_words)) {
+		foreach ($ignore_words as $thisword) {
 			$ignored .= " ".$thisword[1];
 		}
 		$resultHTML .= '</div>';

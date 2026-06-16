@@ -8,3 +8,4 @@ cms/uploads/
 .settings
 \#*\#
 .*.swp
+.aider*

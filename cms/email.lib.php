@@ -44,9 +44,10 @@ function displayEmail($template = "") {
 	$emailTemplates = "<select id='emailtemplates' name='emailtemplates'><option value='new'{$newSelected}>Create New Template</option>";
 	$dir = "$sourceFolder/languages/" . LANGUAGE . "/email/templates/";
 	$handle = opendir($dir);
+	if ($handle === false) return $emailTemplates . "</select>";
 	$subject="";
 	$content="";
-	while($file = readdir($handle)) {
+	while(($file = readdir($handle)) !== false) {
 		if(substr($file, -4, 4) == ".txt") {
 			$name = substr($file, 0, -4);
 			if($name == $template) {
@@ -58,6 +59,7 @@ function displayEmail($template = "") {
 			}
 		}
 	}
+	closedir($handle);
 	$emailTemplates .= "</select>";
 	global $ICONS;
 	$groups = getAllGroups();

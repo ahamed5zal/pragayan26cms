@@ -331,7 +331,7 @@ if(!defined('__PRAGYAN_CMS'))
 			$values[] = $value;
 		}
 
-		$valuesString = join($values,"|");
+		$valuesString = join("|", $values);
 
 		if($elementIsRequired &&  $valuesString == "") {
 			displayerror("Essential field ".$elementName." is missing");

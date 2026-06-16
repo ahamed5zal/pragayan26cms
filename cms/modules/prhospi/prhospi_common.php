@@ -133,7 +133,7 @@ function getSuggestionsForIdOrEmail($input) {
     while($emailRow = mysqli_fetch_row($emailResult)) {
       $suggestions[] = $emailRow[2]. ' - ' . $emailRow[0];
     }                                                                                                                                           
-    return join($suggestions, ',');                                                                                                             
+    return join(',', $suggestions);                                                                                                             
 }
   
 function getHostelsName($mcid) {

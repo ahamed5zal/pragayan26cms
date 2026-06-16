@@ -60,7 +60,7 @@ class prhospi implements module,fileuploadable {
   
   
   
-  public function getCkBody($content="",$team){
+  public function getCkBody($content,$team){
     global $sourceFolder;
     global $cmsFolder;
     global $moduleFolder;
@@ -146,7 +146,7 @@ Ck1;
     while($emailRow = mysqli_fetch_row($emailResult)) {
       $suggestions[] = $emailRow[1]. ' - ' . $emailRow[7];
     }                                                                                                                                           
-    return join($suggestions, ',');                                                                                                             
+    return join(',', $suggestions);                                                                                                             
   }
  
   

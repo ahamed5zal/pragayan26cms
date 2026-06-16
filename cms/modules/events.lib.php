@@ -461,11 +461,11 @@ $userDetails = "SELECT * FROM `events_result`  WHERE `user_id`='{$userId}' and `
 
     $teamMateDetails="SELECT * FROM `events_participants` WHERE `user_pid`='{$userId}' and `event_id` ='{$row['event_id']}'";
    displayerror($teamMateDetails);
-   $teamMateQuery=mysqli_query($GLOBALS["___mysqli_ston"], $teamMateDetails) or displayerror(mysql_error);
+   $teamMateQuery=mysqli_query($GLOBALS["___mysqli_ston"], $teamMateDetails) or displayerror(mysqli_error($GLOBALS["___mysqli_ston"]));
    $teamMateDetails=mysqli_fetch_assoc($teamMateQuery);
   $teamMates=$teamMateDetails['user_team_id'];
  $teamMateDetails="SELECT * FROM `events_participants` WHERE `user_team_id`=$teamMates  and `event_id` ='{$row['event_id']}'";
- $teamMateQuery=mysqli_query($GLOBALS["___mysqli_ston"], $teamMateDetails) or displayerror(mysql_error);
+ $teamMateQuery=mysqli_query($GLOBALS["___mysqli_ston"], $teamMateDetails) or displayerror(mysqli_error($GLOBALS["___mysqli_ston"]));
  $eventAdd.="<td>";
 while($newRow=mysqli_fetch_array($teamMateQuery))
  {

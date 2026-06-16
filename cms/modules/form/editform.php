@@ -101,7 +101,7 @@ if(!defined('__PRAGYAN_CMS'))
 				$updates[] = "`form_closelimit` = '".$closeLimit."'";
 			}
 			if(count($updates) > 0) {
-				$updateQuery = 'UPDATE `form_desc` SET ' . join($updates, ', ') .
+				$updateQuery = 'UPDATE `form_desc` SET ' . join(', ', $updates) .
 				               ' WHERE `page_modulecomponentid` = \'' . $moduleCompId."'";
 				if(mysqli_query($GLOBALS["___mysqli_ston"], $updateQuery)) {
 					displayinfo("All changes in the form have been successfully saved!");
@@ -373,27 +373,27 @@ BODY;
 
 
 		$query = "SELECT * FROM `form_elementdesc` WHERE `form_elementrank` $compare(SELECT `form_elementrank` FROM `form_elementdesc` WHERE `page_modulecomponentid`='$moduleCompId' AND `form_elementid`='$elementId') AND `page_modulecomponentid`='$moduleCompId' AND `form_elementid`!='$elementId' ORDER BY `form_elementrank` $order LIMIT 0,1";
-		$result = mysqli_query($GLOBALS["___mysqli_ston"], $query) or die(mysql_query());
+		$result = mysqli_query($GLOBALS["___mysqli_ston"], $query) or die(mysqli_error($GLOBALS["___mysqli_ston"]));
 		if (mysqli_num_rows($result) == 0) {
 			displayerror("You cannot move up/down the first/last element in form");
 
 		} else {
 			$tempTarg = mysqli_fetch_assoc($result);
 			$query = "SELECT `form_elementrank` FROM `form_elementdesc` WHERE `page_modulecomponentid`='$moduleCompId' AND `form_elementid`='$elementId'";
-			$result = mysqli_query($GLOBALS["___mysqli_ston"], $query) or die(mysql_query());
+			$result = mysqli_query($GLOBALS["___mysqli_ston"], $query) or die(mysqli_error($GLOBALS["___mysqli_ston"]));
 			$tempSrc = mysqli_fetch_assoc($result);
 
 			if ($tempTarg['form_elementrank'] == $tempSrc['form_elementrank']) {
-				$query = "UPDATE `form_elementdesc` SET `form_elementrank` = `form_elementid` WHERE `page_modulecomponentid`='$tempTarg[page_modulecomponentid]'";
+				$query = "UPDATE `form_elementdesc` SET `form_elementrank` = `form_elementid` WHERE `page_modulecomponentid`='{$tempTarg['page_modulecomponentid']}'";
 				$result = mysqli_query($GLOBALS["___mysqli_ston"], $query) or die(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 				if (mysqli_affected_rows($GLOBALS["___mysqli_ston"]) > 0)
 					displayinfo("Error in form element rank corrected. Please reorder them");
 				else
 					displayerror("Failed to correct error in form element ranks!");
 			} else {
-				$query = "UPDATE `form_elementdesc` SET `form_elementrank` = '$tempSrc[form_elementrank]' WHERE `page_modulecomponentid`='$tempTarg[page_modulecomponentid]' AND `form_elementid`='$tempTarg[form_elementid]'";
+				$query = "UPDATE `form_elementdesc` SET `form_elementrank` = '{$tempSrc['form_elementrank']}' WHERE `page_modulecomponentid`='{$tempTarg['page_modulecomponentid']}' AND `form_elementid`='{$tempTarg['form_elementid']}'";
 				$result = mysqli_query($GLOBALS["___mysqli_ston"], $query) or die(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
-				$query = "UPDATE `form_elementdesc` SET `form_elementrank` = '$tempTarg[form_elementrank]' WHERE `page_modulecomponentid`='$moduleCompId' AND `form_elementid`='$elementId'";
+				$query = "UPDATE `form_elementdesc` SET `form_elementrank` = '{$tempTarg['form_elementrank']}' WHERE `page_modulecomponentid`='$moduleCompId' AND `form_elementid`='$elementId'";
 				$result = mysqli_query($GLOBALS["___mysqli_ston"], $query) or die(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 			}
 		}

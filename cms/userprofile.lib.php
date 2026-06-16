@@ -51,7 +51,7 @@ function generatePublicProfile($userProfileId,$accessUserId) {
 	$profileimg= "<img id=profileimg src='$profileimgname' alt='Profile Image' title='Profile Image' height=120 width=100><br/>";
 	
 	$dynamicFields = getFormElementsHtmlAsArrayForView(0, $userId);
-	$dynamicFields = join($dynamicFields, "</tr>\n<tr>");
+	$dynamicFields = join("</tr>\n<tr>", $dynamicFields);
 	if($dynamicFields != '') {
 		$dynamicFields = "<tr>$dynamicFields</tr>";
 	}

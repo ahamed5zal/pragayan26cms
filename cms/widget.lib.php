@@ -229,7 +229,7 @@ function handleWidgetPageSettings($pageId)
 		
 			$html.="<table class='pragyan_fulltable'><tr><th colspan=2>Widget : {$widgetinfo['name']}</th><tr>";
 			$html.="<tr><td>Description : </td><td> {$widgetinfo['description']}</td></tr>";
-			$html .="<tr>".join($formElements, "</tr>\n<tr>")."</tr>";
+			$html .="<tr>".join("</tr>\n<tr>", $formElements)."</tr>";
 		
 			$html.="</table><input name='update_widget_page_settings' type='submit' value='Update'/>" .
 					"<input type='reset' value='Reset'/>";
@@ -635,7 +635,7 @@ function handleWidgetAdmin($pageId)
 		$html.="</td></tr>";
 		*/
 		
-		$html .="<tr>".join($formElements, "</tr>\n<tr>")."</tr>";
+		$html .="<tr>".join("</tr>\n<tr>", $formElements)."</tr>";
 		
 		$html.="</table><input name='update_global_settings' type='submit' value='Update'/>" .
 				"<input type='reset' value='Reset'/>";
@@ -691,7 +691,8 @@ function getConfigFormAsArray($widgetconfigs,$containsFileUploadFields,$widgetin
 			$formValues[$configentry['confname']]=$configentry['confdefault'];
 		}
 			
-		$query="SELECT `config_name` AS 'confname', `config_value` AS 'confvalue' FROM ".MYSQL_DATABASE_PREFIX."widgetsconfig WHERE `widget_instanceid`='$widgetinstanceid' AND `widget_id`='{$widgetconfigs[0]['id']}'  AND `config_name` IN ('".join($confnames,"','")."')";
+		$confnames = empty($confnames) ? array('') : $confnames;
+		$query="SELECT `config_name` AS 'confname', `config_value` AS 'confvalue' FROM ".MYSQL_DATABASE_PREFIX."widgetsconfig WHERE `widget_instanceid`='$widgetinstanceid' AND `widget_id`='{$widgetconfigs[0]['id']}'  AND `config_name` IN ('".join("','",$confnames)."')";
 
 		$res=mysqli_query($GLOBALS["___mysqli_ston"], $query);
 
@@ -731,7 +732,7 @@ function getConfigFormAsArray($widgetconfigs,$containsFileUploadFields,$widgetin
  * @param $isglobal Must be set to true if handling global settings, else false.
  * @return The HTML field of that configuration along with the javascript Validation function (if any).
  */
-function getFormInputField($configentry, $value="", $isglobal) {
+function getFormInputField($configentry, $value, $isglobal) {
 
 
 	$elementType = $configentry['conftype'];
@@ -1171,7 +1172,7 @@ function interpretSubmitValue($conftype,$postvar,$options=NULL)
 				continue;
 			$values[] = $value;
 		}
-		$valuesString = join($values,"|");
+		$valuesString = join("|", $values);
 		return $valuesString;
 	}
 	else if($conftype=='text')

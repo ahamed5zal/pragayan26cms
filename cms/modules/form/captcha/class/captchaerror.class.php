@@ -31,7 +31,7 @@
 
   	var $errors;
 
-  	function captchaerror ()
+  	function __construct ()
   	{
 
   	  $this->errors = array();
@@ -47,7 +47,7 @@
 
   	function displayError ()
   	{
-  		displayerror('Error! Could not generate captcha.<br />' . join($this->errors, '<br />'));
+  		displayerror('Error! Could not generate captcha.<br />' . join('<br />', $this->errors));
 /*
       $iheight     = count($this->errors) * 20 + 10;
       $iheight     = ($iheight < 130) ? 130 : $iheight;

@@ -18,11 +18,12 @@ function processUploaded($type) {
 	global $sourceFolder;
 	if(!file_exists($sourceFolder . "/uploads/{$type}/"))
 		mkdir($sourceFolder . "/uploads/{$type}/");
-	$zipFile = $sourceFolder ."/uploads/{$type}/".$_FILES['file']['name'];
+	$file = $_FILES['file'] ?? [];
+	$zipFile = $sourceFolder ."/uploads/{$type}/".($file['name'] ?? '');
 	$ext = extension($zipFile);
 	while(file_exists($zipFile))
 		$zipFile = $sourceFolder . "/uploads/{$type}/" . rand() . $ext;
-	move_uploaded_file($_FILES['file']['tmp_name'],$zipFile);
+	move_uploaded_file($file['tmp_name'] ?? '',$zipFile);
 
 	$len = strlen($zipFile);
 	$moduleName = name($zipFile,".");
@@ -409,15 +410,21 @@ function checkForWidgetIssues($modulePath,$moduleName,&$issues) {
 function actualModulePath($modulePath) {
 	$moduleActualPath = $modulePath;
 	$dirHandle = opendir($modulePath);
-	while($file = readdir($dirHandle)) {
-		if(substr($file,-8) == ".lib.php")
+	if ($dirHandle === false) return NULL;
+	while(($file = readdir($dirHandle)) !== false) {
+		if(substr($file,-8) == ".lib.php") {
+			closedir($dirHandle);
 			return $modulePath;
+		}
 		elseif(is_dir($modulePath . $file) && $file != '.' && $file != '..') {
 			$return = actualModulePath($modulePath . $file . "/");
-			if($return != NULL)
+			if($return != NULL) {
+				closedir($dirHandle);
 				return $return;
+			}
 		}
 	}
+	closedir($dirHandle);
 	return NULL;
 }
 
@@ -425,23 +432,33 @@ function actualModulePath($modulePath) {
 function actualWidgetPath($modulePath) {
 	$moduleActualPath = $modulePath;
 	$dirHandle = opendir($modulePath);
-	while($file = readdir($dirHandle)) {
-		if($file=="widget.class.php")
+	if ($dirHandle === false) return NULL;
+	while(($file = readdir($dirHandle)) !== false) {
+		if($file=="widget.class.php") {
+			closedir($dirHandle);
 			return $modulePath;
+		}
 		elseif(is_dir($modulePath . $file) && $file != '.' && $file != '..') {
 			$return = actualWidgetPath($modulePath . $file . "/");
-			if($return != NULL)
+			if($return != NULL) {
+				closedir($dirHandle);
 				return $return;
+			}
 		}
 	}
+	closedir($dirHandle);
 	return NULL;
 }
 function getModuleName($moduleActualPath) {
 	$dirHandle = opendir($moduleActualPath);
-	while($file = readdir($dirHandle)) {
-		if(substr($file,-8) == ".lib.php")
+	if ($dirHandle === false) return NULL;
+	while(($file = readdir($dirHandle)) !== false) {
+		if(substr($file,-8) == ".lib.php") {
+			closedir($dirHandle);
 			return substr($file,0,-8);
+		}
 	}
+	closedir($dirHandle);
 	return NULL;
 }
 	

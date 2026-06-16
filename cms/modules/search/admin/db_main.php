@@ -130,7 +130,7 @@ if (isset($file) && $del==0) {
 		 @unlink($backup_path."backup.sql");
 		 $fp = @fopen($backup_path."backup.sql","w");
 		 fwrite ($fp,"");
-			fclose ($fp);
+			if (is_resource($fp)) fclose ($fp);
 		 chmod($backup_path."backup.sql", 0777);
 		 $fp = @fopen($backup_path."backup.sql","w");
 		 $zp = @gzopen($backup_path.$file, "rb");
@@ -144,7 +144,7 @@ if (isset($file) && $del==0) {
 			$data=gzgets($zp, 8192);// buffer php
 			fwrite($fp,$data);
 		 }
-		 fclose($fp);
+		 if (is_resource($fp)) fclose($fp);
 		 gzclose($zp);
 		 $file="backup.sql";
 
@@ -177,12 +177,13 @@ if (isset($file) && $del==1) {
 		mkdir($backup_path, 0766);
 	}
 	$dir=opendir($backup_path); 
+	if ($dir === false) { echo "Unable to open backup directory."; return; }
 	$bgcolor='grey';
 	$is_first=1;
 
 		
 
-	while ($file = readdir ($dir)) { 
+	while (($file = readdir($dir)) !== false) { 
 		if ($file != "." && $file != ".." &&  (preg_match("/\.sql/i",$file) || preg_match("/\.gz/i",$file))){
 			if($is_first==1){
 				echo "<tr> 

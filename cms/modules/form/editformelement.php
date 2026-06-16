@@ -217,7 +217,7 @@ ROWSTRING;
 			}
 		}
 		else {
-			$elemTypeBox = '<option>' . join($elementTypes, "</option>\n<option>") . '</option>';
+			$elemTypeBox = '<option>' . join("</option>\n<option>", $elementTypes) . '</option>';
 		}
 
 		$hiddenValue = isset($this->elementId) ? $this->elementId : 'new';
@@ -405,7 +405,7 @@ HTMLOUTPUT;
 		}
 
 		if(count($updates) > 0) {
-			return 'UPDATE `form_elementdesc` SET ' . join($updates, ', ') . ' WHERE ' .
+			return 'UPDATE `form_elementdesc` SET ' . join(', ', $updates) . ' WHERE ' .
 			       '`form_elementid` =\'' . $this->elementId . '\' AND `page_modulecomponentid` = \'' . $formId."'";
 		}
 		return '';
@@ -441,7 +441,7 @@ HTMLOUTPUT;
 		}
 
 		if(count($keys) > 0) {
-			return 'INSERT INTO `form_elementdesc`(`'.join($keys, '`, `').'`) VALUES ('.join($values, ', ').')';
+			return 'INSERT INTO `form_elementdesc`(`'.join('`, `', $keys).'`) VALUES ('.join(', ', $values).')';
 		}
 		return '';
 	}

@@ -37,6 +37,7 @@ function download($pageId, $userId, $fileName,$action="") {
 	}
 	
 	if($action=="") $action="view";
+	$fileName = urldecode($fileName);
 	// Profile Image exception added by Abhishek
 	global $sourceFolder;
 	global $moduleFolder;
@@ -66,7 +67,7 @@ function download($pageId, $userId, $fileName,$action="") {
 		$moduleType = "profile";
 		$moduleComponentId = $userId;
 		if (isset($_GET['mcid'])) {
-				$moduleComponentId = escape($_GET[mcid]);
+				$moduleComponentId = escape($_GET['mcid']);
 			}
 		// Since the moduleComponentId is equal to userId, the image could be retrieved only if the userId is valid, hence no need for security check for file access here :)
 		
@@ -77,6 +78,12 @@ function download($pageId, $userId, $fileName,$action="") {
 	$query = "SELECT * FROM `" . MYSQL_DATABASE_PREFIX . "uploads` WHERE  `upload_filename`= '". escape($fileName). "' AND `page_module` = '".escape($moduleType)."' AND `page_modulecomponentid` = '".escape($moduleComponentId)."'";
 	$result = mysqli_query($GLOBALS["___mysqli_ston"], $query) or die(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)) . "upload L:85");
 	$row = mysqli_fetch_assoc($result);
+	if (!$row) {
+		header("http/1.0 404 Not Found");
+		echo "<html><head><title>404 Not Found</title></head><body><h1>Not Found</h1>" .
+			 "<p>The requested URL was not found on this server.</p></body></html>";
+		exit();
+	}
 
 	$fileType = $row['upload_filetype'];
 	/**
@@ -94,8 +101,9 @@ function download($pageId, $userId, $fileName,$action="") {
 	$filePointer = @fopen($file, 'r') ;
 	if($filePointer==FALSE){
 		header("http/1.0 404 Not Found" );
+		$reqUrl = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '';
 		echo "<html><head><title>404 Not Found</title></head><body><h1>Not Found</h1>" .
-			 "<p>The requested URL ".$_SERVER['SCRIPT_URL']." was not found on this server.</p><hr>" .
+			 "<p>The requested URL " . $reqUrl . " was not found on this server.</p><hr>" .
 			 "$_SERVER[SERVER_SIGNATURE]</body></html>";
 		exit();
 	}

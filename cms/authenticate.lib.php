@@ -222,7 +222,7 @@ function my_imap_auth ($username, $password)
 	  $response = fgets ($imap_stream, 1024);
 	  $query = 'b222 ' . 'LOGOUT';
 	  $read = fputs ($imap_stream, $query);
-	  fclose($imap_stream);
+	  if (is_resource($imap_stream)) fclose($imap_stream);
 
 	  strtok($response, " ");
 	  $result = strtok(" ");

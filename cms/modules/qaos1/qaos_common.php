@@ -54,7 +54,7 @@ function getFundReq($fundReqId,$mcId) {
   return array_merge(assignVars($row[8]),$ret);	
 }
 
- function getCkBody($content="",$team){
+ function getCkBody($content,$team){
     global $sourceFolder;
     global $cmsFolder;
     global $moduleFolder;

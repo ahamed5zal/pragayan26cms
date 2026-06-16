@@ -351,7 +351,7 @@ function getSuggestions($pattern) {
 		$suggestions[] = $suggestionsRow[1] . ' - ' . $suggestionsRow[2];
 	}
 
-	return join($suggestions, ',');
+	return join(',', $suggestions);
 }
 
 function admin($pageid, $userid) {
@@ -517,7 +517,8 @@ ADMINPAGE;
 			$pagepath = array();
 			parseUrlDereferenced($pageid, $pagepath);
 			$virtue = '';
-			$maxPriorityGroup = getMaxPriorityGroup($pagepath, $userid, array_reverse(getGroupIds($userid)), $virtue);
+			$groupIds = getGroupIds($userid);
+			$maxPriorityGroup = getMaxPriorityGroup($pagepath, $userid, array_reverse($groupIds), $virtue);
 			$modifiableGroups = getModifiableGroups($userid, $maxPriorityGroup);
 			$op .= groupManagementForm($userid, $modifiableGroups, $pagepath);
 			$ophead="{$ICONS['Group Management']['small']}Group Management";
@@ -1224,7 +1225,7 @@ GROUPEDITFORM;
 						if(isset($_POST['chkAddMe'])) {
 							$insertQuery = 'INSERT INTO `' . MYSQL_DATABASE_PREFIX . "usergroup`(`user_id`, `group_id`) VALUES ('$currentUserId', '$newGroupId')";
 							if(!mysqli_query($GLOBALS["___mysqli_ston"], $insertQuery)) {
-								displayerror('Error adding user to newly created group: ' . $insertQuery . '<br />' . mysql_query());
+								displayerror('Error adding user to newly created group: ' . $insertQuery . '<br />' . mysqli_error($GLOBALS["___mysqli_ston"]));
 							}
 						}
 						$virtue = '';

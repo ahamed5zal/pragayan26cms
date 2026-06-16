@@ -228,7 +228,7 @@ function generateFormDataRow($moduleCompId, $userId, $columnList, $showProfileDa
 			/// TODO: Implement the sort here.
 		}
 		else {
-			$elementId = split('_', $rowSortField);
+			$elementId = explode('_', $rowSortField);
 			$elementId = $elementId[1];
 /**
  * SELECT *
@@ -355,7 +355,7 @@ function generateFormDataTable($moduleComponentId, $sortField, $sortOrder, $acti
 				$tableBody .= '<a style="cursor:pointer" title="Delete" onclick="return gotopage(\'./+editregistrants&subaction=delete&useremail='.getUserEmail($userIds[$i]).'\',\''.getUserEmail($userIds[$i]).'\')" />' . $deleteImage . '</a></td>';
 			}
 		}
-		$tableBody .= '<td>' . join(generateFormDataRow($moduleComponentId, $userIds[$i], $columnNames, $showUserProfileData), '</td><td>') . "</td></tr>\n";
+		$tableBody .= '<td>' . join('</td><td>', generateFormDataRow($moduleComponentId, $userIds[$i], $columnNames, $showUserProfileData)) . "</td></tr>\n";
 	}
 	$tableBody.="</tbody>";
 	

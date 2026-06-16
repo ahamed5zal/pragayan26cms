@@ -49,7 +49,7 @@ class pagelist implements module {
 		$out=$this->generatePagelist($pageid, $this->userId, 0, 'view',$reqdepth+1);
 		return $out;
 	}
-	function generatePagelist($pageId, $userId, $permId, $action = '',$depth) {
+	function generatePagelist($pageId, $userId, $permId, $action,$depth) {
 		global $cmsFolder, $urlRequestRoot ,$templateFolder;
 		$treeData= '<div><ul id="sitemap">' ;
 		if($action != '') {

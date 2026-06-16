@@ -369,11 +369,11 @@ CSS;
 				$formTitle = getPageTitle($pageId);
 				$formInfo = $parentTitle.'_'.$formTitle;
 				$formPath = getPagePath($pageId);
-				$query = "SELECT count(distinct(`user_id`)) FROM `form_regdata` WHERE `page_modulecomponentid`='$result[page_modulecomponentid]'";
+				$query = "SELECT count(distinct(`user_id`)) FROM `form_regdata` WHERE `page_modulecomponentid`='{$result['page_modulecomponentid']}'";
 				$resource2 = mysqli_query($GLOBALS["___mysqli_ston"], $query) ;//or die(mysql_error());
 				$result2 = mysqli_fetch_row($resource2);
 				
-				if(!strpos($formPath,'qaos'))
+				if(strpos($formPath,'qaos') === false)
 				{
 					if($class=='even')
 						{
@@ -414,7 +414,7 @@ CSS;
 			$suggestions[] = $suggestionsRow[1] . ' - ' . $suggestionsRow[2];
 		}
 
-		return join($suggestions, ',');
+		return join(',', $suggestions);
 	}
 
 	public function createModule($moduleComponentId) {

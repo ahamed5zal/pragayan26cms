@@ -77,13 +77,13 @@ function parseUrlReal($url, &$pageIdArray) {
 		$conditions[] = 'IF(`node'.($i - 1).'`.`page_module` = \'link\', `node'.($i - 1).'`.`page_modulecomponentid`, `node'.($i - 1).'`.`page_id`) = `node'.$i.'`.`page_parentid`';
 	}
 
- 	$pageIdQuery = 'SELECT ' . join($pages, ', ') . ' FROM (' . join($nodes, ', ') . ')';
+ 	$pageIdQuery = 'SELECT ' . join(', ', $pages) . ' FROM (' . join(', ', $nodes) . ')';
  	if(count($conditions) > 0)
- 		$pageIdQuery .= ' WHERE ' . join($conditions, ' AND ');
+ 		$pageIdQuery .= ' WHERE ' . join(' AND ', $conditions);
 
-	$pageIdResult = mysql_query($pageIdQuery);
+	$pageIdResult = mysqli_query($GLOBALS["___mysqli_ston"], $pageIdQuery);
 
-	if(!$pageIdResult || !($pageIdArray = mysql_fetch_row($pageIdResult))) {
+	if(!$pageIdResult || !($pageIdArray = mysqli_fetch_row($pageIdResult))) {
 		displayerror("The requested page does not exist.");
 		return false;
 	}
@@ -100,19 +100,21 @@ function parseUrlReal($url, &$pageIdArray) {
  * @param $pageids An array to hold the list of page ids.
  */
 function parseUrlDereferenced($pageid, &$pageids) {
-	$dereferencedPageId = getDereferencedPageId($pageid);
-	$parentId = getParentPage($dereferencedPageId);
+	$dereferencedPageId = (int)getDereferencedPageId($pageid);
+	$parentId = (int)getParentPage($dereferencedPageId);
 	$pageids = array($dereferencedPageId);
 
 	while($parentId != $dereferencedPageId) {
 		$pageids[] = $parentId;
-		$dereferencedPageId = getDereferencedPageId($parentId);
-		$parentId = getParentPage($dereferencedPageId);
+		$dereferencedPageId = (int)getDereferencedPageId($parentId);
+		$parentId = (int)getParentPage($dereferencedPageId);
 		if($dereferencedPageId==0)	break;
 	}
 	if($parentId != 0)
 		displayerror("Looping condition detected!!");
 	$pageids = array_reverse($pageids);
+	$pageids = array_filter($pageids, fn($v) => $v >= 0);
+	$pageids = array_values($pageids);
 }
 
  /*

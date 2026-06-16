@@ -140,9 +140,9 @@ TABLE;
         <td>{$rollNumber}</td>
         <td>{$res['amount']}</td>
         <td>{$res['gender']}</td>
-        <td style="background-color:${$res['oc_tshirt_distributed']}">{$res['Tshirt_size']}({$res['oc_tshirt_distributed']})</td>
-        <td style="background-color:${$res['oc_food_coupon_distributed']}">({$res['oc_food_coupon_distributed']})</td>
-        <td style="background-color:${$res['oc_extra_distributed']}">({$res['oc_extra_distributed']})</td>
+        <td style="background-color:{${$res['oc_tshirt_distributed']}}">{$res['Tshirt_size']}({$res['oc_tshirt_distributed']})</td>
+        <td style="background-color:{${$res['oc_food_coupon_distributed']}}">({$res['oc_food_coupon_distributed']})</td>
+        <td style="background-color:{${$res['oc_extra_distributed']}}">({$res['oc_extra_distributed']})</td>
       </tr>
 TR;
   }
@@ -352,7 +352,7 @@ function isAvailable($mcId,$str) {
   return false;
 }
 
-function handleTShirtDistribution($mcId,$userId,$tShirtSize,$toDistribute = 0,$registeredBy) {
+function handleTShirtDistribution($mcId,$userId,$tShirtSize,$toDistribute,$registeredBy) {
   global $urlRequestRoot,$sourceFolder,$templateFolder,$cmsFolder,$moduleFolder;
   $checkPNG = "$urlRequestRoot/$cmsFolder/$moduleFolder/oc/images/check.png";
   $wrongPNG = "$urlRequestRoot/$cmsFolder/$moduleFolder/oc/images/dialog-error.png";
@@ -395,7 +395,7 @@ function handleTShirtDistribution($mcId,$userId,$tShirtSize,$toDistribute = 0,$r
    return "true";
 }
 
-function handleFoodCouponDistribution($mcId,$userId,$toDistribute = 0,$registeredBy) { 
+function handleFoodCouponDistribution($mcId,$userId,$toDistribute,$registeredBy) { 
   global $urlRequestRoot,$sourceFolder,$templateFolder,$cmsFolder,$moduleFolder;
   $checkPNG = "$urlRequestRoot/$cmsFolder/$moduleFolder/oc/images/check.png";
   $wrongPNG = "$urlRequestRoot/$cmsFolder/$moduleFolder/oc/images/dialog-error.png";
@@ -469,7 +469,7 @@ function handleExtras($mcId,$userId,$toDistribute = 0) {
    return;
 }
 
-function checkExisting($mcId,$barCode_roll,$submit = 0,$registeredBy){
+function checkExisting($mcId,$barCode_roll,$submit,$registeredBy){
   global $urlRequestRoot,$sourceFolder,$templateFolder,$cmsFolder,$moduleFolder;
   $checkPNG = "$urlRequestRoot/$cmsFolder/$moduleFolder/oc/images/check.png";
   $wrongPNG = "$urlRequestRoot/$cmsFolder/$moduleFolder/oc/images/dialog-error.png";

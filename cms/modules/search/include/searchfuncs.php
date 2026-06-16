@@ -10,7 +10,7 @@ error_reporting(E_ALL ^ E_NOTICE);
 	function swap_max (&$arr, $start, $domain) {
 		$pos  = $start;
 		$maxweight = $arr[$pos]['weight'];
-		for  ($i = $start; $i< count($arr); $i++) {
+		for  ($i = $start; $i< count((array)$arr); $i++) {
 			if ($arr[$i]['domain'] == $domain) {
 				$pos = $i;
 				$maxweight = $arr[$i]['weight'];
@@ -28,7 +28,7 @@ error_reporting(E_ALL ^ E_NOTICE);
 
 	function sort_with_domains (&$arr) {
 		$domain = -1;
-		for  ($i = 0; $i< count($arr)-1; $i++) {
+		for  ($i = 0; $i< count((array)$arr)-1; $i++) {
 			swap_max($arr, $i, $domain);
 			$domain = $arr[$i]['domain'];
 		}
@@ -51,9 +51,9 @@ error_reporting(E_ALL ^ E_NOTICE);
 
 	function makeboollist($a) {
 		global $entities, $stem_words;
-		while ($char = each($entities)) {
-			$a = preg_replace("/".$char[0]."/i", $char[1], $a);
-		}
+    foreach ($entities as $key => $value) {
+        $a = preg_replace("/" . $key . "/i", $value, $a);
+    }
 		$a = trim($a);
 
 		$a = preg_replace("/&quot;/i", "\"", $a);
@@ -76,7 +76,7 @@ error_reporting(E_ALL ^ E_NOTICE);
 		if ($a=="") {
 			$limit = 0;
 		} else {
-		$limit = count($words);
+		$limit = count((array)$words);
 		}
 
 
@@ -160,13 +160,13 @@ error_reporting(E_ALL ^ E_NOTICE);
 		}
 
 		//find all sites that should not be included in the result
-		if (count($searchstr['+']) == 0) {
+		if (count((array)$searchstr['+']) == 0) {
 			return null;
 		}
 		$wordarray = $searchstr['-'];
 		$notlist = array();
 		$not_words = 0;
-		while ($not_words < count($wordarray)) {
+		while ($not_words < count((array)$wordarray)) {
 			if ($stem_words == 1) {
 				$searchword = addslashes(stem($wordarray[$not_words]));
 			} else {
@@ -188,7 +188,7 @@ error_reporting(E_ALL ^ E_NOTICE);
 		//find all sites containing the search phrase
 		$wordarray = $searchstr['+s'];
 		$phrase_words = 0;
-		while ($phrase_words < count($wordarray)) {
+		while ($phrase_words < count((array)$wordarray)) {
 
 			$searchword = addslashes($wordarray[$phrase_words]);
 			$query1 = "SELECT link_id from ".$mysql_table_prefix."links where fulltxt like '% $searchword%'";
@@ -226,7 +226,7 @@ error_reporting(E_ALL ^ E_NOTICE);
 		$wordarray = $searchstr['+'];
 		$words = 0;
 		$starttime = getmicrotime();
-		while (($words < count($wordarray)) && $possible_to_find == 1) {
+		while (($words < count((array)$wordarray)) && $possible_to_find == 1) {
 			if ($stem_words == 1) {
 				$searchword = addslashes(stem($wordarray[$words]));
 			} else {
@@ -270,7 +270,7 @@ error_reporting(E_ALL ^ E_NOTICE);
 				$j= 1;
 				$min = 0;
 				while ($j < $words) {
-					if (count($linklist[$min]['id']) > count($linklist[$j]['id'])) {
+					if (count((array)$linklist[$min]['id']) > count((array)$linklist[$j]['id'])) {
 						$min = $j;
 					}
 					$j++;
@@ -281,7 +281,7 @@ error_reporting(E_ALL ^ E_NOTICE);
 
 				$temp_array = $linklist[$min]['id'];
 				$count = 0;
-				while ($j < count($temp_array)) {
+				while ($j < count((array)$temp_array)) {
 					$k = 0; //and word counter
 					$n = 0; //not word counter
 					$o = 0; //phrase word counter
@@ -323,7 +323,7 @@ error_reporting(E_ALL ^ E_NOTICE);
 		$end = getmicrotime()- $starttime;
 
 
-		if ((count($result_array_full) == 0 || $possible_to_find == 0) && $did_you_mean_enabled == 1) {
+		if ((count((array)$result_array_full) == 0 || $possible_to_find == 0) && $did_you_mean_enabled == 1) {
 			reset ($searchstr['+']);
 			foreach ($searchstr['+'] as $word) {
 				$word = addslashes($word);
@@ -344,17 +344,17 @@ error_reporting(E_ALL ^ E_NOTICE);
 				}
 
 			}
-			$res['did_you_mean'] = $near_words;
+			$res['did_you_mean'] = $near_words ?? [];
 			return $res;
 		}
-		if (count($result_array_full) == 0) {
+		if (count((array)$result_array_full) == 0) {
 			return null;
 		}
 		arsort ($result_array_full);
 
 
 		if ($merge_site_results == 1 && $domain_qry == "") {
-			while (list($key, $value) = each($result_array_full)) {
+			foreach ($result_array_full as $key => $value) {
 				if (!isset($domains_to_show[$domains[$key]])) {
 					$result_array_temp[$key] = $value;
 					$domains_to_show[$domains[$key]] = 1;
@@ -367,25 +367,27 @@ error_reporting(E_ALL ^ E_NOTICE);
 		}
 	
 		
-		while (list($key, $value) = each ($result_array_temp)) {
+		foreach ($result_array_temp as $key => $value) {
 			$result_array[$key] = $value;
 			if (isset ($domains_to_show[$domains[$key]]) && $domains_to_show[$domains[$key]] != 1) {
-				list ($k, $v) = each($domains_to_show[$domains[$key]]);
+				$k = key($domains_to_show[$domains[$key]]);
+				$v = current($domains_to_show[$domains[$key]]);
+				next($domains_to_show[$domains[$key]]);
 				$result_array[$k] = $v;
 			}
 		}
 
-		$results = count($result_array);
+		$results = count((array)$result_array);
 
 		$keys = array_keys($result_array);
 		$maxweight = $result_array[$keys[0]];
 
 
-		for ($i = ($start -1)*$per_page; $i <min($results, ($start -1)*$per_page + $per_page) ; $i++) {
+		for ($i = ((int)$start -1)*$per_page; $i <min($results, ((int)$start -1)*$per_page + $per_page) ; $i++) {
 			$in[] = $keys[$i];
 
 		}
-		if (!is_array($in)) {
+		if (empty($in)) {
 			$res['results'] = $results;
 			return $res;
 		}
@@ -462,7 +464,7 @@ function get_search_results($query, $start, $category, $searchtype, $results, $d
 	
 	$full_result['ignore_words'] = $words['ignore'];
 
-	if ($start==0) 
+	if ((int)$start==0) 
 		$start=1;
 	$result = search($words, $category, $start, $results_per_page, $searchtype, $domain);
 	$query= stripslashes($query);
@@ -480,10 +482,12 @@ function get_search_results($query, $start, $category, $searchtype, $results, $d
 	$did_you_mean = "";
 
 
+	$did_you_mean = '';
+	$did_you_mean_b = '';
 	if (isset($result['did_you_mean'])) {
 		$did_you_mean_b=$entitiesQuery;
 		$did_you_mean=$entitiesQuery;
-		while (list($key, $val) = each($result['did_you_mean'])) {
+		foreach ($result['did_you_mean'] as $key => $val) {
 			if ($key != $val) {
 				$did_you_mean_b = str_replace($key, "<b>$val</b>", $did_you_mean_b);
 				$did_you_mean = str_replace($key, "$val", $did_you_mean);
@@ -499,17 +503,17 @@ function get_search_results($query, $start, $category, $searchtype, $results, $d
 		$matchword= $sph_messages["match"];
 	}
 
-	$num_of_results = count($result) - 2;
+	$num_of_results = count((array)$result) - 2;
 	
 	
 	
 	$full_result['num_of_results'] = $num_of_results;
 
 
-	if ($start < 2)
+	if ((int)$start < 2)
 		saveToLog(addslashes($query), $time, $rows);
-	$from = ($start-1) * $results_per_page+1;
-	$to = min(($start)*$results_per_page, $rows);
+	$from = ((int)$start - 1) * $results_per_page + 1;
+	$to = min(((int)$start)*$results_per_page, $rows);
 
 	
 	$full_result['from'] = $from;
@@ -549,8 +553,8 @@ function get_search_results($query, $start, $category, $searchtype, $results, $d
 				$x = 0;
 				$begin = 0;
 				$end = 0;
-				while(list($id, $place) = each($places)) {
-					while ($places[$id + $x] - $place < $desc_length && $x+$id < count($places) && $place < strlen($fulltxt) -$desc_length) {
+				foreach ($places as $id => $place) {
+					while ($places[$id + $x] - $place < $desc_length && $x+$id < count((array)$places) && $place < strlen($fulltxt) -$desc_length) {
 						$x++;
 						$begin = $id;
 						$end = $id + $x;
@@ -609,18 +613,18 @@ function get_search_results($query, $start, $category, $searchtype, $results, $d
 
 	$pages = ceil($rows / $results_per_page);
 	$full_result['pages'] = $pages;
-	$prev = $start - 1;
+	$prev = (int)$start - 1;
 	$full_result['prev'] = $prev;
-	$next = $start + 1;
+	$next = (int)$start + 1;
 	$full_result['next'] = $next;
 	$full_result['start'] = $start;
 	$full_result['query'] = $entitiesQuery;
 
 	if ($from <= $to) {
 
-		$firstpage = $start - $links_to_next;
+		$firstpage = (int)$start - (int)$links_to_next;
 		if ($firstpage < 1) $firstpage = 1;
-		$lastpage = $start + $links_to_next;
+		$lastpage = (int)$start + (int)$links_to_next;
 		if ($lastpage > $pages) $lastpage = $pages;
 
 		for ($x=$firstpage; $x<=$lastpage; $x++)

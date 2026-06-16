@@ -119,7 +119,7 @@ class Services_Yadis_Yadis {
      * is returned.  If not, an instance of
      * {@link Services_Yadis_PlainHTTPFetcher} is returned.
      */
-    function getHTTPFetcher($timeout = 20)
+    static function getHTTPFetcher($timeout = 20)
     {
         if (defined('Services_Yadis_CURL_PRESENT') &&
             Services_Yadis_CURL_PRESENT) {
@@ -133,7 +133,7 @@ class Services_Yadis_Yadis {
     /**
      * @access private
      */
-    function _getHeader($header_list, $names)
+    static function _getHeader($header_list, $names)
     {
         foreach ($header_list as $name => $value) {
             foreach ($names as $n) {
@@ -149,7 +149,7 @@ class Services_Yadis_Yadis {
     /**
      * @access private
      */
-    function _getContentType($content_type_header)
+    static function _getContentType($content_type_header)
     {
         if ($content_type_header) {
             $parts = explode(";", $content_type_header);
@@ -181,7 +181,7 @@ class Services_Yadis_Yadis {
      * Services_Yadis_Yadis, depending on whether the discovery
      * succeeded.
      */
-    function discover($uri, &$http_response, &$fetcher,
+    static function discover($uri, &$http_response, &$fetcher,
                       $extra_ns_map = null, $timeout = 20)
     {
         if (!$uri) {

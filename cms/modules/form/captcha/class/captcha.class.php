@@ -43,7 +43,7 @@
     var $cmsFolder;
     var $urlRequestRoot;
 
-    function captcha ($sourceFolder, $moduleFolder, $uploadFolder, $urlRequestRoot, $cmsFolder, $length = 5)
+    function __construct ($sourceFolder, $moduleFolder, $uploadFolder, $urlRequestRoot, $cmsFolder, $length = 5)
     {
 			$this->sourceFolder = $sourceFolder;
 			$this->moduleFolder = $moduleFolder;
@@ -136,6 +136,8 @@
     function getRandFont ()
     {
 
+
+      if (!is_array($this->fonts) || count($this->fonts) === 0) return '';
       return $this->fontpath . $this->fonts[mt_rand(0, count($this->fonts) - 1)];
 
     } //getRandFont
@@ -198,7 +200,7 @@
                      mt_rand(30, 70),
                      $stringcolor,
                      $this->getRandFont(),
-                     $this->CaptchaString{$i});
+                     $this->CaptchaString[$i]);
 
       }
 
@@ -207,14 +209,20 @@
 
 			$captchaImageFolder = "$this->sourceFolder/$this->uploadFolder/temp";
 			// exec('find "'.$captchaImageFolder.'" -maxdepth 1 -type 5 -mmin +60 | xargs -0 /bin/rm -f');
+            $files = scandir($captchaImageFolder, 1);
+                        // Filter out '.' and '..' and ensure it's an array for PHP 8
+                        $validFiles = is_array($files) ? array_diff($files, array('.', '..')) : array();
 
-			$captchaImageFile = scandir($captchaImageFolder, 1);
-			if(count($captchaImageFile) <= 1) {
-				$captchaImageFile[0] = '000000.png';
-			}
-			$captchaImageFile = substr($captchaImageFile[0], 0, strrpos($captchaImageFile[0], '.'));
-			$captchaImageFile++;
-			$captchaImageFile = str_pad($captchaImageFile, 6, '0', STR_PAD_LEFT) . '.png';
+                        if (empty($validFiles)) {
+                            $newNumber = 1;
+                        } else {
+                                 $lastFile = reset($validFiles); // Get the newest file
+                                 $newNumber = (int)substr($lastFile, 0, strrpos($lastFile, '.'));
+                                 $newNumber++;
+                             }
+                             $captchaImageFile = str_pad($newNumber, 6, '0', STR_PAD_LEFT) . '.png';
+
+
 
 			$this->captchaImageUrl = "$this->urlRequestRoot/$this->cmsFolder/$this->uploadFolder/temp/$captchaImageFile";
 

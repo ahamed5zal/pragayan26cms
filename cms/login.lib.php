@@ -13,12 +13,16 @@ if(!defined('__PRAGYAN_CMS'))
  * For more details, see README
  */
 
+require_once("csrf.lib.php");
+
 function resetPasswd($allow_login) {
 	if((!isset($_POST['user_email']))&&(!isset($_GET['key']))) {
+		$csrfField = getCsrfTokenField();
 		$resetPasswd =<<<RESET
 					<form class="registrationform" method="POST" name="user_passreset" onsubmit="return checkForm(this)" action="./+login&subaction=resetPasswd">
 						<fieldset>
 						<legend>Reset Password</legend>
+						$csrfField
 							<table>
 								<tr>
 									<td><label for="user_email"  class="labelrequired">Email</label></td>
@@ -41,11 +45,12 @@ RESET;
 		return $resetPasswd;
 	}
 	elseif(!isset($_GET['key'])) {
+						if (!verifyCsrfToken()) return "";
 						$user_email = escape($_GET['user_email']);
 						if (!preg_match("/^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,3})$/i", escape($_POST['user_email'])))
 							displayerror("Invalid Email Id. <br /><input type=\"button\" onclick=\"history.go(-1)\" value=\"Go back\" />");
 						else {
-							$query = "SELECT * FROM `" . MYSQL_DATABASE_PREFIX . "users` WHERE `user_email`='".escape($_POST[user_email])."' ";
+							$query = "SELECT * FROM `" . MYSQL_DATABASE_PREFIX . "users` WHERE `user_email`='".escape($_POST['user_email'])."' ";
 							$result = mysqli_query($GLOBALS["___mysqli_ston"], $query);
 							$temp = mysqli_fetch_assoc($result);
 							if (mysqli_num_rows($result) == 0)
@@ -343,21 +348,25 @@ function openid_login($userdata){
 			  "<li>You just need to provide your password of your existing account to link your OpenID with.</li>".
 			  "<li> This is a one time step after which you can use your OpenID account to Login.</li></ul>");
 	      $cmstitle=CMS_TITLE;
+	      $safe_email = htmlspecialchars($userdata['email'], ENT_QUOTES);
+	      $safe_username = htmlspecialchars($username, ENT_QUOTES);
+	      $csrfField = getCsrfTokenField();
 	       $openid_pass_form=<<<OPENIDPASS
 		
 	<form method="POST" class="registrationform" name="openid_pass"  action="./home/+login&subaction=openid_pass">
 		<fieldset>
 		 <legend>Password for the existing account </legend>
 					    Please Enter the Password of the pre-existing account on $cmstitle
-		<input type="hidden" name="email" value="${userdata['email']}" />														      
+		$csrfField
+		<input type="hidden" name="email" value="$safe_email" />														      
         <table>
 
 <tr><td>Username</td>
 
-<td>$username</td></tr>
+<td>$safe_username</td></tr>
 
 <tr><td>Email</td>
-<td>${userdata['email']}</td></tr>
+<td>$safe_email</td></tr>
  <tr><td><label for="user_password" class="labelrequired">Password</label></td>
 				      <td><input type="password" name="user_password"  id="user_password"  class="required" /><br /></td>
 				      </tr>
@@ -382,19 +391,23 @@ OPENIDPASS;
 	       * and add the user there appropriately.
 	      */
 	      displayinfo("Seems like you are using this OpenID for the first time. We just need your full name to continue.");
+	      $safe_openid_email = htmlspecialchars($userdata['email'], ENT_QUOTES);
+	      $safe_fullname = htmlspecialchars($userdata['fullname'], ENT_QUOTES);
+	      $csrfField = getCsrfTokenField();
 	      $openid_detail_form=<<<OPENIDFORM
 	<form method="POST" class="registrationform" name="quick_openid_reg"  action="./home/+login&subaction=quick_openid_reg">
 	<fieldset>
 	<legend>Just give us your Full name</legend>
+	$csrfField
 	<table>
 	<tr>
 	<td><label for="user_email"  class="labelrequired">Email</label></td>
-        <td><input type="text" name="user_email" value="${userdata['email']}"  id="user_email" class="required" readonly="true" onchange="if(this.length!=0) return checkEmail(this);"/><br /></td>
+        <td><input type="text" name="user_email" value="$safe_openid_email"  id="user_email" class="required" readonly="true" onchange="if(this.length!=0) return checkEmail(this);"/><br /></td>
         </tr>
 
 	<tr>
 	<td><label for="user_name">Full Name</label></td>
-        <td><input type="text" name="user_name" value="${userdata['fullname']}"  id="user_name" class="required"/><br /></td>
+        <td><input type="text" name="user_name" value="$safe_fullname"  id="user_name" class="required"/><br /></td>
         </tr>
 
         <tr>
@@ -431,6 +444,7 @@ function loginForm($allow_login=1)
   global $urlRequestRoot;
   global $cmsFolder;
   $openidFolder=$urlRequestRoot.'/'.$cmsFolder.'/openid';
+  $csrfField = getCsrfTokenField();
 	$openid_login_str =<<<OPENIDLOGIN
 
         <!-- Simple OpenID Selector -->
@@ -461,6 +475,7 @@ function loginForm($allow_login=1)
 <!-- Simple OpenID Selector -->
 <form action="./+login&subaction=openid_login" method="post" id="openid_form">
         <input type="hidden" name="process" value="1" />
+        $csrfField
         
 			   <p> Sign-in using your existing account on popular websites
 <br>Please click your account provider:</p>
@@ -500,6 +515,7 @@ OPENIDLOGIN;
 					<form method="POST" class="registrationform" name="user_loginform" id="pragyan_loginform" onsubmit="return checkLoginForm(this);" action="./+login">
 						<fieldset>
 						<legend>Login</legend>
+						$csrfField
 							<table cellspacing=0 cellpadding=0>
 								<tr>
 									<td><label for="user_email"  class="labelrequired">Email</label></td>
@@ -549,6 +565,7 @@ function login() {
 	{
 	  if(isset($_POST['process']))
 	    {
+	      if (!verifyCsrfToken()) return "";
 	      $openid_url = trim($_POST['openid_identifier']);
 	      openid_endpoint($openid_url);
 	    }
@@ -580,6 +597,7 @@ function login() {
       }
       if($_GET['subaction']=="openid_pass")
 	{
+	  if (!verifyCsrfToken()) return "";
 	  if(!isset($_SESSION['openid_url']) || !isset($_SESSION['openid_email']))
 	    {
 	      displayerror("You are trying to link an OpenID account without validating your log-in. Please <a href=\"./+login\">Login</a> with your OpenID account first.");
@@ -600,7 +618,7 @@ function login() {
 	      $info=getUserInfo($openid_email);
 	      if(!$info)
 		{
-		  displayerror("No user with Email $openid_email");
+		  displayerror("No user with Email ".safe_html($openid_email));
 		}
 	      else
 		{
@@ -625,6 +643,7 @@ function login() {
 	}
       if($_GET['subaction']=="quick_openid_reg")
 	{
+	  if (!verifyCsrfToken()) return "";
 	  if(!isset($_SESSION['openid_url']) || !isset($_SESSION['openid_email']))
 	    {
 	      displayerror("You are trying to register an OpenID account without validating your log-in. Please <a href=\"./+login\">Login</a> with your OpenID account first.");
@@ -668,6 +687,7 @@ function login() {
   if (!isset ($_POST['user_email'])) {
     return loginForm($allow_login_result[0]);
   } else {
+    if (!verifyCsrfToken()) return "";
 			
     /*if it is, 
       then userLDAPVerify($user_email,$user_passwd);
@@ -707,7 +727,7 @@ function login() {
 	}
 	else { //if user is not in db
 	  global $authmethods;
-	  if(strpos($user_email,'@') > -1) {
+	  if(strpos($user_email,'@') !== false) {
 	    $tmp = explode('@',$user_email);
 	    $user_name = $tmp[0];
 	    $user_domain = strtolower($tmp[1]);
@@ -733,7 +753,7 @@ function login() {
 	      "VALUES (DEFAULT, '{$user_name}', '{$user_email}', '{$user_fullname}', '{$user_md5passwd}', '{$login_method}', '1')";
 	    mysqli_query($GLOBALS["___mysqli_ston"], $query) or die(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)) . " creating new user !");
 	  }
-	  else displaywarning("Incorrect username and/or password for <b>".(isset($user_domain)?$user_domain."</b> domain!":$user_name."</b> user"));
+	  else displaywarning("Incorrect username and/or password for <b>".(isset($user_domain)?htmlspecialchars($user_domain, ENT_QUOTES)."</b> domain!":htmlspecialchars($user_name, ENT_QUOTES)."</b> user"));
 	}
 				
 	if($login_status) {
@@ -744,7 +764,7 @@ function login() {
 	    // then it means that the user has been denied access !!!
 	  }
 	  else {
-	    $query = "UPDATE `" . MYSQL_DATABASE_PREFIX . "users` SET `user_lastlogin`=NOW() WHERE `" . MYSQL_DATABASE_PREFIX . "users`.`user_id` ='$temp[user_id]'";
+	    $query = "UPDATE `" . MYSQL_DATABASE_PREFIX . "users` SET `user_lastlogin`=NOW() WHERE `" . MYSQL_DATABASE_PREFIX . "users`.`user_id` ='{$temp['user_id']}'";
 	    mysqli_query($GLOBALS["___mysqli_ston"], $query) or die(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)) . " in login.lib.L:111");
 	    $_SESSION['last_to_last_login_datetime']=$temp['user_lastlogin'];
 	    setAuth($temp['user_id']);

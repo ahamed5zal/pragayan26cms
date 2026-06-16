@@ -85,7 +85,7 @@ $findQuery="SELECT * FROM `events_details` WHERE `event_id`={$eid} AND `page_mod
 $insertRes=mysqli_query($GLOBALS["___mysqli_ston"], $findQuery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 $row=mysqli_fetch_array($insertRes);
 
-$query="SELECT * FROM `events_details` WHERE `event_Id`={$eid} AND `page_moduleComponentId={$pcmid}";
+$query="SELECT * FROM `events_details` WHERE `event_Id`={$eid} AND `page_moduleComponentId`={$pcmid}";
 mysqli_query($GLOBALS["___mysqli_ston"], $query);
 
 $startTime=substr($row[event_start_time], 0, 5);

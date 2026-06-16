@@ -110,10 +110,12 @@ $onlineSiteUrl = "http://" . $_SERVER['HTTP_HOST'] . substr($scriptname,0,stripo
 ///If config.inc.php doesn't exists, assume CMS hasn't been installed.
 @include_once($sourceFolder."/config.inc.php"); 
 
+header("Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: *.nitt.edu; font-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'self'");
+
 ///If config.inc.php doesn't exists, ADMIN_USERID won't be defined, so assume CMS is not installed.
 if(!defined("ADMIN_USERID") )
 {
-	echo "Welcome to Pragyan CMS v3.0. <a href='./INSTALL/'>Click Here</a> to goto installation page.<br/><br/>
+	echo "Welcome to Pragyan CMS v3.0. <a href='{$urlRequestRoot}/INSTALL/'>Click Here</a> to goto installation page.<br/><br/>
 	<b>NOTE:</b>If you're not using the <a href='http://sourceforge.net/projects/pragyan'>official package</a> of the Pragyan CMS or you're installing for the second time, then please make sure that the 'RewriteEngine' property is set to 'Off' in the .htaccess file present in the root folder of Pragyan for the above link to work correctly.";
 	exit();
 }
@@ -217,6 +219,8 @@ require_once($sourceFolder."/login.lib.php");
 ///If requesting for a userpage donot goto parse. Note that this code is before the URL parse
 
 ///Check if request is made
+$pageId = 0;
+$pageIdArray = [];
 if($publicPageRequest) {
 	require_once($sourceFolder."/userprofile.lib.php");
 	define("TEMPLATE", getPageTemplate(0));
@@ -238,7 +242,7 @@ if(URLSecurityCheck($_GET))
 	$pageId = parseUrlReal("home", $pageIdArray);
 	$TITLE = CMS_TITLE;
 	$MENUBAR = '';
-	$CONTENT = "The requested URL was found to have invalid syntax and cannot be processed for security reasons.<br/> If you believe its a". 				"correct URL, please contact the administrator immediately..<br />$_SERVER[SERVER_SIGNATURE]".
+	$CONTENT = "The requested URL was found to have invalid syntax and cannot be processed for security reasons.<br/> If you believe its a". 				"correct URL, please contact the administrator immediately..<br />".$_SERVER['SERVER_SIGNATURE'].
 			"<br /><br />Click <a href='".$urlRequestRoot."'>here </a> to return to the home page";
 	templateReplace($TITLE,$MENUBAR,$ACTIONBARMODULE,$ACTIONBARPAGE,$BREADCRUMB,$SEARCHBAR,$PAGEKEYWORDS,$INHERITEDINFO,$CONTENT,$FOOTER,$DEBUGINFO,$ERRORSTRING,$WARNINGSTRING,$INFOSTRING,$STARTSCRIPTS,$LOGINFORM);
 	exit();
@@ -253,7 +257,7 @@ if ($pageId === false) {
 	$pageId = parseUrlReal("home", $pageIdArray);
 	$TITLE = CMS_TITLE;
 	$MENUBAR = '';
-	$CONTENT = "The requested URL was not found on this server.<br />$_SERVER[SERVER_SIGNATURE]".
+	$CONTENT = "The requested URL was not found on this server.<br />".$_SERVER['SERVER_SIGNATURE'].
 		"<br /><br />Click <a href='".$urlRequestRoot."'>here </a> to return to the home page";
 	templateReplace($TITLE,$MENUBAR,$ACTIONBARMODULE,$ACTIONBARPAGE,$BREADCRUMB,$SEARCHBAR,$PAGEKEYWORDS,$INHERITEDINFO,$CONTENT,$FOOTER,$DEBUGINFO,$ERRORSTRING,$WARNINGSTRING,$INFOSTRING,$STARTSCRIPTS,$LOGINFORM);
 	exit();

@@ -242,7 +242,7 @@ JS;
 			$gallResult = mysqli_query($GLOBALS["___mysqli_ston"], $gallQuery);
 		}
 
-		$content2 = getFileUploadForm($this->moduleComponentId, "gallery", './+edit', 10000000, 5);
+		$content2 = getFileUploadForm($this->moduleComponentId, "gallery", './+edit', 10000000, 10);
 		$allowableTypes = array (
 			'jpeg',
 			'jpg',

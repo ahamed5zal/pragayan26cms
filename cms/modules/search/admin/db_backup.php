@@ -66,11 +66,11 @@ function get_def($database,$table,$fp) {
           if(!isset($index[$kname])) $index[$kname] = array();
           $index[$kname][] = $row["Column_name"];
      }
-     while(list($x, $columns) = @each($index)) {
+     foreach ($index as $x => $columns) {
           $def .= ",\n";
-          if($x == "PRIMARY") $def .= "   PRIMARY KEY (" . implode($columns, ", ") . ")";
-          else if (substr($x,0,6) == "UNIQUE") $def .= "   UNIQUE ".substr($x,7)." (" . implode($columns, ", ") . ")";
-          else $def .= "   KEY $x (" . implode($columns, ", ") . ")";
+          if($x == "PRIMARY") $def .= "   PRIMARY KEY (" . implode(", ", $columns) . ")";
+          else if (substr($x,0,6) == "UNIQUE") $def .= "   UNIQUE ".substr($x,7)." (" . implode(", ", $columns) . ")";
+          else $def .= "   KEY $x (" . implode(", ", $columns) . ")";
      }
 
      $def .= "\n);#%%\n\n";

@@ -119,8 +119,8 @@ function getAllPermissionsOnPage($pagepath, $modifiableGroups, $grantableActions
 	$userPermTable = '`' . MYSQL_DATABASE_PREFIX . 'userpageperm`';
 	$permListTable = '`' . MYSQL_DATABASE_PREFIX . 'permissionlist`';
 	$permQuery = "SELECT `perm_type`, $userPermTable.`perm_id` AS `perm_id`, `page_id`, `usergroup_id`, `perm_permission` " .
-	             "FROM $userPermTable, $permListTable WHERE `page_id` IN (" . join($pagepath, ', ') . ") AND " .
-	             "$userPermTable.`perm_id` IN (" . join($permIds, ', ') .
+	             "FROM $userPermTable, $permListTable WHERE `page_id` IN (" . join(', ', $pagepath) . ") AND " .
+	             "$userPermTable.`perm_id` IN (" . join(', ', $permIds) .
 	             ") AND $userPermTable.`perm_id` = $permListTable.`perm_id`";
 	$permResult = mysqli_query($GLOBALS["___mysqli_ston"], $permQuery);
 
@@ -326,7 +326,12 @@ function getPagePermission(array $pagePath, $usergroupid, $action, $module, $per
 	$userpermTable = MYSQL_DATABASE_PREFIX . "userpageperm";
 	$permissionlistTable = MYSQL_DATABASE_PREFIX . "permissionlist";
 
-	$pageids = join($pagePath, ', ');
+	$pageids = join(",", array_filter(array_map('intval', $pagePath), fn($v) => $v >= 0));
+	if ($pageids === "") return false;
+
+	$usergroupid = (int)$usergroupid;
+	$module = ((isset($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $module) : "");
+	$action = ((isset($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $action) : "");
 
 	$permQuery = "SELECT $userpermTable.perm_permission, $userpermTable.page_id FROM $userpermTable, $permissionlistTable ";
 	$permQuery .= "WHERE $userpermTable.perm_type = '$permtype' AND $userpermTable.page_id IN ($pageids) AND ";
@@ -519,7 +524,7 @@ function grantPermissions($userid, $pageid) {
 			$grantableActions = getGroupPermissions($groups, $pagepath);
 		}
 
-		$actionCount = count($_POST['permission']);
+		$actionCount = isset($_POST['permission']) ? count($_POST['permission']) : 0;
 		$checkedActions = array();
 		for($i = 0; $i < $actionCount; $i++) {
 			list($modTemp, $actTemp) = explode('_', escape($_POST['permission'][$i]), 2);

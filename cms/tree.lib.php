@@ -48,7 +48,7 @@ class DirectoryTreeNode {
 		$pagepermTable = MYSQL_DATABASE_PREFIX . 'userpageperm';
 
 		$permQuery = "SELECT `perm_permission`, `usergroup_id` FROM `$pagepermTable` WHERE " .
-									"((`usergroup_id` IN (" . join($groups, ', ') . ") AND `perm_type` = 'group') OR " .
+									"((`usergroup_id` IN (" . join(', ', $groups) . ") AND `perm_type` = 'group') OR " .
 									"(`usergroup_id` = '$userid' AND `perm_type` = 'user')) " .
 									"AND `page_id` = '$pid' AND `perm_id` = '$permId'";
 

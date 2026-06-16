@@ -12,6 +12,8 @@ if(!defined('__PRAGYAN_CMS'))
  * @license http://www.gnu.org/licenses/ GNU Public License
  * For more details, see README
  */
+
+require_once("csrf.lib.php");
  
 /** 
  *
@@ -37,20 +39,21 @@ function getRegistrationForm() {
 	$containsFileUploadFields = false;
         /// Get the dynamic fields that has been added to the registration form in the profile form fields.
 	$dynamicFields = getFormElementsHtmlAsArray(0, 0, $jsValidationFunctions, $containsFileUploadFields);
-	$dynamicFields = join($dynamicFields, "</tr>\n<tr>");
+	$dynamicFields = join("</tr>\n<tr>", $dynamicFields);
 	if($dynamicFields != '') {
 		$dynamicFields = "<tr>$dynamicFields</tr>";
 	}
-	$jsValidationFunctions = join($jsValidationFunctions, ' && ');
+	$jsValidationFunctions = join(' && ', $jsValidationFunctions);
 	$email_val = "";
 	$name_val = "";
 	$fullname_val = "";
 	if(isset($_POST['user_email']))
-		$email_val = escape($_POST['user_email']);
+		$email_val = escape(htmlspecialchars($_POST['user_email'], ENT_QUOTES));
 	if(isset($_POST['user_name']))
-		$name_val = escape($_POST['user_name']);
-	if(isset($_POST['user_email']))
-		$fullname_val = escape($_POST['user_fullname']);
+		$name_val = escape(htmlspecialchars($_POST['user_name'], ENT_QUOTES));
+	if(isset($_POST['user_fullname']))
+		$fullname_val = escape(htmlspecialchars($_POST['user_fullname'], ENT_QUOTES));
+	$csrfField = getCsrfTokenField();
 	$reg_str =<<<REG
 <script language="javascript">
 			function checkPassword(inputhandler2) {
@@ -83,6 +86,7 @@ function getRegistrationForm() {
 <form class="cms-registrationform"  method="POST" name="user_reg_usrFrm" onsubmit="return checkRegistrationForm(this)" action="./+login&subaction=register" enctype="multipart/form-data">
 	<fieldset>
 	<legend> Sign Up</legend>
+	$csrfField
 		<table border="0" cellspacing="0" cellpadding="0">
 	       <tr>	<td><label for="user_email" class="labelrequired">Email *</label></td>
 				<td><input name="user_email" id="user_email" class="required" value='{$email_val}' onchange="if(this.length!=0) return checkEmail(this);" type="text"></td>
@@ -139,10 +143,12 @@ function register() {
 	///Activation key resend form
 	elseif ((isset ($_GET['reSendKey'])) && (!isset ($_POST['resend_key_email'])) && SEND_MAIL_ON_REGISTRATION) {
 
+		$csrfField = getCsrfTokenField();
 		$reSendForm =<<<FORM
 <form  class="cms-registrationform" method="POST" name="user_resend_key" onsubmit="return checkForm(this)" action="./+login&subaction=register&reSendKey">
    <fieldset>
    <legend>Resend Activation Link</legend>
+   $csrfField
    <table>
 		<tr>
 			<td><label for="resend_key_email"  class="labelrequired">Email</label></td>
@@ -163,6 +169,7 @@ FORM;
 	}
 	///Activation key resend submission
 	elseif (isset ($_POST['resend_key_email'])) {
+		if (!verifyCsrfToken()) return "";
 		$email = escape($_POST['resend_key_email']);
 		$query = "SELECT * FROM  `" . MYSQL_DATABASE_PREFIX . "users`  WHERE `user_email`='$email' ";
 		$result = mysqli_query($GLOBALS["___mysqli_ston"], $query) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)) . "registration L:131");
@@ -171,7 +178,7 @@ FORM;
 		else {
 			$temp = mysqli_fetch_assoc($result);
 			if ($temp['user_activated'] == 1)
-				displayinfo("E-mail $email has already been verified.<a href=\"./+login\"> Login</a> <a href=\"./+login&subaction=resetPasswd\">Forgot Password?</a>");
+				displayinfo("E-mail ".safe_html($email)." has already been verified.<a href=\"./+login\"> Login</a> <a href=\"./+login&subaction=resetPasswd\">Forgot Password?</a>");
 			else {
 				$key = getVerificationKey($email, $temp['user_password'], $temp['user_regdate']);
 
@@ -201,21 +208,22 @@ FORM;
 		$result = mysqli_query($GLOBALS["___mysqli_ston"], $query) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)) . "registration L:76");
 		$temp = mysqli_fetch_assoc($result);
 		if ($temp['user_activated'] == 1)
-			displayinfo("E-mail ".escape($_GET[verify])." has already been verified");
+			displayinfo("E-mail ".safe_html(escape($_GET['verify']))." has already been verified");
 		else {
 			if ($_GET['key'] == getVerificationKey($_GET['verify'], $temp['user_password'], $temp['user_regdate'])) {
 				$query = "UPDATE `" . MYSQL_DATABASE_PREFIX . "users` SET `user_activated`=1  WHERE `user_email`='$emailId'";
 				mysqli_query($GLOBALS["___mysqli_ston"], $query) or die(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 				if (mysqli_affected_rows($GLOBALS["___mysqli_ston"]) > 0)
-					displayinfo("Your e-mail ".escape($_GET[verify])." has been verified. Now you can fill your profile information by clicking <a href=\"./+profile\">here</a> or by clicking on the preferences link in the action bar any time you are logged in.");
+				displayinfo("Your e-mail ".safe_html(escape($_GET['verify']))." has been verified. Now you can fill your profile information by clicking <a href=\"./+profile\">here</a> or by clicking on the preferences link in the action bar any time you are logged in.");
 				else
-					displayerror("Verification error for ".escape($_GET[verify]).". Please contact administrator");
-			} else
-				displayerror("Verification error for ".escape($_GET[verify]).". Please contact administrator");
+					displayerror("Verification error for ".safe_html(escape($_GET['verify'])).". Please contact administrator");
+		} else
+				displayerror("Verification error for ".safe_html(escape($_GET['verify'])).". Please contact administrator");
 		}
 	}
 	///Registration form submission
 	else {
+		if (!verifyCsrfToken()) return "";
 
 		if ((($_POST['user_email']) == "") || (($_POST['user_password']) == "")) {
 			displayerror("Blank e-mail/password NOT allowed");
@@ -256,8 +264,8 @@ FORM;
 		} else {
 			$passwd = md5($_POST['user_password']);
 			$query = "INSERT INTO `" . MYSQL_DATABASE_PREFIX . "users` " .
-					"(`user_name`, `user_email`, `user_fullname`, `user_password`, `user_activated`) " .
-					"VALUES ('".escape(htmlentities($_POST['user_name']))."', '".escape(htmlentities($_POST['user_email']))."', '".escape(htmlentities($_POST['user_fullname']))."', '$passwd', ".ACTIVATE_USER_ON_REG.")";
+					"(`user_name`, `user_email`, `user_fullname`, `user_password`, `user_activated`, `user_lastlogin`) " .
+					"VALUES ('".escape(htmlentities($_POST['user_name']))."', '".escape(htmlentities($_POST['user_email']))."', '".escape(htmlentities($_POST['user_fullname']))."', '$passwd', ".ACTIVATE_USER_ON_REG.", NOW())";
 			$result = mysqli_query($GLOBALS["___mysqli_ston"], $query);
 			$query1 = "SELECT `user_id` FROM `". MYSQL_DATABASE_PREFIX . "users` WHERE `user_email` ='".escape($_POST['user_email'])."' LIMIT 1";
 			$result1 = mysqli_query($GLOBALS["___mysqli_ston"], $query1);
