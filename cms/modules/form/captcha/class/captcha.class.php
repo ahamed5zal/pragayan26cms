@@ -211,7 +211,7 @@
 			// exec('find "'.$captchaImageFolder.'" -maxdepth 1 -type 5 -mmin +60 | xargs -0 /bin/rm -f');
             $files = scandir($captchaImageFolder, 1);
                         // Filter out '.' and '..' and ensure it's an array for PHP 8
-                        $validFiles = is_array($files) ? array_diff($files, array('.', '..')) : array();
+                        $validFiles = is_array($files) ? preg_grep('/^\d{6}\.png$/', $files) : array();
 
                         if (empty($validFiles)) {
                             $newNumber = 1;

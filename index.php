@@ -307,13 +307,15 @@ $PAGEKEYWORDS = getPagetags($pageId);
 $MENUBAR = getMenu($userId, $pageIdArray); 
 
 ///The Login form to be displayed from login.lib.php
-if($userId == 0)
-	$LOGINFORM = loginForm();
-else
+if($userId != 0)
 {
 	$userNameFromId = getUserName($userId);
 	$LOGINFORM = "Welcome {$userNameFromId}.";
 }
+else if($action != "login")
+	$LOGINFORM = loginForm();
+else
+	$LOGINFORM = "";
 
 ///Gets the list of allowed actions for the current page
 $ACTIONBARPAGE = getActionbarPage($userId, $pageId);

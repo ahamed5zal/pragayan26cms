@@ -141,7 +141,7 @@ SCRIPT;
 			$_SESSION['CAPTCHAString'] = $captcha->getCaptchaString();
 
 			$body = '<tr><td>Enter the text as shown in the image :</td><td>' .
-					'<img style="border:1px solid;padding:0px" src="' . $captcha->getCaptchaUrl() . '" alt="CAPTCHA" border="1"/><br/>' .
+					'<img style="border:1px solid;padding:0px" src="' . $captcha->getCaptchaUrl() . '?t=' . time() . '" alt="CAPTCHA" border="1"/><br/>' .
 					'<input type="text" class="required" name="txtCaptcha" /><td></tr>';
 			$body .="<input type='hidden' name='captcha' value='0'>";
 			}			
