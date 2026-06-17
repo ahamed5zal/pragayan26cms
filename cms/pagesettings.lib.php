@@ -76,20 +76,23 @@ function getSettingsForm($pageId, $userId) {
 	$page_result = mysqli_query($GLOBALS["___mysqli_ston"], $page_query) or die(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 	$childList ="";
 	$isLeaf = false;
-	if(mysqli_num_rows($page_result)==0){
+	$childCount = mysqli_num_rows($page_result);
+	if($childCount == 0){
 	    $isLeaf = true;
 		$childList = "There are no child pages associated with this page.";
 	}
-	else
-		$childList = "<table border=\"1\" width=\"100%\"><tr><th>Child Pages</th><th>Display in menu bar</th><th>Display in Sitemap</th><th>Display Icon in menu</th><th>Move page up</th><th>Move page down</th><th>Delete</th></tr>";
+	else {
+		$childList = "<table border=\"1\" width=\"100%\"><tr><th>Child Pages</th><th>Display in menu bar</th><th>Display in Sitemap</th><th>Display Icon in menu</th><th>Order</th><th>Delete</th></tr>";
+	}
+	$currentPosition = 1;
 	while ($page_result_row = mysqli_fetch_assoc($page_result)) {
 		$childList .= '<tr><td><a href="./'.$page_result_row['page_name'].'+settings">' . $page_result_row['page_title'] . '</a></td>' .
 				'<td><input type="checkbox" name="menubarshowchildren[]" id="'.$page_result_row['page_name'].'" value="' . $page_result_row['page_name'] . '" ' . ($page_result_row['page_displayinmenu'] == 1 ? 'checked="yes" ' : '') . '/></td>'.
 				'<td><input type="checkbox" name="sitemapshowchildren[]" id="'.$page_result_row['page_name'].'" value="' . $page_result_row['page_name'] . '" ' . ($page_result_row['page_displayinsitemap'] == 1 ? 'checked="yes" ' : '') . '/></td>'.
 				'<td><input type="checkbox" name="childrenshowicon[]" id="'.$page_result_row['page_name'].'" value="' . $page_result_row['page_name'] . '" ' . ($page_result_row['page_displayicon'] == 1 ? 'checked="yes" ' : '') . '/></td>'.
-				'<td align="center"><input type="submit" name="moveUp" onclick="this.form.action+=\''.$page_result_row['page_name'].'\'" value="Move Up" /></td>' .
-				'<td align="center"><input type="submit" name="moveDn" onclick="this.form.action+=\''.$page_result_row['page_name'].'\'" value="Move Down" /></td>' .
+				'<td align="center"><input type="number" name="childOrder['.$page_result_row['page_name'].']" value="'.$currentPosition.'" min="1" max="'.$childCount.'" style="width:60px" /></td>' .
 				'<td align="center"><input type="submit" name="deletePage" onclick="javascript:if(checkDelete(this,\''.$page_result_row['page_name'].'\')){this.form.action+=\''.$page_result_row['page_name'].'\'}"  value="Delete" /></td></tr>';
+		$currentPosition++;
 	}
 	if(!mysqli_num_rows($page_result)==0)
 		$childList .= "</table>";
@@ -939,44 +942,53 @@ function pagesettings($pageId, $userId) {
 					displayerror("Could not update page settings : ".$updateErrors);
 				}
 			}
-			if(isset($_POST['moveUp'])||isset($_POST['moveDn'])) {
-				if(isset($_POST['moveUp']))
-				{
-					$comparison="<=";
-					$sortOrder="DESC";
-				}
-				else
-				{
-					$comparison=">=";
-					$sortOrder="ASC";
-				}
-				$childPageName=escape($_GET['pageName']);
-				$query="SELECT `page_menurank`,`page_id` FROM `".MYSQL_DATABASE_PREFIX."pages` WHERE `page_parentid`='$pageId' AND `page_name`='$childPageName' AND `page_id` != '$pageId' ORDER BY `page_menurank` $sortOrder LIMIT 0,1 ";
-				$result=mysqli_query($GLOBALS["___mysqli_ston"], $query);
-				$temp=mysqli_fetch_assoc($result);
-				$childPageId=$temp['page_id'];
-				$query="SELECT `page_menurank`,`page_id` FROM `".MYSQL_DATABASE_PREFIX."pages` WHERE `page_parentid`=$pageId AND `page_menurank` $comparison(SELECT `page_menurank` FROM  `".MYSQL_DATABASE_PREFIX."pages` WHERE `page_parentid`='$pageId' AND `page_name`='$childPageName') AND `page_id` != '$childPageId'  AND `page_parentid` != `page_id` ORDER BY `page_menurank` $sortOrder LIMIT 0,1 ";
-				$result=mysqli_query($GLOBALS["___mysqli_ston"], $query) or displayinfo(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
-				if(mysqli_num_rows($result)==0){
-					displayerror("You cannot move up/down the first/last page in menu");
+			if (isset($_POST['childOrder']) && is_array($_POST['childOrder'])) {
+				$currentOrder = array_keys($_POST['childOrder']);
+				$totalChildren = count($currentOrder);
 
+				$desired = [];
+				foreach ($_POST['childOrder'] as $name => $pos) {
+					$name = escape(trim($name));
+					$desired[$name] = max(1, min(intval($pos), $totalChildren));
 				}
-				$tempTarg=mysqli_fetch_assoc($result);
-				$query="SELECT `page_menurank`,`page_parentid` FROM `".MYSQL_DATABASE_PREFIX."pages` WHERE `page_id`='$childPageId'";
-				$result=mysqli_query($GLOBALS["___mysqli_ston"], $query);
-				$tempSrc=mysqli_fetch_assoc($result);
-				if(($tempTarg['page_menurank'])==($tempSrc['page_menurank']))
-				{
-					$query="UPDATE `".MYSQL_DATABASE_PREFIX."pages` SET `page_menurank` = `page_id` WHERE `page_parentid`='{$tempSrc['page_parentid']}'";
-		 			mysqli_query($GLOBALS["___mysqli_ston"], $query);
-		 			displayinfo("Error in menu rank corrected. Please reorder the pages");
+
+				$unchanged = [];
+				$changed = [];
+				foreach ($currentOrder as $idx => $name) {
+					if (isset($desired[$name]) && $desired[$name] == $idx + 1)
+						$unchanged[] = $name;
+					else
+						$changed[] = $name;
 				}
-				else{
-				$query="UPDATE `".MYSQL_DATABASE_PREFIX."pages`  SET `page_menurank` ='{$tempSrc['page_menurank']}' WHERE `page_id` = '{$tempTarg['page_id']}' ";
-				mysqli_query($GLOBALS["___mysqli_ston"], $query);
-				$query="UPDATE `".MYSQL_DATABASE_PREFIX."pages`  SET `page_menurank` ='{$tempTarg['page_menurank']}' WHERE `page_id` = '$childPageId' ";
-				mysqli_query($GLOBALS["___mysqli_ston"], $query);
+
+				$newOrder = $unchanged;
+
+				usort($changed, function($a, $b) use ($desired, $currentOrder) {
+					$diff = $desired[$a] <=> $desired[$b];
+					if ($diff != 0) return $diff;
+					return array_search($a, $currentOrder) <=> array_search($b, $currentOrder);
+				});
+
+				foreach ($changed as $name) {
+					$pos = $desired[$name];
+					$idx = array_search($name, $newOrder);
+					if ($idx !== false)
+						array_splice($newOrder, $idx, 1);
+					$insertPos = max(0, min($pos - 1, count($newOrder)));
+					array_splice($newOrder, $insertPos, 0, [$name]);
 				}
+
+				$rank = 1;
+				foreach ($newOrder as $name) {
+					$query = "UPDATE `" . MYSQL_DATABASE_PREFIX . "pages`
+						SET `page_menurank` = '$rank'
+						WHERE `page_parentid` = '$pageId'
+							AND `page_name` = '$name'
+							AND `page_parentid` != `page_id`";
+					mysqli_query($GLOBALS["___mysqli_ston"], $query);
+					$rank++;
+				}
+				displayinfo("Page order updated successfully.");
 			}
 			if(isset($_POST['deletePage']))
 			{
