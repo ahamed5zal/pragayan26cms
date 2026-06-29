@@ -28,7 +28,7 @@ function breadcrumbs($pageIdArray) {
 	$pageIdList = join("," , $pageIdArray);
 	if ($pageIdList === "") return '';
 	$sqlOutputArray = array();
-	$query = 'SELECT `page_id`, `page_name`, `page_title` FROM `' . MYSQL_DATABASE_PREFIX . 'pages` WHERE `page_id` >= 0 AND `page_id` IN (' . $pageIdList . ')';
+	$query = 'SELECT `page_id`, `page_name`, `page_title` FROM `' . MYSQL_DATABASE_PREFIX . 'pages` WHERE `page_id` IN (' . $pageIdList . ')';
 	$resultId = mysqli_query($GLOBALS["___mysqli_ston"], $query);
 
 	while ($row = mysqli_fetch_assoc($resultId))

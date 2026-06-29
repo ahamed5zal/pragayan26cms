@@ -446,8 +446,6 @@ function loginForm($allow_login=1)
   global $uploadFolder, $sourceFolder, $moduleFolder;
   $openidFolder=$urlRequestRoot.'/'.$cmsFolder.'/openid';
   $csrfField = getCsrfTokenField();
-  require_once("$sourceFolder/$moduleFolder/form/registrationformgenerate.php");
-  $captchaHtml = getCaptchaHtml();
 	$openid_login_str =<<<OPENIDLOGIN
 
         <!-- Simple OpenID Selector -->

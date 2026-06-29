@@ -415,78 +415,6 @@ MOVECOPY;
 	$row = mysqli_fetch_array(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT `allowComments` FROM `article_content` WHERE `page_modulecomponentid` = '{$modulecomponentid}'"));
 	$allowComments = ($row && isset($row['allowComments']) && $row['allowComments'] == 1) ? 'checked="checked" ' : '';
 	
-	$archivePageSettingsText = '';
-	$csrfField = getCsrfTokenField();
-	if ($pageId > 0) {
-		$childDescendantIds = getAllDescendantIds($pageId);
-		$hasArchivedDescendants = false;
-		foreach ($childDescendantIds as $id)
-			if ($id < 0) { $hasArchivedDescendants = true; break; }
-		$thirdBtn = '';
-		if ($hasArchivedDescendants)
-			$thirdBtn = '<td>
-				<form action="./+settings&amp;subaction=restoredescendants&amp;pageName=" method="POST" style="display:inline">
-					' . $csrfField . '
-					<input type="submit" name="restoreDescendants" value="Restore All Child Pages" onclick="return confirm(\'Restore all archived descendant pages?\')" />
-				</form>
-			</td>';
-		$archivePageSettingsText = '<a name="archiveform"></a>
-	<fieldset>
-		<legend>' . $ICONS['Archive Page']['small'] . 'Archive / Restore Page</legend>
-		<table border="1" cellpadding="2px" cellspacing="2px">
-			<tr>
-				<td>
-					<form action="./+settings&amp;subaction=archive&amp;pageName=" method="POST" style="display:inline">
-						' . $csrfField . '
-						<input type="submit" name="archivePage" value="Archive Page Only" />
-					</form>
-				</td>
-				<td>
-					<form action="./+settings&amp;subaction=archivewithchildren&amp;pageName=" method="POST" style="display:inline">
-						' . $csrfField . '
-						<input type="submit" name="archivePageWithChildren" value="Archive Including Child Pages" onclick="return confirm(\'Archive this page and all descendants?\')" />
-					</form>
-				</td>
-				' . $thirdBtn . '
-			</tr>
-		</table>
-	</fieldset>';
-	}
-	elseif ($pageId < 0)
-		$archivePageSettingsText = '<a name="archiveform"></a>
-	<fieldset>
-		<legend>' . $ICONS['Archive Page']['small'] . 'Archive / Restore Page</legend>
-		<table border="1" cellpadding="2px" cellspacing="2px">
-			<tr>
-				<td>
-					<form action="./+settings&amp;subaction=restore&amp;pageName=" method="POST" style="display:inline">
-						' . $csrfField . '
-						<input type="submit" name="restorePage" value="Restore Page Only" />
-					</form>
-				</td>
-				<td>
-					<form action="./+settings&amp;subaction=restorewithchildren&amp;pageName=" method="POST" style="display:inline">
-						' . $csrfField . '
-						<input type="submit" name="restorePageWithChildren" value="Restore Including Child Pages" onclick="return confirm(\'Restore this page and all descendants?\')" />
-					</form>
-				</td>
-			</tr>
-		</table>
-	</fieldset>';
-	else {
-		$archivePageSettingsText = '<a name="archiveform"></a>
-	<fieldset>
-		<legend>' . $ICONS['Archive Page']['small'] . 'Archive / Restore Page</legend>
-		<table border="1" cellpadding="2px" cellspacing="2px">
-			<tr>
-				<td><input type="submit" value="Archive Page Only" disabled="disabled" /></td>
-				<td><input type="submit" value="Archive Including Child Pages" disabled="disabled" /></td>
-			</tr>
-		</table>
-		<p><em>The root page cannot be archived.</em></p>
-	</fieldset>';
-	}
-	
 	$formDisplay =<<<FORMDISPLAY
 
 	<div id="page_settings">
@@ -960,33 +888,21 @@ function pagesettings($pageId, $userId) {
 					else
 						$changed[] = $name;
 				}
-
-				$newOrder = $unchanged;
-
-				usort($changed, function($a, $b) use ($desired, $currentOrder) {
-					$diff = $desired[$a] <=> $desired[$b];
-					if ($diff != 0) return $diff;
-					return array_search($a, $currentOrder) <=> array_search($b, $currentOrder);
-				});
-
-				foreach ($changed as $name) {
-					$pos = $desired[$name];
-					$idx = array_search($name, $newOrder);
-					if ($idx !== false)
-						array_splice($newOrder, $idx, 1);
-					$insertPos = max(0, min($pos - 1, count($newOrder)));
-					array_splice($newOrder, $insertPos, 0, [$name]);
+				$tempTarg=mysqli_fetch_assoc($result);
+				$query="SELECT `page_menurank`,`page_parentid` FROM `".MYSQL_DATABASE_PREFIX."pages` WHERE `page_id`='$childPageId'";
+				$result=mysqli_query($GLOBALS["___mysqli_ston"], $query);
+				$tempSrc=mysqli_fetch_assoc($result);
+				if(($tempTarg['page_menurank'])==($tempSrc['page_menurank']))
+				{
+					$query="UPDATE `".MYSQL_DATABASE_PREFIX."pages` SET `page_menurank` = `page_id` WHERE `page_parentid`='{$tempSrc['page_parentid']}'";
+		 			mysqli_query($GLOBALS["___mysqli_ston"], $query);
+		 			displayinfo("Error in menu rank corrected. Please reorder the pages");
 				}
-
-				$rank = 1;
-				foreach ($newOrder as $name) {
-					$query = "UPDATE `" . MYSQL_DATABASE_PREFIX . "pages`
-						SET `page_menurank` = '$rank'
-						WHERE `page_parentid` = '$pageId'
-							AND `page_name` = '$name'
-							AND `page_parentid` != `page_id`";
-					mysqli_query($GLOBALS["___mysqli_ston"], $query);
-					$rank++;
+				else{
+				$query="UPDATE `".MYSQL_DATABASE_PREFIX."pages`  SET `page_menurank` ='{$tempSrc['page_menurank']}' WHERE `page_id` = '{$tempTarg['page_id']}' ";
+				mysqli_query($GLOBALS["___mysqli_ston"], $query);
+				$query="UPDATE `".MYSQL_DATABASE_PREFIX."pages`  SET `page_menurank` ='{$tempTarg['page_menurank']}' WHERE `page_id` = '$childPageId' ";
+				mysqli_query($GLOBALS["___mysqli_ston"], $query);
 				}
 				displayinfo("Page order updated successfully.");
 			}
