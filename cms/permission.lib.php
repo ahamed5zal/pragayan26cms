@@ -375,6 +375,10 @@ function getPagePermission(array $pagePath, $usergroupid, $action, $module, $per
  */
  //TODO : Make sure that when admin is granted, it gets granted only at pageid 0
 function getPermissions($userid, $pageid, $action, $module="") {
+	if ($pageid < 0) {
+		if ($action === "settings") return getPermissions($userid, 0, "admin");
+		return false;
+	}
 	if($action!="admin" && getPermissions($userid,0,"admin"))
 		return true;
 	if($module=="") {

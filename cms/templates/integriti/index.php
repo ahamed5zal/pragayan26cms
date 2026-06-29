@@ -16,9 +16,10 @@ if(!defined('__PRAGYAN_CMS'))
 	<link rel="stylesheet" type="text/css" href="<?php echo $TEMPLATEBROWSERPATH; ?>/styles/main.css" />
     <meta name="description" content="<?php echo $SITEDESCRIPTION ?>" />
     <meta name="keywords" content="<?php echo $SITEKEYWORDS.', '.$PAGEKEYWORDS ?>" /> 
-	<?php global $urlRequestRoot;	global $PAGELASTUPDATED;
+	<?php global $urlRequestRoot; global $PAGELASTUPDATED; global $pageId;
 	if($PAGELASTUPDATED!="")
 		echo '<meta http-equiv="Last-Update" content="'.substr($PAGELASTUPDATED,0,10).'" />'."\n";
+	if ($pageId < 0) echo '<meta name="robots" content="noindex, follow" />'."\n";
 	?>
     <link rel="index" href="./" title="Home" />
 	<link rel="stylesheet" type="text/css" href="<?php echo  $TEMPLATEBROWSERPATH; ?>/styles/adminui.css" />

@@ -443,6 +443,7 @@ function loginForm($allow_login=1)
 {
   global $urlRequestRoot;
   global $cmsFolder;
+  global $uploadFolder, $sourceFolder, $moduleFolder;
   $openidFolder=$urlRequestRoot.'/'.$cmsFolder.'/openid';
   $csrfField = getCsrfTokenField();
 	$openid_login_str =<<<OPENIDLOGIN
@@ -524,6 +525,7 @@ OPENIDLOGIN;
 								<tr><td><label for="user_password" class="labelrequired">Password</label></td>
 									<td><input type="password" name="user_password"  id="user_password"  class="required" /><br /></td>
 								</tr>
+								$captchaHtml
 								<tr>
 									<td><input type="submit" value="Login" /></td>
 									<td><a href="./+login&subaction=resetPasswd">Lost Password?</a> 
@@ -710,6 +712,11 @@ function login() {
       	return loginForm($allow_login_result[0]);
 	}
 	else {
+	global $sourceFolder, $moduleFolder;
+	require_once("$sourceFolder/$moduleFolder/form/registrationformsubmit.php");
+	if (isset($_POST['captcha']) && submitCaptcha() == false) {
+		return loginForm($allow_login_result[0]);
+	}
 	$user_email = escape($_POST['user_email']);
 	$user_passwd = escape($_POST['user_password']);
 	$login_method = '';

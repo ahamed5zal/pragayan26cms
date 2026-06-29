@@ -76,20 +76,23 @@ function getSettingsForm($pageId, $userId) {
 	$page_result = mysqli_query($GLOBALS["___mysqli_ston"], $page_query) or die(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 	$childList ="";
 	$isLeaf = false;
-	if(mysqli_num_rows($page_result)==0){
+	$childCount = mysqli_num_rows($page_result);
+	if($childCount == 0){
 	    $isLeaf = true;
 		$childList = "There are no child pages associated with this page.";
 	}
-	else
-		$childList = "<table border=\"1\" width=\"100%\"><tr><th>Child Pages</th><th>Display in menu bar</th><th>Display in Sitemap</th><th>Display Icon in menu</th><th>Move page up</th><th>Move page down</th><th>Delete</th></tr>";
+	else {
+		$childList = "<table border=\"1\" width=\"100%\"><tr><th>Child Pages</th><th>Display in menu bar</th><th>Display in Sitemap</th><th>Display Icon in menu</th><th>Order</th><th>Delete</th></tr>";
+	}
+	$currentPosition = 1;
 	while ($page_result_row = mysqli_fetch_assoc($page_result)) {
 		$childList .= '<tr><td><a href="./'.$page_result_row['page_name'].'+settings">' . $page_result_row['page_title'] . '</a></td>' .
 				'<td><input type="checkbox" name="menubarshowchildren[]" id="'.$page_result_row['page_name'].'" value="' . $page_result_row['page_name'] . '" ' . ($page_result_row['page_displayinmenu'] == 1 ? 'checked="yes" ' : '') . '/></td>'.
 				'<td><input type="checkbox" name="sitemapshowchildren[]" id="'.$page_result_row['page_name'].'" value="' . $page_result_row['page_name'] . '" ' . ($page_result_row['page_displayinsitemap'] == 1 ? 'checked="yes" ' : '') . '/></td>'.
 				'<td><input type="checkbox" name="childrenshowicon[]" id="'.$page_result_row['page_name'].'" value="' . $page_result_row['page_name'] . '" ' . ($page_result_row['page_displayicon'] == 1 ? 'checked="yes" ' : '') . '/></td>'.
-				'<td align="center"><input type="submit" name="moveUp" onclick="this.form.action+=\''.$page_result_row['page_name'].'\'" value="Move Up" /></td>' .
-				'<td align="center"><input type="submit" name="moveDn" onclick="this.form.action+=\''.$page_result_row['page_name'].'\'" value="Move Down" /></td>' .
+				'<td align="center"><input type="number" name="childOrder['.$page_result_row['page_name'].']" value="'.$currentPosition.'" min="1" max="'.$childCount.'" style="width:60px" /></td>' .
 				'<td align="center"><input type="submit" name="deletePage" onclick="javascript:if(checkDelete(this,\''.$page_result_row['page_name'].'\')){this.form.action+=\''.$page_result_row['page_name'].'\'}"  value="Delete" /></td></tr>';
+		$currentPosition++;
 	}
 	if(!mysqli_num_rows($page_result)==0)
 		$childList .= "</table>";
@@ -466,6 +469,7 @@ MOVECOPY;
         <td><a href='#childpageform'><div>{$ICONS['Create New Page']['large']}<br/>Create New Page</div></a></td>
         <td><a href='#copymovepageform'><div>{$ICONS['Copy or Move Page']['large']}<br/>Copy or Move Page</div></a></td>
         <td><a href='#inheritinfoform'><div>{$ICONS['Page Inherited Info']['large']}<br/>Page Inherited Information</div></a></td>
+        <td><a href='#archiveform'><div>{$ICONS['Archive Page']['large']}<br/>Archive Page</div></a></td>
         </tr>
         </table>   
         </fieldset>
@@ -564,7 +568,6 @@ FORMDISPLAY;
       	</fieldset>
       	<a href="#topquicklinks">Top</a>
     </form>
-    	<br/><br/>
 		$createdPageSettingsText
 		<a href="#topquicklinks">Top</a>
 	<br/><br/>
@@ -575,6 +578,9 @@ FORMDISPLAY;
     	<a href="#topquicklinks">Top</a>
     <br/><br/>
     	$tagsPageSettingsText
+    	<a href="#topquicklinks">Top</a>
+    	<br/><br/>
+    	$archivePageSettingsText
     	<a href="#topquicklinks">Top</a>
 	</div>
 FORMDISPLAY;
@@ -864,27 +870,23 @@ function pagesettings($pageId, $userId) {
 					displayerror("Could not update page settings : ".$updateErrors);
 				}
 			}
-			if(isset($_POST['moveUp'])||isset($_POST['moveDn'])) {
-				if(isset($_POST['moveUp']))
-				{
-					$comparison="<=";
-					$sortOrder="DESC";
-				}
-				else
-				{
-					$comparison=">=";
-					$sortOrder="ASC";
-				}
-				$childPageName=escape($_GET['pageName']);
-				$query="SELECT `page_menurank`,`page_id` FROM `".MYSQL_DATABASE_PREFIX."pages` WHERE `page_parentid`='$pageId' AND `page_name`='$childPageName' AND `page_id` != '$pageId' ORDER BY `page_menurank` $sortOrder LIMIT 0,1 ";
-				$result=mysqli_query($GLOBALS["___mysqli_ston"], $query);
-				$temp=mysqli_fetch_assoc($result);
-				$childPageId=$temp['page_id'];
-				$query="SELECT `page_menurank`,`page_id` FROM `".MYSQL_DATABASE_PREFIX."pages` WHERE `page_parentid`=$pageId AND `page_menurank` $comparison(SELECT `page_menurank` FROM  `".MYSQL_DATABASE_PREFIX."pages` WHERE `page_parentid`='$pageId' AND `page_name`='$childPageName') AND `page_id` != '$childPageId'  AND `page_parentid` != `page_id` ORDER BY `page_menurank` $sortOrder LIMIT 0,1 ";
-				$result=mysqli_query($GLOBALS["___mysqli_ston"], $query) or displayinfo(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
-				if(mysqli_num_rows($result)==0){
-					displayerror("You cannot move up/down the first/last page in menu");
+			if (isset($_POST['childOrder']) && is_array($_POST['childOrder'])) {
+				$currentOrder = array_keys($_POST['childOrder']);
+				$totalChildren = count($currentOrder);
 
+				$desired = [];
+				foreach ($_POST['childOrder'] as $name => $pos) {
+					$name = escape(trim($name));
+					$desired[$name] = max(1, min(intval($pos), $totalChildren));
+				}
+
+				$unchanged = [];
+				$changed = [];
+				foreach ($currentOrder as $idx => $name) {
+					if (isset($desired[$name]) && $desired[$name] == $idx + 1)
+						$unchanged[] = $name;
+					else
+						$changed[] = $name;
 				}
 				$tempTarg=mysqli_fetch_assoc($result);
 				$query="SELECT `page_menurank`,`page_parentid` FROM `".MYSQL_DATABASE_PREFIX."pages` WHERE `page_id`='$childPageId'";
@@ -902,6 +904,7 @@ function pagesettings($pageId, $userId) {
 				$query="UPDATE `".MYSQL_DATABASE_PREFIX."pages`  SET `page_menurank` ='{$tempTarg['page_menurank']}' WHERE `page_id` = '$childPageId' ";
 				mysqli_query($GLOBALS["___mysqli_ston"], $query);
 				}
+				displayinfo("Page order updated successfully.");
 			}
 			if(isset($_POST['deletePage']))
 			{
@@ -1081,6 +1084,31 @@ function pagesettings($pageId, $userId) {
 				else
 					displayerror("Error in adding tag.");
 			}
+		}
+		elseif($_GET['subaction']=="archive") {
+			if (!verifyCsrfToken()) return '';
+			if($pageId<=0) { displayerror("Root page cannot be archived."); }
+			else { archivePage($pageId); displayinfo("Page archived successfully."); }
+		}
+		elseif($_GET['subaction']=="archivewithchildren") {
+			if (!verifyCsrfToken()) return '';
+			if($pageId<=0) { displayerror("Root page cannot be archived."); }
+			else { archivePageAndDescendants($pageId, $userId); displayinfo("Page and descendants archived successfully."); }
+		}
+		elseif($_GET['subaction']=="restore") {
+			if (!verifyCsrfToken()) return '';
+			if($pageId>=0) { displayerror("Page is not archived."); }
+			else { restorePage($pageId); displayinfo("Page restored successfully."); }
+		}
+		elseif($_GET['subaction']=="restorewithchildren") {
+			if (!verifyCsrfToken()) return '';
+			if($pageId>=0) { displayerror("Page is not archived."); }
+			else { restorePageAndDescendants($pageId, $userId); displayinfo("Page and descendants restored successfully."); }
+		}
+		elseif($_GET['subaction']=="restoredescendants") {
+			if (!verifyCsrfToken()) return '';
+			if($pageId<=0) { displayerror("Root page cannot initiate restore from."); }
+			else { restoreDescendants($pageId); displayinfo("All descendant pages restored successfully."); }
 		}
 	}
 	if ($settingsForm = getSettingsForm($pageId, $userId))
@@ -1417,5 +1445,63 @@ function getPageInheritedInfo($pageId, &$inheritedInfoBuf) {
 	} while($curPageId >= 0);
 
 	return -1;
+}
+
+function getAllDescendantIdsInclusive($pageId) {
+	$ids = array((int)$pageId);
+	$query = "SELECT `page_id` FROM `".MYSQL_DATABASE_PREFIX."pages` WHERE `page_parentid` = '".(int)$pageId."' AND `page_id` != `page_parentid`";
+	$result = mysqli_query($GLOBALS["___mysqli_ston"], $query);
+	while($row = mysqli_fetch_row($result))
+		$ids = array_merge($ids, getAllDescendantIdsInclusive($row[0]));
+	return $ids;
+}
+
+function getAllDescendantIds($pageId) {
+	$ids = array();
+	$query = "SELECT `page_id` FROM `".MYSQL_DATABASE_PREFIX."pages` WHERE `page_parentid` = '".(int)$pageId."' AND `page_id` != `page_parentid`";
+	$result = mysqli_query($GLOBALS["___mysqli_ston"], $query);
+	while($row = mysqli_fetch_row($result))
+		$ids = array_merge($ids, getAllDescendantIdsInclusive($row[0]));
+	return $ids;
+}
+
+function restoreDescendants($pageId) {
+	$ids = getAllDescendantIds($pageId);
+	if (empty($ids)) return;
+	$descAbsList = join(",", array_map(function($v){return abs($v);}, $ids));
+	$pid = (int)$pageId;
+	mysqli_query($GLOBALS["___mysqli_ston"], "UPDATE `".MYSQL_DATABASE_PREFIX."pages` SET `page_parentid` = abs(`page_parentid`) WHERE (abs(`page_parentid`) IN ($descAbsList) OR abs(`page_parentid`) = '$pid') AND `page_parentid` != `page_id`");
+	mysqli_query($GLOBALS["___mysqli_ston"], "UPDATE `".MYSQL_DATABASE_PREFIX."pages` SET `page_id` = abs(`page_id`) WHERE abs(`page_id`) IN ($descAbsList)");
+	mysqli_query($GLOBALS["___mysqli_ston"], "UPDATE `".MYSQL_DATABASE_PREFIX."userpageperm` SET `page_id` = abs(`page_id`) WHERE abs(`page_id`) IN ($descAbsList)");
+}
+
+function archivePage($pageId) {
+	$pid = (int)$pageId;
+	mysqli_query($GLOBALS["___mysqli_ston"], "UPDATE `".MYSQL_DATABASE_PREFIX."pages` SET `page_parentid` = -abs(`page_parentid`) WHERE `page_parentid` = '$pid' AND `page_parentid` != `page_id`");
+	mysqli_query($GLOBALS["___mysqli_ston"], "UPDATE `".MYSQL_DATABASE_PREFIX."pages` SET `page_id` = -abs(`page_id`) WHERE `page_id` = '$pid'");
+	mysqli_query($GLOBALS["___mysqli_ston"], "UPDATE `".MYSQL_DATABASE_PREFIX."userpageperm` SET `page_id` = -abs(`page_id`) WHERE `page_id` = '$pid'");
+}
+
+function restorePage($pageId) {
+	$pid = (int)$pageId;
+	mysqli_query($GLOBALS["___mysqli_ston"], "UPDATE `".MYSQL_DATABASE_PREFIX."pages` SET `page_parentid` = abs(`page_parentid`) WHERE `page_parentid` = '$pid' AND `page_parentid` != `page_id`");
+	mysqli_query($GLOBALS["___mysqli_ston"], "UPDATE `".MYSQL_DATABASE_PREFIX."pages` SET `page_id` = abs(`page_id`) WHERE `page_id` = '$pid'");
+	mysqli_query($GLOBALS["___mysqli_ston"], "UPDATE `".MYSQL_DATABASE_PREFIX."userpageperm` SET `page_id` = abs(`page_id`) WHERE `page_id` = '$pid'");
+}
+
+function archivePageAndDescendants($pageId, $userId) {
+	$ids = getAllDescendantIdsInclusive($pageId);
+	$idList = join(",", $ids);
+	mysqli_query($GLOBALS["___mysqli_ston"], "UPDATE `".MYSQL_DATABASE_PREFIX."pages` SET `page_parentid` = -abs(`page_parentid`) WHERE `page_parentid` IN ($idList) AND `page_parentid` != `page_id`");
+	mysqli_query($GLOBALS["___mysqli_ston"], "UPDATE `".MYSQL_DATABASE_PREFIX."pages` SET `page_id` = -abs(`page_id`) WHERE `page_id` IN ($idList)");
+	mysqli_query($GLOBALS["___mysqli_ston"], "UPDATE `".MYSQL_DATABASE_PREFIX."userpageperm` SET `page_id` = -abs(`page_id`) WHERE `page_id` IN ($idList)");
+}
+
+function restorePageAndDescendants($pageId, $userId) {
+	$ids = getAllDescendantIdsInclusive($pageId);
+	$idList = join(",", $ids);
+	mysqli_query($GLOBALS["___mysqli_ston"], "UPDATE `".MYSQL_DATABASE_PREFIX."pages` SET `page_parentid` = abs(`page_parentid`) WHERE `page_parentid` IN ($idList) AND `page_parentid` != `page_id`");
+	mysqli_query($GLOBALS["___mysqli_ston"], "UPDATE `".MYSQL_DATABASE_PREFIX."pages` SET `page_id` = abs(`page_id`) WHERE `page_id` IN ($idList)");
+	mysqli_query($GLOBALS["___mysqli_ston"], "UPDATE `".MYSQL_DATABASE_PREFIX."userpageperm` SET `page_id` = abs(`page_id`) WHERE `page_id` IN ($idList)");
 }
 
