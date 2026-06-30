@@ -26,7 +26,8 @@ function saveToLog ($query, $elapsed, $results) {
 	global $sph_mysql_table_prefix;
 	if ($results == '')
 		$results = 0;
-	$query = "insert into ".$sph_mysql_table_prefix."query_log (query, time, elapsed, results) values ('$query', now(), '$elapsed', '$results')";
+	$queryEscaped = escape($query);
+	$query = "insert into ".$sph_mysql_table_prefix."query_log (query, time, elapsed, results) values ('$queryEscaped', now(), '$elapsed', '$results')";
 	if(!mysqli_query($GLOBALS["___mysqli_ston"], $query))
 		displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 }

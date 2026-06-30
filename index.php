@@ -110,7 +110,7 @@ $onlineSiteUrl = "http://" . $_SERVER['HTTP_HOST'] . substr($scriptname,0,stripo
 ///If config.inc.php doesn't exists, assume CMS hasn't been installed.
 @include_once($sourceFolder."/config.inc.php"); 
 
-header("Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: *.nitt.edu; font-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'self'");
+header("Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' http://cse.google.com https://cse.google.com http://www.google.com https://www.google.com http://translate.google.com https://translate.google.com http://translate.googleapis.com https://translate.googleapis.com http://translate-pa.googleapis.com https://translate-pa.googleapis.com http://www.gstatic.com https://www.gstatic.com http://www.google-analytics.com https://www.google-analytics.com; style-src 'self' 'unsafe-inline' http://www.google.com https://www.google.com http://translate.google.com https://translate.google.com http://translate.googleapis.com https://translate.googleapis.com http://www.gstatic.com https://www.gstatic.com; img-src 'self' data: *.nitt.edu *.gstatic.com http://cse.google.com https://cse.google.com http://www.google.com https://www.google.com http://translate.google.com https://translate.google.com http://translate.googleapis.com https://translate.googleapis.com; font-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-src 'self' http://cse.google.com https://cse.google.com http://www.google.com https://www.google.com http://translate.google.com https://translate.google.com http://translate.googleapis.com https://translate.googleapis.com; connect-src 'self' http://cse.google.com https://cse.google.com http://www.google.com https://www.google.com http://www.googleapis.com https://www.googleapis.com http://translate.google.com https://translate.google.com http://translate.googleapis.com https://translate.googleapis.com http://www.google-analytics.com https://www.google-analytics.com; frame-ancestors 'self'");
 
 ///If config.inc.php doesn't exists, ADMIN_USERID won't be defined, so assume CMS is not installed.
 if(!defined("ADMIN_USERID") )
@@ -156,7 +156,7 @@ else $pageFullPath = "home";
 
 ///Retrieve the action, default is "view"
 if(isset($_GET['action']))
-	$action = strtolower(escape($_GET['action']));
+	$action = strtolower(escape(ltrim($_GET['action'], '/')));
 else	$action = "view";
 
 ///Just to check if server is alive, an alternative of Ping

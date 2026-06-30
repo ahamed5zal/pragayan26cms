@@ -114,7 +114,12 @@ if(!defined('CMS_SETUP')) {
 
 // set the PHP session id (PHPSESSID) cookie to a custom value
 ini_set('session.name',"PHPSESSID");
-session_set_cookie_params(\$cookie_timeout, \$cookie_path);
+session_set_cookie_params([
+	'lifetime' => \$cookie_timeout,
+	'path' => \$cookie_path,
+	'httponly' => true,
+	'samesite' => 'Lax'
+]);
 
 // set the garbage collector - who will clean the session files -
 //   to our custom timeout

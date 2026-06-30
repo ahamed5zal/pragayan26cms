@@ -113,7 +113,7 @@ function getRegistrationForm() {
 
 			<tr>
 				<td><input type="submit" id="submitbutton" value="Sign Up"></td>
-				<td><a href="./+login&subaction=register&reSendKey=1">Resend Activation link?</a> <a href="./+login">Login?</a></td>
+				<td><a href="./+login">Login?</a></td>
 			</tr>
 		</table>
 	</fieldset>
@@ -133,6 +133,7 @@ SCRIPT;
 }
 
 function register() {
+	return displayinfo("Self-registration is currently disabled.");
 	///registration formmessenger
 	global $uploadFolder,$sourceFolder,$moduleFolder,$urlRequestRoot;
 	require("$sourceFolder/$moduleFolder/form/registrationformgenerate.php");
@@ -159,7 +160,7 @@ function register() {
 		</tr>
 		<tr>
 			<td><input type="submit" id="submitbutton" value="Submit"></td>
-			<td><a href="./+login&subaction=register">Sign Up</a> <a href="./+login">Login?</a></td>
+			<td><a href="./+login">Login?</a></td>
 		</tr>
 	</table>
 	</fieldset>
@@ -174,7 +175,7 @@ FORM;
 		$query = "SELECT * FROM  `" . MYSQL_DATABASE_PREFIX . "users`  WHERE `user_email`='$email' ";
 		$result = mysqli_query($GLOBALS["___mysqli_ston"], $query) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)) . "registration L:131");
 		if (!mysqli_num_rows($result))
-			displayinfo("This email-id has not yet been registered. Kindly <a href=\"./+login&subaction=register\">register</a>.");
+			displayinfo("This email-id has not yet been registered. Kindly contact the site administrator.");
 		else {
 			$temp = mysqli_fetch_assoc($result);
 			if ($temp['user_activated'] == 1)

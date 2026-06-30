@@ -36,7 +36,6 @@ function resetPasswd($allow_login) {
 									<td>
 RESET;
 		if($allow_login)
-			$resetPasswd .="<a href='./+login&subaction=register'>Sign Up</a> ";
 			$resetPasswd .= "<a href='./+login'>Login</a></td>
 								</tr>
 							</table>
@@ -528,10 +527,9 @@ OPENIDLOGIN;
 								$captchaHtml
 								<tr>
 									<td><input type="submit" value="Login" /></td>
-									<td><a href="./+login&subaction=resetPasswd">Lost Password?</a> 
+									<td>&nbsp;</td>
 LOGIN;
 	if($allow_login)
-		$login_str .= "<a href=\"./+login&subaction=register\">Sign Up</a>";
 		$login_str .= "</td>
 								</tr>
 							</table>
@@ -628,7 +626,7 @@ function login() {
 		  if($check)
 		    {
 		      //Password was correct. Link the account
-		      $query="INSERT INTO `" . MYSQL_DATABASE_PREFIX ."openid_users` (`openid_url`,`user_id`) VALUES ('$openid_url',".$info['user_id'].")";
+		      $query="INSERT INTO `" . MYSQL_DATABASE_PREFIX ."openid_users` (`openid_url`,`user_id`) VALUES ('".escape($openid_url)."',".$info['user_id'].")";
 		      $result=mysqli_query($GLOBALS["___mysqli_ston"], $query) or die(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false))." in login() subaction=openid_pass while trying to Link OpenID account");
 		      if($result)
 			{
@@ -665,12 +663,12 @@ function login() {
 	      $openid_fname=escape($_POST['user_name']);
 	      //Now let's start making the dummy user
 	      $query = "INSERT INTO `" . MYSQL_DATABASE_PREFIX . "users` " ."(`user_name`, `user_email`, `user_fullname`, `user_password`, `user_activated`,`user_loginmethod`) ".
-		"VALUES ('".$openid_email."', '".$openid_email."','".$openid_fname."','0',1,'openid');";	    
+		"VALUES ('".escape($openid_email)."', '".escape($openid_email)."','".$openid_fname."','0',1,'openid');";	    
 	      $result=mysqli_query($GLOBALS["___mysqli_ston"], $query) or die(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false))." in login() subaction=quick_openid_reg while trying to insert information of new account");
 	      if($result)
 		{
 		  $id=((is_null($___mysqli_res = mysqli_insert_id($GLOBALS["___mysqli_ston"]))) ? false : $___mysqli_res);
-		  $query="INSERT INTO `" . MYSQL_DATABASE_PREFIX ."openid_users` (`openid_url`,`user_id`) VALUES ('$openid_url',".$id.")";
+		  $query="INSERT INTO `" . MYSQL_DATABASE_PREFIX ."openid_users` (`openid_url`,`user_id`) VALUES ('".escape($openid_url)."',".$id.")";
 		  $result=mysqli_query($GLOBALS["___mysqli_ston"], $query) or die(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false))." in login() subaction=quick_openid_reg while trying to Link OpenID account");
 		  if($result)
 		    {
@@ -782,7 +780,7 @@ function login() {
 	  }
 	}
 	else {
-	  displaywarning("Wrong E-mail or password. <a href='./+login&subaction=resetPasswd'>Lost Password?</a><br />");
+	  displaywarning("Wrong E-mail or password.<br />");
 		return loginForm($allow_login_result[0]);
 	}
       }

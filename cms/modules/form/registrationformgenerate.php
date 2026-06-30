@@ -258,13 +258,13 @@ function getFormElementInputField($moduleComponentId, $elementId, $value="", &$j
 			}
 			else
 				$sizeText = 'rows="5" cols="20"';
-			$htmlOutput .= '<textarea style="width:100%" '.$sizeText.' name="'.$elementName.'" id="'.$elementName.'" title="'.$elementTooltip."\"".$validCheck.'>' . $value . '</textarea>';
+			$htmlOutput .= '<textarea style="width:100%" '.$sizeText.' name="'.$elementName.'" id="'.$elementName.'" title="'.$elementTooltip.'"'.$validCheck.'>' . htmlspecialchars($value, ENT_QUOTES) . '</textarea>';
 			return true;
 		}
 		/// PASSWORD
 		function getFormElementPassword($elementName,$value,$isRequired,$elementHelpName,$elementTooltip,$elementSize,$elementTypeOptions,$elementMoreThan,$elementLessThan,$elementCheckInt,&$jsOutput,&$htmlOutput){
 
-			$htmlOutput .= '<input type="password" id="'.$elementName.'" name="'.$elementName.'" title="'.$elementTooltip.'" value="'.$value.'"/>';
+			$htmlOutput .= '<input type="password" id="'.$elementName.'" name="'.$elementName.'" title="'.$elementTooltip.'" value="'.htmlspecialchars($value, ENT_QUOTES).'"/>';
 			return true;
 		}
 		/// SELECTBOX
@@ -364,7 +364,7 @@ function getFormElementInputField($moduleComponentId, $elementId, $value="", &$j
 
 			global $uploadFolder;
 			if($value != '') {
-				$htmlOutput .= '<br />(Leave blank to keep current file : <a href="./' . $value . '">'.$value.'</a>)';
+				$htmlOutput .= '<br />(Leave blank to keep current file : <a href="./' . htmlspecialchars($value, ENT_QUOTES) . '">'.htmlspecialchars($value, ENT_QUOTES).'</a>)';
 			}
 
 			return true;
@@ -396,7 +396,7 @@ function getFormElementInputField($moduleComponentId, $elementId, $value="", &$j
 			}
 			else
 				$sizeText = "";
-			$htmlOutput .= '<input type="text" '.$sizeText.' name="'.$elementName.'" id="'.$elementName.'" value="'.$value.'" ' .
+			$htmlOutput .= '<input type="text" '.$sizeText.' name="'.$elementName.'" id="'.$elementName.'" value="'.htmlspecialchars($value, ENT_QUOTES).'" ' .
 										 'title="'.$elementTooltip."\"".$validCheck.' />';
 										 return true;
 		}
@@ -423,7 +423,7 @@ function getFormElementInputField($moduleComponentId, $elementId, $value="", &$j
 			if(!is_null($elementLessThan) && $elementLessThan != '') {
 				$jsOutput[] = "checkUBDate('$elementName', '$elementLessThan', $datetimeFormat, '$elementHelpName')";
 			}
-			$htmlOutput .= '<input type="text" '. $validCheck . ' name="'.$elementName.'" value="' . $value . '" id="'.$elementName.'" /><input name="cal'.$elementName.'" type="reset" value=" ... " onclick="return showCalendar(\'' . $elementName . '\', '.$datetimeFormat.', \'24\', true);" />';
+			$htmlOutput .= '<input type="text" '. $validCheck . ' name="'.$elementName.'" value="' . htmlspecialchars($value, ENT_QUOTES) . '" id="'.$elementName.'" /><input name="cal'.$elementName.'" type="reset" value=" ... " onclick="return showCalendar(\'' . $elementName . '\', '.$datetimeFormat.', \'24\', true);" />';
 			return true;
 		}
 
@@ -443,7 +443,7 @@ function displaySuggestionBox($sizeText,$txtField,$value,$elementTooltip,$validC
   global $urlRequestRoot, $moduleFolder, $cmsFolder,$templateFolder,$sourceFolder,$cmsFolder,$STARTSCRIPTS;
   $scriptsFolder = "$urlRequestRoot/$cmsFolder/$templateFolder/common/scripts";
   $imagesFolder = "$urlRequestRoot/$cmsFolder/$templateFolder/common/images";
-  $suggestionsBox = '<input type="text" '.$sizeText.' name="'.$txtField.'" id="'.$txtField.'" value="'.$value.'" '.'title="'.$elementTooltip."\"".$validCheck.' autocomplete="off" style="width: 285px" onKeyPress="'/*return disableEnterKey(event,\''.$divId.'\')*/.'" placeholder="Enter Email Id or Pragyan Id"/>';
+  $suggestionsBox = '<input type="text" '.$sizeText.' name="'.$txtField.'" id="'.$txtField.'" value="'.htmlspecialchars($value, ENT_QUOTES).'" '.'title="'.$elementTooltip."\"".$validCheck.' autocomplete="off" style="width: 285px" onKeyPress="'/*return disableEnterKey(event,\''.$divId.'\')*/.'" placeholder="Enter Email Id or Pragyan Id"/>';
   /*
   $suggestionsBox .=<<<FIELD
     <div id="{$divId}" style="background-color: white; width: 300px; border: 1px solid black; position: relative; overflow-y: scroll; max-height: 180px;z-index:100; display: none;left:11px;top:-10px;" tabindex="1"  ></div>

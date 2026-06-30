@@ -38,7 +38,6 @@ function getActionbarPage($userId, $pageId) {
 	if($userId==0) {
 	if($allow_login_result[0]) {
 		$actionbarPage["login"]="Login";
-		$actionbarPage["login&subaction=register"]="Register";
 		}
 	}
 	else {

@@ -168,9 +168,9 @@ error_reporting(E_ALL ^ E_NOTICE);
 		$not_words = 0;
 		while ($not_words < count((array)$wordarray)) {
 			if ($stem_words == 1) {
-				$searchword = addslashes(stem($wordarray[$not_words]));
+				$searchword = escape(stem($wordarray[$not_words]));
 			} else {
-				$searchword = addslashes($wordarray[$not_words]);
+				$searchword = escape($wordarray[$not_words]);
 			}
 			$wordmd5 = substr(md5($searchword), 0, 1);
 
@@ -190,9 +190,10 @@ error_reporting(E_ALL ^ E_NOTICE);
 		$phrase_words = 0;
 		while ($phrase_words < count((array)$wordarray)) {
 
-			$searchword = addslashes($wordarray[$phrase_words]);
+			$searchword = escape($wordarray[$phrase_words]);
 			$query1 = "SELECT link_id from ".$mysql_table_prefix."links where fulltxt like '% $searchword%'";
-			echo ((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false));
+			echo "An error occurred. Please try again later.";
+		error_log("MySQL error in searchfuncs.php: " . ((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 			$result = mysqli_query($GLOBALS["___mysqli_ston"], $query1);
 			$num_rows = mysqli_num_rows($result);
 			if ($num_rows == 0) {
@@ -211,7 +212,8 @@ error_reporting(E_ALL ^ E_NOTICE);
 			$catlist = implode(",", $allcats);
 			$query1 = "select link_id from ".$mysql_table_prefix."links, ".$mysql_table_prefix."sites, ".$mysql_table_prefix."categories, ".$mysql_table_prefix."site_category where ".$mysql_table_prefix."links.site_id = ".$mysql_table_prefix."sites.site_id and ".$mysql_table_prefix."sites.site_id = ".$mysql_table_prefix."site_category.site_id and ".$mysql_table_prefix."site_category.category_id in ($catlist)";
 			$result = mysqli_query($GLOBALS["___mysqli_ston"], $query1);
-			echo ((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false));
+			echo "An error occurred. Please try again later.";
+		error_log("MySQL error in searchfuncs.php: " . ((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 			$num_rows = mysqli_num_rows($result);
 			if ($num_rows == 0) {
 				$possible_to_find = 0;
@@ -228,13 +230,14 @@ error_reporting(E_ALL ^ E_NOTICE);
 		$starttime = getmicrotime();
 		while (($words < count((array)$wordarray)) && $possible_to_find == 1) {
 			if ($stem_words == 1) {
-				$searchword = addslashes(stem($wordarray[$words]));
+				$searchword = escape(stem($wordarray[$words]));
 			} else {
-				$searchword = addslashes($wordarray[$words]);
+				$searchword = escape($wordarray[$words]);
 			}
 			$wordmd5 = substr(md5($searchword), 0, 1);
 			$query1 = "SELECT distinct link_id, weight, domain from ".$mysql_table_prefix."link_keyword$wordmd5, ".$mysql_table_prefix."keywords where ".$mysql_table_prefix."link_keyword$wordmd5.keyword_id= ".$mysql_table_prefix."keywords.keyword_id and keyword='$searchword' $domain_qry order by weight desc";
-			echo ((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false));
+			echo "An error occurred. Please try again later.";
+		error_log("MySQL error in searchfuncs.php: " . ((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 			$result = mysqli_query($GLOBALS["___mysqli_ston"], $query1);
 			$num_rows = mysqli_num_rows($result);
 			if ($num_rows == 0) {
@@ -326,7 +329,7 @@ error_reporting(E_ALL ^ E_NOTICE);
 		if ((count((array)$result_array_full) == 0 || $possible_to_find == 0) && $did_you_mean_enabled == 1) {
 			reset ($searchstr['+']);
 			foreach ($searchstr['+'] as $word) {
-				$word = addslashes($word);
+				$word = escape($word);
 				$result = mysqli_query($GLOBALS["___mysqli_ston"], "select keyword from ".$mysql_table_prefix."keywords where soundex(keyword) = soundex('$word')");
 				$max_distance = 100;
 				$near_word ="";
@@ -404,7 +407,8 @@ error_reporting(E_ALL ^ E_NOTICE);
 		$query1 = "SELECT distinct link_id, url, title, description,  $fulltxt, size FROM ".$mysql_table_prefix."links WHERE link_id in ($inlist)";
 
 		$result = mysqli_query($GLOBALS["___mysqli_ston"], $query1);
-		echo ((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false));
+		echo "An error occurred. Please try again later.";
+		error_log("MySQL error in searchfuncs.php: " . ((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 
 		$i = 0;
 		while ($row = mysqli_fetch_row($result)) {
@@ -429,7 +433,8 @@ error_reporting(E_ALL ^ E_NOTICE);
 		} else {
 			usort($res, "cmp"); 	
 		}
-		echo ((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false));
+		echo "An error occurred. Please try again later.";
+		error_log("MySQL error in searchfuncs.php: " . ((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 		$res['maxweight'] = $maxweight;
 		$res['results'] = $results;
 		return $res;
@@ -511,7 +516,7 @@ function get_search_results($query, $start, $category, $searchtype, $results, $d
 
 
 	if ((int)$start < 2)
-		saveToLog(addslashes($query), $time, $rows);
+		saveToLog($query, $time, $rows);
 	$from = ((int)$start - 1) * $results_per_page + 1;
 	$to = min(((int)$start)*$results_per_page, $rows);
 
