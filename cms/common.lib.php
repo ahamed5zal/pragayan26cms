@@ -418,7 +418,7 @@ function getUserEmail($userId) {
 	$query="SELECT `user_email` FROM `".MYSQL_DATABASE_PREFIX."users` WHERE `user_id` = '".$userId."'";
 	$result = mysqli_query($GLOBALS["___mysqli_ston"], $query);
 	$row= mysqli_fetch_row($result);
-	return $row[0];
+	return $row ? $row[0] : 'Anonymous';
 }
 
 /**

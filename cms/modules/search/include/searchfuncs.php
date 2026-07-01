@@ -163,7 +163,7 @@ error_reporting(E_ALL ^ E_NOTICE);
 		if (count((array)$searchstr['+']) == 0) {
 			return null;
 		}
-		$wordarray = $searchstr['-'];
+		$wordarray = $searchstr['-'] ?? [];
 		$notlist = array();
 		$not_words = 0;
 		while ($not_words < count((array)$wordarray)) {
@@ -186,7 +186,7 @@ error_reporting(E_ALL ^ E_NOTICE);
 		
 
 		//find all sites containing the search phrase
-		$wordarray = $searchstr['+s'];
+		$wordarray = $searchstr['+s'] ?? [];
 		$phrase_words = 0;
 		while ($phrase_words < count((array)$wordarray)) {
 
@@ -464,10 +464,10 @@ function get_search_results($query, $start, $category, $searchtype, $results, $d
            $query=str_replace('"','',$query);
         }   
 	$words = makeboollist($query);
-	$ignorewords = $words['ignore'];
+	$ignorewords = $words['ignore'] ?? [];
 
-	
-	$full_result['ignore_words'] = $words['ignore'];
+
+	$full_result['ignore_words'] = $words['ignore'] ?? [];
 
 	if ((int)$start==0) 
 		$start=1;
@@ -503,9 +503,9 @@ function get_search_results($query, $start, $category, $searchtype, $results, $d
 	$full_result['did_you_mean'] = $did_you_mean;
 	$full_result['did_you_mean_b'] = $did_you_mean_b;
 
-	$matchword = $sph_messages["matches"];
+	$matchword = $sph_messages["matches"] ?? 'matches';
 	if ($rows == 1) {
-		$matchword= $sph_messages["match"];
+		$matchword = $sph_messages["match"] ?? 'match';
 	}
 
 	$num_of_results = count((array)$result) - 2;
@@ -559,7 +559,7 @@ function get_search_results($query, $start, $category, $searchtype, $results, $d
 				$begin = 0;
 				$end = 0;
 				foreach ($places as $id => $place) {
-					while ($places[$id + $x] - $place < $desc_length && $x+$id < count((array)$places) && $place < strlen($fulltxt) -$desc_length) {
+					while (($places[$id + $x] ?? 0) - $place < $desc_length && $x+$id < count((array)$places) && $place < strlen($fulltxt) -$desc_length) {
 						$x++;
 						$begin = $id;
 						$end = $id + $x;

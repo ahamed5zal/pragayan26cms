@@ -51,7 +51,7 @@ abstract class widgetFramework
 	{
 		$this->widgetId=$widgetId;
 		$this->widgetInstanceId=$widgetInstanceId;
-		$this->pageId=$pageId;
+		$this->widgetPageId=$pageId;
 		$this->defaultConfigs=$defaultconfigs;
 		$this->loadWidget();
 		

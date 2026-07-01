@@ -615,6 +615,8 @@ RET;
 	$permissions = formattedPermissions($pagepath, $modifiableGroupIds, $grantableActions);
 	$groups = customGetGroups($maxPriorityGroup);
 	$users = customGetAllUsers();
+	$groupsJson = json_encode($groups);
+	$usersJson = json_encode($users);
 	global $templateFolder;
 	$smarttableconfig = array (
 			'permtable' => array(
@@ -720,8 +722,8 @@ var pageid = {$pageid};
 var permissions = {$perms};
 var permGroups;
 var permUsers;
-var groups = {{$groups}};
-var users = {{$users}};
+var groups = {$groupsJson};
+var users = {$usersJson};
 {$permissions}
 {$selected}
 </script>
@@ -776,20 +778,18 @@ function getPerms($pageId, $groupuser, $yesno) {
 }
 
 function customGetAllUsers() {
-	$ret = "";
+	$ret = array();
 	$result = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT `user_email`, `user_name`, `user_id` FROM `" . MYSQL_DATABASE_PREFIX . "users`");
 	while($row = mysqli_fetch_array($result))
-		$ret .= "'{$row['user_id']}' : '{$row['user_name']} &lt;{$row['user_email']}&gt;', ";
-	$ret = rtrim($ret,", ");
-	return $ret;	
+		$ret[$row['user_id']] = $row['user_name'] . ' <' . $row['user_email'] . '>';
+	return $ret;
 }
 
 function customGetGroups($priority) {
-	$ret = "'0' : 'Everyone', '1' : 'Logged in Users', ";
+	$ret = array(0 => 'Everyone', 1 => 'Logged in Users');
 	$result = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT `group_name`,`group_id` FROM `" . MYSQL_DATABASE_PREFIX . "groups` WHERE `group_priority` < '{$priority}'");
 	while($row = mysqli_fetch_array($result))
-		$ret .= "'{$row['group_id']}' : '{$row['group_name']}', ";
-	$ret = rtrim($ret,", ");
+		$ret[$row['group_id']] = $row['group_name'];
 	return $ret;
 }
 

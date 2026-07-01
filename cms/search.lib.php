@@ -136,9 +136,9 @@ DIDYOUMEAN;
 		$resultHTML .= '<div id="results">';
 
 		foreach ($qry_results as $_key => $_row){
-			$last_domain = $domain_name;
+			$last_domain = $domain_name ?? '';
 			extract($_row);
-			if ($sph_show_query_scores == 0)
+			if (($sph_show_query_scores ?? 0) == 0)
 				$weight = '';
 			else
 				$weight = "[$weight%]"; 
@@ -162,10 +162,10 @@ DIDYOUMEAN;
 	}
 
 	if (isset($other_pages)) {
-		if ($adv==1) {
+		if (($adv ?? 0) == 1) {
 			$adv_qry = "&adv=1";
 		}
-		if ($type != "") {
+		if (($type ?? '') != "") {
 			$type_qry = "&type=$type";
 		}
 
